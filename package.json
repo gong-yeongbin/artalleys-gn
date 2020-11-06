@@ -6,7 +6,8 @@
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
       "start": "ts-node src/index.ts",
-      "deploy": "sls deploy --aws-profile artalleys"
+      "deploy": "sls deploy --aws-profile artalleys",
+      "docs": "apidoc -i services/ -o docs/"
    },
    "dependencies": {
       "source-map-support": "^0.5.10",
