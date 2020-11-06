@@ -4,6 +4,9 @@ import {
   getConnectionManager,
   DefaultNamingStrategy,
 } from "typeorm";
+import { User } from "../entity/User";
+
+const entity = [User];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   type: "mysql",
@@ -13,7 +16,7 @@ const CONNECTION_OPTIONS: ConnectionOptions = {
   password: "1111",
   database: "gn",
   synchronize: true,
-  entities: ["entities/*.*"],
+  entities: entity,
 };
 
 /**
