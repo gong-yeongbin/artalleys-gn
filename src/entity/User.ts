@@ -1,18 +1,25 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity()
+@Entity("user")
 export class User {
+  @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column({ name: "phone_number", type: "integer" })
+  phoneNumber: number;
 
-    @Column()
-    firstName: string;
+  @Column({ name: "email", type: "nvarchar", length: 45 })
+  email: string;
 
-    @Column()
-    lastName: string;
+  @Column({ name: "nick_name", type: "nvarchar", length: 45 })
+  nickName: string;
 
-    @Column()
-    age: number;
+  @Column({ name: "profile_image", type: "nvarchar", length: 1024 })
+  profileImage: string;
 
+  @Column({ name: "create_at" })
+  createfAt: Date;
+
+  @Column({ name: "update_at" })
+  updateAt: Date;
 }

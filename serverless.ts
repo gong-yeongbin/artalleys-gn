@@ -1,4 +1,6 @@
+import { S3 } from "aws-sdk";
 import type { Serverless } from "serverless/aws";
+import { putObject } from "./services/util/aws";
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -27,6 +29,15 @@ const serverlessConfiguration: Serverless = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
     },
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: "s3:*",
+        Resource: {
+          "Fn::Join": ["", ["arn:aws:s3:::artalleys-gn-image-bucket", "/*"]],
+        },
+      },
+    ],
   },
   functions: {
     hello: {
@@ -36,6 +47,31 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "hello",
+          },
+        },
+      ],
+    },
+    createPost: {
+      handler: "services/post/createPost.createPost",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "post/{uid}/createPost",
+            cors: true,
+          },
+        },
+      ],
+    },
+    imageResize: {
+      handler: "services/post/createPost.imageResize",
+      events: [
+        {
+          s3: {
+            bucket: "artalleys-gn-image-bucket",
+            event: "s3:ObjectCreated:*",
+            rules: [],
+            existing: true,
           },
         },
       ],

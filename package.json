@@ -10,10 +10,11 @@
       "docs": "apidoc -i services/ -o docs/"
    },
    "dependencies": {
-      "source-map-support": "^0.5.10",
-      "typeorm": "0.2.29",
+      "aws-sdk": "^2.788.0",
+      "mysql": "^2.18.1",
       "reflect-metadata": "^0.1.10",
-      "mysql": "^2.14.1"
+      "source-map-support": "^0.5.10",
+      "typeorm": "0.2.29"
    },
    "devDependencies": {
       "@types/aws-lambda": "^8.10.17",

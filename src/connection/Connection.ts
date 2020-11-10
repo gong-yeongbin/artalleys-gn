@@ -5,8 +5,10 @@ import {
   DefaultNamingStrategy,
 } from "typeorm";
 import { User } from "../entity/User";
+import { Post } from "../entity/Post";
+import { PostLocation } from "../entity/PostLocation";
 
-const entity = [User];
+const entity = [User, Post, PostLocation];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   type: "mysql",
