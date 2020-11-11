@@ -1,14 +1,13 @@
-import { SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER } from "constants";
-
 import * as AWS from "aws-sdk";
-import { ForeignKeyMetadata } from "typeorm/metadata/ForeignKeyMetadata";
+
+const { BUCKET_NAME } = process.env;
 
 const s3: AWS.S3 = new AWS.S3();
 
 export const putObject = async (data: Buffer, key: string) => {
   await s3
     .putObject({
-      Bucket: "artalleys-gn-image-bucket",
+      Bucket: BUCKET_NAME,
       Body: data,
       Key: key,
       ContentType: "image/png",
@@ -19,14 +18,12 @@ export const putObject = async (data: Buffer, key: string) => {
 export const getObject = async (key: string) => {
   return await s3
     .getObject({
-      Bucket: "artalleys-gn-image-bucket",
+      Bucket: BUCKET_NAME,
       Key: key,
     })
     .promise();
 };
 
 export const deleteObject = async (key: string) => {
-  await s3
-    .deleteObject({ Bucket: "artalleys-gn-image-bucket", Key: key })
-    .promise();
+  await s3.deleteObject({ Bucket: BUCKET_NAME, Key: key }).promise();
 };

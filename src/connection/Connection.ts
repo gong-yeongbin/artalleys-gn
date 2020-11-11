@@ -3,22 +3,32 @@ import {
   Connection,
   getConnectionManager,
   DefaultNamingStrategy,
+  DatabaseType,
 } from "typeorm";
 import { User } from "../entity/User";
 import { Post } from "../entity/Post";
 import { PostLocation } from "../entity/PostLocation";
 import { PostImage } from "../entity/PostImage";
 
+const {
+  DB_TYPE,
+  DB_HOST,
+  DB_PORT,
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_DATABASE,
+  DB_SYNCHRONIZE,
+} = process.env;
 const entity = [User, Post, PostLocation, PostImage];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: "mysql",
-  host: "localhost",
-  port: 3306,
-  username: "root",
-  password: "1111",
-  database: "gn",
-  synchronize: true,
+  type: DB_TYPE as DatabaseType,
+  host: DB_HOST,
+  port: Number(DB_PORT),
+  username: DB_USERNAME,
+  password: DB_PASSWORD,
+  database: DB_DATABASE,
+  synchronize: Boolean(DB_SYNCHRONIZE),
   entities: entity,
 };
 

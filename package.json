@@ -7,6 +7,7 @@
       "test": "echo \"Error: no test specified\" && exit 1",
       "start": "ts-node src/index.ts",
       "deploy": "sls deploy --aws-profile artalleys",
+      "local": "sls offline --env local",
       "docs": "apidoc -i services/ -o docs/"
    },
    "dependencies": {
@@ -29,6 +30,7 @@
       "eslint-plugin-prettier": "^3.1.4",
       "fork-ts-checker-webpack-plugin": "^3.0.1",
       "prettier": "^2.1.2",
+      "serverless-dotenv-plugin": "^3.1.0",
       "serverless-offline": "^6.8.0",
       "serverless-webpack": "^5.2.0",
       "ts-loader": "^5.3.3",
