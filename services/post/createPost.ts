@@ -1,9 +1,10 @@
-import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
+import { APIGatewayEvent, Context, ProxyResult, S3Event } from "aws-lambda";
 import * as crypto from "crypto";
+import * as jimp from "jimp";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { Post } from "../../src/entity/Post";
 import { PostLocation } from "../../src/entity/PostLocation";
-import { putObject } from "../util/aws";
+import { putObject, getObject } from "../util/aws";
 
 export const createPost = async (
   event: APIGatewayEvent,
@@ -17,7 +18,7 @@ export const createPost = async (
   const data: any = JSON.parse(event.body);
 
   for (let index in data) {
-    const fileName = crypto.createHash("md5").digest("hex");
+    const postId = crypto.createHash("md5").digest("hex");
 
     let post: Post = new Post();
     let postLocation: PostLocation = new PostLocation();
@@ -49,7 +50,8 @@ export const createPost = async (
     // let dbSave = await postRepository.save(post);
 
     // if (dbSave !== null) {
-    await putObject(originalImage, `${uid}/${fileName}/original.png`);
+    await putObject(originalImage, `${uid}/${postId}/origin.png`);
+    // https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/test/filename/origin.png
     // }
   }
 
@@ -68,8 +70,22 @@ export const createPost = async (
 };
 
 export const imageResize = async (
-  event: APIGatewayEvent,
+  event: S3Event,
   context: Context
 ): Promise<void> => {
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!! imageResize");
+  const imageKey: string = event.Records[0].s3.object.key;
+  const uid: string = imageKey.split("/")[0];
+  const postId: string = imageKey.split("/")[1];
+
+  const imageObject: any = await getObject(imageKey);
+  const imageBuffer: Buffer = imageObject.Body as Buffer;
+
+  const resizeImageData = await (await jimp.read(imageBuffer)).resize(
+    jimp.AUTO,
+    360
+  );
+
+  resizeImageData.getBuffer(jimp.MIME_PNG, async (err, resizeImage) => {
+    await putObject(resizeImage, `${uid}/${postId}/resize.png`);
+  });
 };

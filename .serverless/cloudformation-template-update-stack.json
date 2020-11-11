@@ -173,7 +173,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/artalleys-gn/prod/1605010531352-2020-11-10T12:15:31.352Z/artalleys-gn.zip"
+          "S3Key": "serverless/artalleys-gn/prod/1605061894650-2020-11-11T02:31:34.650Z/artalleys-gn.zip"
         },
         "FunctionName": "artalleys-gn-prod-hello",
         "Handler": "handler.hello",
@@ -196,14 +196,14 @@
         "HelloLogGroup"
       ]
     },
-    "HelloLambdaVersionfJZpgSR4dkvak0efRMWLh3WKyfOG90aKoIYbeQs7o": {
+    "HelloLambdaVersionJJRyENG4RJcAAoQe9rGn9DQgQuyw77BoSa6oXWH74": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HelloLambdaFunction"
         },
-        "CodeSha256": "1E8gq6ovgorxCbyamBgNk35ZOmOXa4uumKw8AAOeBsY="
+        "CodeSha256": "Tb5K82Y1IGeO81hKpSos+nWDTls415RDilMDRjpPKrc="
       }
     },
     "CreatePostLambdaFunction": {
@@ -213,7 +213,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/artalleys-gn/prod/1605010531352-2020-11-10T12:15:31.352Z/artalleys-gn.zip"
+          "S3Key": "serverless/artalleys-gn/prod/1605061894650-2020-11-11T02:31:34.650Z/artalleys-gn.zip"
         },
         "FunctionName": "artalleys-gn-prod-createPost",
         "Handler": "services/post/createPost.createPost",
@@ -236,14 +236,14 @@
         "CreatePostLogGroup"
       ]
     },
-    "CreatePostLambdaVersionYQIKRyzaqd6KZWYQZjAYzcVSYMuN9Rpaour42Yf8R4": {
+    "CreatePostLambdaVersion7EReh9DQMKLr2yrhFbUXYexb4XzggmLiqaYjte9M": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreatePostLambdaFunction"
         },
-        "CodeSha256": "1E8gq6ovgorxCbyamBgNk35ZOmOXa4uumKw8AAOeBsY="
+        "CodeSha256": "Tb5K82Y1IGeO81hKpSos+nWDTls415RDilMDRjpPKrc="
       }
     },
     "ImageResizeLambdaFunction": {
@@ -253,7 +253,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/artalleys-gn/prod/1605010531352-2020-11-10T12:15:31.352Z/artalleys-gn.zip"
+          "S3Key": "serverless/artalleys-gn/prod/1605061894650-2020-11-11T02:31:34.650Z/artalleys-gn.zip"
         },
         "FunctionName": "artalleys-gn-prod-imageResize",
         "Handler": "services/post/createPost.imageResize",
@@ -276,14 +276,14 @@
         "ImageResizeLogGroup"
       ]
     },
-    "ImageResizeLambdaVersionVGPpB3GgxKF5TTvijdx6J8JRkjcgUoKyIO2MqJM": {
+    "ImageResizeLambdaVersion7wY5sMepbmWwSYaDlMcNAmoR3szxlfcNsaNsm5QaVg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ImageResizeLambdaFunction"
         },
-        "CodeSha256": "1E8gq6ovgorxCbyamBgNk35ZOmOXa4uumKw8AAOeBsY="
+        "CodeSha256": "Tb5K82Y1IGeO81hKpSos+nWDTls415RDilMDRjpPKrc="
       }
     },
     "ImageResizeCustomS31": {
@@ -406,7 +406,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/artalleys-gn/prod/1605010531352-2020-11-10T12:15:31.352Z/custom-resources.zip"
+          "S3Key": "serverless/artalleys-gn/prod/1605061894650-2020-11-11T02:31:34.650Z/custom-resources.zip"
         },
         "FunctionName": "artalleys-gn-prod-custom-resource-existing-s3",
         "Handler": "s3/handler.handler",
@@ -622,7 +622,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1605010511146": {
+    "ApiGatewayDeployment1605061875372": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -720,19 +720,19 @@
     "HelloLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HelloLambdaVersionfJZpgSR4dkvak0efRMWLh3WKyfOG90aKoIYbeQs7o"
+        "Ref": "HelloLambdaVersionJJRyENG4RJcAAoQe9rGn9DQgQuyw77BoSa6oXWH74"
       }
     },
     "CreatePostLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreatePostLambdaVersionYQIKRyzaqd6KZWYQZjAYzcVSYMuN9Rpaour42Yf8R4"
+        "Ref": "CreatePostLambdaVersion7EReh9DQMKLr2yrhFbUXYexb4XzggmLiqaYjte9M"
       }
     },
     "ImageResizeLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ImageResizeLambdaVersionVGPpB3GgxKF5TTvijdx6J8JRkjcgUoKyIO2MqJM"
+        "Ref": "ImageResizeLambdaVersion7wY5sMepbmWwSYaDlMcNAmoR3szxlfcNsaNsm5QaVg"
       }
     },
     "ServiceEndpoint": {
