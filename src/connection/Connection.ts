@@ -7,8 +7,9 @@ import {
 import { User } from "../entity/User";
 import { Post } from "../entity/Post";
 import { PostLocation } from "../entity/PostLocation";
+import { PostImage } from "../entity/PostImage";
 
-const entity = [User, Post, PostLocation];
+const entity = [User, Post, PostLocation, PostImage];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   type: "mysql",

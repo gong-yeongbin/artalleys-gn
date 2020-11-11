@@ -2,21 +2,25 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToOne,
+  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Post } from "./Post";
 
-@Entity("post_location")
-export class PostLocation {
+import { Post } from "../entity/Post";
+
+@Entity("post_image")
+export class PostImage {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
-  @Column({ name: "longtitude", type: "integer" })
-  longtitude: number;
+  @Column({ name: "url", type: "nvarchar", nullable: false })
+  url: string;
 
-  @Column({ name: "latitude", type: "integer" })
-  latitude: number;
+  @OneToOne(() => Post, { cascade: ["insert", "update", "remove"] })
+  @JoinColumn({ name: "post" })
+  post: Post;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;

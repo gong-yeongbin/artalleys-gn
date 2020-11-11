@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity("user")
 export class User {
@@ -17,9 +23,9 @@ export class User {
   @Column({ name: "profile_image", type: "nvarchar", length: 1024 })
   profileImage: string;
 
-  @Column({ name: "create_at" })
-  createfAt: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @Column({ name: "update_at" })
-  updateAt: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 }

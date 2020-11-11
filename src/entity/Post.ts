@@ -1,18 +1,22 @@
-import { join } from "path";
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
   JoinColumn,
-  JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { PostLocation } from "../entity/PostLocation";
+import { PostImage } from "../entity/PostImage";
 
 @Entity("post")
 export class Post {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
+
+  @Column({ name: "post_Id", type: "nvarchar" })
+  postId: string;
 
   @Column({ name: "type", type: "nvarchar" })
   type: string;
@@ -46,4 +50,10 @@ export class Post {
   @OneToOne(() => PostLocation, { cascade: ["insert", "update", "remove"] })
   @JoinColumn({ name: "location" })
   location: PostLocation;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 }
