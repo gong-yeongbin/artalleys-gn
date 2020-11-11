@@ -7,6 +7,40 @@ import { PostImage } from "../../src/entity/PostImage";
 import { PostLocation } from "../../src/entity/PostLocation";
 import { putObject, getObject } from "../util/aws";
 
+/**
+ * @api {put}  /post/:uid/createPost     Create Post
+ * @apiName Create Post
+ * @apiGroup Post
+ *
+ * @apiParam (PathParam) {String} uid                                   uid
+ * @apiParam (Body) {String{30}}  title                                 post title
+ * @apiParam (Body) {String="sell","want","business"}  type             post type
+ * @apiParam (Body) {String} condition                                  post condition
+ * @apiParam (Body) {Object} [location]                                 post location(type: sell)
+ * @apiParam (Body) {Object} location.latitude                          post location latitude
+ * @apiParam (Body) {Object} location.longtitude                        post location longtitude
+ * @apiParam (Body) {number} [price]                                    post price
+ * @apiParam (Body) {number} [number]                                   post number(type: business)
+ * @apiParam (Body) {String{300}} descriptions                          post descriptions
+ * @apiParam (Body) {base64} image                                      post image
+ *
+ * @apiParamExample {json} Request
+ * [
+ *  {
+ *    "title": "hwajangpyoom",
+ *    "type": "want",
+ *    "category":"hwajangpyoom category",
+ *    "condition": "other",
+ *    "location": {"latitude":"12.123","longtitude":"13.123"},
+ *    "price": 1000
+ *    "number": 123-1234-1234
+ *    "descriptions":"test hwajangpyoom e da",
+ *    "image": "testtesttesttest........"
+ *  }
+ * ]
+ * @apiSuccess (200 OK) {String} NoContent                              Success
+ **/
+
 export const createPost = async (
   event: APIGatewayEvent,
   context: Context
@@ -57,7 +91,7 @@ export const createPost = async (
     let dbSave = await postImageRepository.save(postImage);
 
     if (dbSave !== null) {
-      // await putObject(originalImage, `${uid}/${postId}/origin.png`);
+      await putObject(originalImage, `${uid}/${postId}/origin.png`);
     }
   }
 
