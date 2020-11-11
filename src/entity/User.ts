@@ -11,6 +11,9 @@ export class User {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
+  @Column({ name: "uid", type: "nvarchar" })
+  uid: string;
+
   @Column({ name: "phone_number", type: "integer" })
   phoneNumber: number;
 

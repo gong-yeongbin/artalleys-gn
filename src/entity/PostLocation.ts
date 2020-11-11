@@ -4,6 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from "typeorm";
 import { Post } from "./Post";
 
@@ -23,4 +25,10 @@ export class PostLocation {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToOne(() => Post, (post) => post.postLocation, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "post" })
+  post: Post;
 }

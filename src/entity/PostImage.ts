@@ -2,7 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -18,13 +18,15 @@ export class PostImage {
   @Column({ name: "url", type: "nvarchar", nullable: false })
   url: string;
 
-  @OneToOne(() => Post, { cascade: ["insert", "update", "remove"] })
-  @JoinColumn({ name: "post" })
-  post: Post;
-
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @ManyToOne(() => Post, (post) => post.postImage, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "post" })
+  post: Post;
 }

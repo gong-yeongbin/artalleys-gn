@@ -1,4 +1,5 @@
 import {
+  Unique,
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -6,11 +7,13 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
 import { PostLocation } from "../entity/PostLocation";
 import { PostImage } from "../entity/PostImage";
 
 @Entity("post")
+@Unique(["postId"])
 export class Post {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
@@ -31,6 +34,13 @@ export class Post {
   price: number;
 
   @Column({
+    name: "firm_on_price",
+    type: "boolean",
+    default: false,
+  })
+  firmOnPrice: boolean;
+
+  @Column({
     name: "descriptions",
     type: "nvarchar",
     length: 300,
@@ -47,13 +57,29 @@ export class Post {
   @Column({ name: "number", type: "integer", nullable: true })
   number: number;
 
-  @OneToOne(() => PostLocation, { cascade: ["insert", "update", "remove"] })
-  @JoinColumn({ name: "location" })
-  location: PostLocation;
+  @Column({ name: "active", type: "nvarchar", default: "active" })
+  active: string;
+
+  @Column({
+    name: "hide",
+    type: "boolean",
+    default: false,
+  })
+  hide: boolean;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToMany(() => PostImage, (postImage) => postImage.post, {
+    cascade: ["insert", "update", "remove"],
+  })
+  postImage: PostImage[];
+
+  @OneToOne(() => PostLocation, (postLocation) => postLocation.post, {
+    cascade: ["insert", "update", "remove"],
+  })
+  postLocation: PostLocation;
 }

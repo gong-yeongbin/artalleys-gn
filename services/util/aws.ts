@@ -24,3 +24,9 @@ export const getObject = async (key: string) => {
     })
     .promise();
 };
+
+export const deleteObject = async (key: string) => {
+  await s3
+    .deleteObject({ Bucket: "artalleys-gn-image-bucket", Key: key })
+    .promise();
+};

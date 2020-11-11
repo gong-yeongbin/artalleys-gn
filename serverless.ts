@@ -52,7 +52,7 @@ const serverlessConfiguration: Serverless = {
       ],
     },
     createPost: {
-      handler: "services/post/createPost.createPost",
+      handler: "services/post/handler.createPost",
       events: [
         {
           http: {
@@ -63,8 +63,56 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getPost: {
+      handler: "services/post/handler.getPost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{uid}/{postId}/getPost",
+            cors: true,
+          },
+        },
+      ],
+    },
+    hidePost: {
+      handler: "services/post/handler.hidePost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{uid}/{postId}/hidePost",
+            cors: true,
+          },
+        },
+      ],
+    },
+    boostPost: {
+      handler: "services/post/handler.boostPost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{uid}/{postId}/boostPost",
+            cors: true,
+          },
+        },
+      ],
+    },
+    deletePost: {
+      handler: "services/post/handler.deletePost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{uid}/{postId}/deletePost",
+            cors: true,
+          },
+        },
+      ],
+    },
     imageResize: {
-      handler: "services/post/createPost.imageResize",
+      handler: "services/post/handler.imageResize",
       events: [
         {
           s3: {
