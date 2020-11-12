@@ -14,7 +14,7 @@ import { putObject, getObject, deleteObject } from "../util/aws";
  *
  * @apiParam (PathParam) {String} uid                                   uid
  * @apiParam (Body) {String{30}}  title                                 post title
- * @apiParam (Body) {String="sell","want","business"}  type             post type
+ * @apiParam (Body) {String="sell","buy","business"}  type             post type
  * @apiParam (Body) {String} condition                                  post condition
  * @apiParam (Body) {Object} [location]                                 post location(type: sell)
  * @apiParam (Body) {Object} location.latitude                          post location latitude
@@ -31,7 +31,7 @@ import { putObject, getObject, deleteObject } from "../util/aws";
 [
  {
    "title": "hwajangpyoom",
-   "type": "want",
+   "type": "buy",
    "category":"hwajangpyoom category",
    "condition": "other",
    "location": {"latitude":"12.123","longtitude":"13.123"},
@@ -121,7 +121,7 @@ export const createPost = async (
  {
   "id": "56",
   "postId": "aafde3c18d762d3c03ca0943b9cfe6",
-  "type": "want",
+  "type": "buy",
   "title": "hwajangpyoom",
   "category": "hwajangpyoom category",
   "price": 0,

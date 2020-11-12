@@ -128,6 +128,27 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getFeed: {
+      handler: "services/feed/handler.getFeed",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "feed/getFeed",
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  type: false,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
   },
 };
 

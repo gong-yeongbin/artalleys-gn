@@ -22,13 +22,13 @@ const {
 const entity = [User, Post, PostLocation, PostImage];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: DB_TYPE as DatabaseType,
+  type: "mysql",
   host: DB_HOST,
-  port: Number(DB_PORT),
+  port: 3306,
   username: DB_USERNAME,
   password: DB_PASSWORD,
   database: DB_DATABASE,
-  synchronize: Boolean(DB_SYNCHRONIZE),
+  synchronize: true,
   entities: entity,
 };
 
