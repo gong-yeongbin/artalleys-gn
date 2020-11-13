@@ -9,6 +9,8 @@ import { User } from "../entity/User";
 import { Post } from "../entity/Post";
 import { PostLocation } from "../entity/PostLocation";
 import { PostImage } from "../entity/PostImage";
+import { Business } from "../entity/Business";
+import { BusinessImage } from "../entity/BusinessImage";
 
 const {
   DB_TYPE,
@@ -19,7 +21,7 @@ const {
   DB_DATABASE,
   DB_SYNCHRONIZE,
 } = process.env;
-const entity = [User, Post, PostLocation, PostImage];
+const entity = [User, Post, PostLocation, PostImage, Business, BusinessImage];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   type: "mysql",

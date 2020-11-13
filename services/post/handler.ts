@@ -1,11 +1,23 @@
-import { APIGatewayEvent, Context, ProxyResult, S3Event } from "aws-lambda";
+import {
+  APIGatewayEvent,
+  Context,
+  ProxyResult,
+  SQSEvent,
+  SQSRecord,
+} from "aws-lambda";
 import * as crypto from "crypto";
 import * as jimp from "jimp";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { Post } from "../../src/entity/Post";
 import { PostImage } from "../../src/entity/PostImage";
 import { PostLocation } from "../../src/entity/PostLocation";
-import { putObject, getObject, deleteObject } from "../util/aws";
+import {
+  putObject,
+  getObject,
+  deleteObject,
+  deleteMessage,
+  sendMessage,
+} from "../util/aws";
 
 /**
  * @api {put}  /post/:uid/createPost     Create Post
@@ -28,7 +40,6 @@ import { putObject, getObject, deleteObject } from "../util/aws";
  *
  *
  * @apiParamExample {json} Request Body
-[
  {
    "title": "hwajangpyoom",
    "type": "buy",
@@ -40,9 +51,8 @@ import { putObject, getObject, deleteObject } from "../util/aws";
    "number": 12312341234,
    "descriptions":"test hwajangpyoom e da",
    "hide": false,
-   "image": "testtesttesttest........"
+   "image": ["testtesttesttest........"]
  }
-]
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
 
@@ -56,50 +66,57 @@ export const createPost = async (
   const postImageRepository = connection.getRepository(PostImage);
 
   const uid: string = event.pathParameters["uid"];
+  const postId = crypto.randomBytes(10).toString("hex");
   const data: any = JSON.parse(event.body);
 
-  for (let index in data) {
-    const originalImage = Buffer.from(data[index].image, "base64");
-    const postId = crypto.randomBytes(15).toString("hex");
+  let post: Post = new Post();
+  let postLocation: PostLocation = new PostLocation();
+  let postImage: PostImage = new PostImage();
 
-    let {
-      type,
-      title,
-      category,
-      price = 0,
-      firmOnPrice = false,
-      descriptions,
-      condition,
-      number,
-    }: Post = data[index];
+  let {
+    type,
+    title,
+    category,
+    price = 0,
+    firmOnPrice = false,
+    descriptions,
+    condition,
+    number,
+  }: Post = data;
 
-    let post: Post = new Post();
-    let postLocation: PostLocation = new PostLocation();
-    let postImage: PostImage = new PostImage();
+  postLocation.longtitude = data.location.longtitude;
+  postLocation.latitude = data.location.latitude;
+  await postLocationRepository.save(postLocation);
 
-    postLocation.longtitude = data[index].location.longtitude;
-    postLocation.latitude = data[index].location.latitude;
-    await postLocationRepository.save(postLocation);
+  post.postId = postId;
+  post.type = type.toLowerCase();
+  post.title = title;
+  post.category = category.toLowerCase();
+  post.price = price;
+  post.firmOnPrice = firmOnPrice;
+  post.descriptions = descriptions;
+  post.condition = condition.toLowerCase();
+  post.number = number;
+  post.postLocation = postLocation;
+  await postRepository.save(post);
 
-    post.postId = postId;
-    post.type = type.toLowerCase();
-    post.title = title;
-    post.category = category.toLowerCase();
-    post.price = price;
-    post.firmOnPrice = firmOnPrice;
-    post.descriptions = descriptions;
-    post.condition = condition.toLowerCase();
-    post.number = number;
-    post.postLocation = postLocation;
-    await postRepository.save(post);
+  for (let index in data.image) {
+    let imageName = crypto.randomBytes(10).toString("hex");
 
-    postImage.url = `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/${postId}/origin.png`;
-    postImage.post = post;
-    let dbSave = await postImageRepository.save(postImage);
+    await postImageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(PostImage)
+      .values({
+        post: post,
+        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${uid}/${postId}/origin/${imageName}.png`,
+      })
+      .execute();
 
-    if (dbSave != null) {
-      await putObject(originalImage, `${uid}/${postId}/origin.png`);
-    }
+    const originalImage = Buffer.from(data.image[index], "base64");
+
+    // await putObject(originalImage, `post/${uid}/${postId}/origin/${imageName}.png`);
+    // await sendMessage(`post/${uid}/${postId}/origin/${imageName}.png`);
   }
 
   return {
@@ -304,34 +321,43 @@ export const deletePost = async (
   };
 };
 export const imageResize = async (
-  event: S3Event,
+  event: SQSEvent,
   context: Context
 ): Promise<void> => {
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postImageRepository = connection.getRepository(PostImage);
+  for (let record of event.Records) {
+    const receiveData: string = record.body;
 
-  const imageKey: string = event.Records[0].s3.object.key;
-  const uid: string = imageKey.split("/")[0];
-  const postId: string = imageKey.split("/")[1];
+    const uid: string = receiveData.split("/")[0];
+    const postId: string = receiveData.split("/")[1];
 
-  const imageObject: any = await getObject(imageKey);
-  const imageBuffer: Buffer = imageObject.Body as Buffer;
+    const connection = await getDatabaseConnection();
+    const postRepository = connection.getRepository(Post);
+    const postImageRepository = connection.getRepository(PostImage);
 
-  const postEntity: Post = await postRepository.findOne({ postId: postId });
-  const postImage = new PostImage();
+    const imageObject: any = await getObject(receiveData as string);
 
-  postImage.url = `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/${postId}/resize.png`;
-  let dbSave = await postImageRepository.save(postImage);
+    const imageBuffer: Buffer = imageObject.Body as Buffer;
+    const postEntity: Post = await postRepository.findOne({ postId: postId });
+    const postImage = new PostImage();
 
-  const resizeImageData = await (await jimp.read(imageBuffer)).resize(
-    jimp.AUTO,
-    360
-  );
+    postImage.url = `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${receiveData.replace(
+      "origin",
+      "resize"
+    )}`;
+    await postImageRepository.save(postImage);
 
-  if (dbSave !== null) {
+    const resizeImageData = await (await jimp.read(imageBuffer)).resize(
+      jimp.AUTO,
+      360
+    );
+
     resizeImageData.getBuffer(jimp.MIME_PNG, async (err, resizeImage) => {
-      await putObject(resizeImage, `${uid}/${postId}/resize.png`);
+      await putObject(
+        resizeImage,
+        `${receiveData.replace("origin", "resize")}`
+      );
     });
+
+    await deleteMessage(record.receiptHandle);
   }
 };

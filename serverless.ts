@@ -1,4 +1,4 @@
-import { S3 } from "aws-sdk";
+import { S3, SQS } from "aws-sdk";
 import type { Serverless } from "serverless/aws";
 import { putObject } from "./services/util/aws";
 
@@ -40,6 +40,11 @@ const serverlessConfiguration: Serverless = {
         Resource: {
           "Fn::Join": ["", ["arn:aws:s3:::artalleys-gn-image-bucket", "/*"]],
         },
+      },
+      {
+        Effect: "Allow",
+        Action: "sqs:*",
+        Resource: "*",
       },
     ],
   },
@@ -117,16 +122,6 @@ const serverlessConfiguration: Serverless = {
     },
     imageResize: {
       handler: "services/post/handler.imageResize",
-      events: [
-        {
-          s3: {
-            bucket: "artalleys-gn-image-bucket",
-            event: "s3:ObjectCreated:*",
-            rules: [],
-            existing: true,
-          },
-        },
-      ],
     },
     getFeed: {
       handler: "services/feed/handler.getFeed",
@@ -144,6 +139,18 @@ const serverlessConfiguration: Serverless = {
                 },
               },
             },
+            cors: true,
+          },
+        },
+      ],
+    },
+    createBusiness: {
+      handler: "services/business/handler.createBusiness",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "business/{uid}/{businessId}/createBusiness",
             cors: true,
           },
         },

@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { PostLocation } from "../entity/PostLocation";
 import { PostImage } from "../entity/PostImage";
+import { Business } from "./Business";
 
 @Entity("post")
 @Unique(["postId"])
@@ -82,4 +83,9 @@ export class Post {
     cascade: ["insert", "update", "remove"],
   })
   postLocation: PostLocation;
+
+  @OneToOne(() => Business, (business) => business.post, {
+    cascade: ["insert", "update", "remove"],
+  })
+  business: Business;
 }

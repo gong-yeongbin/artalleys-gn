@@ -20,7 +20,12 @@
         "DB_USERNAME": "root",
         "DB_PASSWORD": "1111",
         "DB_DATABASE": "gn",
-        "BUCKET_NAME": "artalleys-gn-image-bucket"
+        "BUCKET_NAME": "artalleys-gn-image-bucket",
+        "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+        "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+        "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+        "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+        "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
       },
       "iamRoleStatements": [
         {
@@ -37,6 +42,13 @@
               ]
             ]
           }
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "sqs:*"
+          ],
+          "Resource": "*"
         }
       ],
       "variableSyntax": "\\${([^{}:]+?(?:\\(|:)(?:[^:{}][^{}]*?)?)}",
@@ -147,6 +159,12 @@
               "LogGroupName": "/aws/lambda/artalleys-gn-prod-getFeed"
             }
           },
+          "CreateBusinessLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-createBusiness"
+            }
+          },
           "IamRoleLambdaExecution": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -206,6 +224,9 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][1]"
                       }
                     ]
                   }
@@ -234,7 +255,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-hello",
               "Handler": "handler.hello",
@@ -256,7 +277,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -264,14 +290,14 @@
               "HelloLogGroup"
             ]
           },
-          "HelloLambdaVersion0F6JRKVvPACfTK6tDPImzFSLscVMuyVK9kA8hhFdBY": {
+          "HelloLambdaVersion5CCj33RVuJ6j56N9VSzqU9V3x4SQ5Bo22YZGeaA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HelloLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "CreatePostLambdaFunction": {
@@ -281,7 +307,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-createPost",
               "Handler": "services/post/handler.createPost",
@@ -303,7 +329,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -311,14 +342,14 @@
               "CreatePostLogGroup"
             ]
           },
-          "CreatePostLambdaVersionOtOrxSQGPJFHjnrr92rabVHfjhWbtEwn8n1W37mDvk": {
+          "CreatePostLambdaVersionG3d5lTsuPGYvD2jZ6kygpeBPO6nGT8WBPnYZrUoY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreatePostLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "GetPostLambdaFunction": {
@@ -328,7 +359,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-getPost",
               "Handler": "services/post/handler.getPost",
@@ -350,7 +381,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -358,14 +394,14 @@
               "GetPostLogGroup"
             ]
           },
-          "GetPostLambdaVersionUA5wBKsbOVnYq6irGYdnJKZNqTjcOaYwasCk4zbObk": {
+          "GetPostLambdaVersion0DIFHc0tF0VHDbeFCIBXrcXode4MGFl7CDwctVM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetPostLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "HidePostLambdaFunction": {
@@ -375,7 +411,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-hidePost",
               "Handler": "services/post/handler.hidePost",
@@ -397,7 +433,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -405,14 +446,14 @@
               "HidePostLogGroup"
             ]
           },
-          "HidePostLambdaVersionVOsvklmSzUpXBct6iqzisfo4ngUcEvVFtu6WQ76x2DQ": {
+          "HidePostLambdaVersionSiWQsWUuGdJs5SQkI4CQB2RGRIo6PFd6ScuCqJoMn0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HidePostLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "BoostPostLambdaFunction": {
@@ -422,7 +463,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-boostPost",
               "Handler": "services/post/handler.boostPost",
@@ -444,7 +485,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -452,14 +498,14 @@
               "BoostPostLogGroup"
             ]
           },
-          "BoostPostLambdaVersionL2VGBZoTYbn7tK3a2hr7JjA4MCN8HuwgIc4QiU": {
+          "BoostPostLambdaVersion8CMwJo1NQnxVbH5K3Qg7r0oUJC6QzWWzjgyBqZcb7o": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "BoostPostLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "DeletePostLambdaFunction": {
@@ -469,7 +515,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-deletePost",
               "Handler": "services/post/handler.deletePost",
@@ -491,7 +537,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -499,14 +550,14 @@
               "DeletePostLogGroup"
             ]
           },
-          "DeletePostLambdaVersionn6dtNtMc24mtYFsov7msBAFBSfRVNJWkp072POIn4": {
+          "DeletePostLambdaVersion0kh4Pm5JvNcwx01OwfuvDW5loXP1FQ7BIRt7mCTuhng": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeletePostLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "ImageResizeLambdaFunction": {
@@ -516,7 +567,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-imageResize",
               "Handler": "services/post/handler.imageResize",
@@ -538,7 +589,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -546,14 +602,14 @@
               "ImageResizeLogGroup"
             ]
           },
-          "ImageResizeLambdaVersionaqSjGUzlTvFkMrobWz5nOdupF3LdoQ1NadjFjgI1Fk": {
+          "ImageResizeLambdaVersionlaNZ2ikNADgOvlP2SHCoLSDWsQNelLmybsD1bExo": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ImageResizeLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
           "GetFeedLambdaFunction": {
@@ -563,7 +619,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-getFeed",
               "Handler": "services/feed/handler.getFeed",
@@ -585,7 +641,12 @@
                   "DB_USERNAME": "root",
                   "DB_PASSWORD": "1111",
                   "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket"
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
                 }
               }
             },
@@ -593,153 +654,67 @@
               "GetFeedLogGroup"
             ]
           },
-          "GetFeedLambdaVersion0TrN7vZSW90MFi0JmTa4iq2aT0jQHLWSnin4tcV4": {
+          "GetFeedLambdaVersion4G5hObQGSXxR21sa8KGnRFejlGlS43e3TM8gLbjM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetFeedLambdaFunction"
               },
-              "CodeSha256": "l3butQIUIR+9GKqz8UPop4Vr1sznLjQpg1yri2BxEpw="
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
             }
           },
-          "ImageResizeCustomS31": {
-            "Type": "Custom::S3",
-            "Version": 1,
-            "DependsOn": [
-              "ImageResizeLambdaFunction",
-              "CustomDashresourceDashexistingDashs3LambdaFunction"
-            ],
-            "Properties": {
-              "ServiceToken": {
-                "Fn::GetAtt": [
-                  "CustomDashresourceDashexistingDashs3LambdaFunction",
-                  "Arn"
-                ]
-              },
-              "FunctionName": "artalleys-gn-prod-imageResize",
-              "BucketName": "artalleys-gn-image-bucket",
-              "BucketConfigs": [
-                {
-                  "Event": "s3:ObjectCreated:*",
-                  "Rules": []
-                }
-              ]
-            }
-          },
-          "IamRoleCustomResourcesLambdaExecution": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-              "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                  {
-                    "Effect": "Allow",
-                    "Principal": {
-                      "Service": [
-                        "lambda.amazonaws.com"
-                      ]
-                    },
-                    "Action": [
-                      "sts:AssumeRole"
-                    ]
-                  }
-                ]
-              },
-              "Policies": [
-                {
-                  "PolicyName": {
-                    "Fn::Join": [
-                      "-",
-                      [
-                        "prod",
-                        "artalleys-gn",
-                        "custom-resources-lambda"
-                      ]
-                    ]
-                  },
-                  "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                      {
-                        "Effect": "Allow",
-                        "Resource": {
-                          "Fn::Join": [
-                            ":",
-                            [
-                              "arn",
-                              {
-                                "Ref": "AWS::Partition"
-                              },
-                              "s3",
-                              "",
-                              "",
-                              "artalleys-gn-image-bucket"
-                            ]
-                          ]
-                        },
-                        "Action": [
-                          "s3:PutBucketNotification",
-                          "s3:GetBucketNotification"
-                        ]
-                      },
-                      {
-                        "Effect": "Allow",
-                        "Resource": {
-                          "Fn::Join": [
-                            ":",
-                            [
-                              "arn",
-                              {
-                                "Ref": "AWS::Partition"
-                              },
-                              "lambda",
-                              {
-                                "Ref": "AWS::Region"
-                              },
-                              {
-                                "Ref": "AWS::AccountId"
-                              },
-                              "function",
-                              "*"
-                            ]
-                          ]
-                        },
-                        "Action": [
-                          "lambda:AddPermission",
-                          "lambda:RemovePermission"
-                        ]
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          },
-          "CustomDashresourceDashexistingDashs3LambdaFunction": {
+          "CreateBusinessLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z/custom-resources.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z/artalleys-gn.zip"
               },
-              "FunctionName": "artalleys-gn-prod-custom-resource-existing-s3",
-              "Handler": "s3/handler.handler",
+              "FunctionName": "artalleys-gn-prod-createBusiness",
+              "Handler": "services/business/handler.createBusiness",
               "MemorySize": 1024,
-              "Runtime": "nodejs12.x",
-              "Timeout": 180,
               "Role": {
                 "Fn::GetAtt": [
-                  "IamRoleCustomResourcesLambdaExecution",
+                  "IamRoleLambdaExecution",
                   "Arn"
                 ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
               }
             },
             "DependsOn": [
-              "IamRoleCustomResourcesLambdaExecution"
+              "CreateBusinessLogGroup"
             ]
+          },
+          "CreateBusinessLambdaVersionAp0qgKTFsvXKiFoDs6EyTQUyKARXYknMmJidipN0UGs": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateBusinessLambdaFunction"
+              },
+              "CodeSha256": "rBvoxZOX8zXzyIAlVMwaTmOlyV2iHZPzgPIARZ3xTCA="
+            }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
@@ -890,6 +865,45 @@
                 "Ref": "ApiGatewayResourceFeed"
               },
               "PathPart": "getFeed",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceBusiness": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "business",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceBusinessUidVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceBusiness"
+              },
+              "PathPart": "{uid}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceBusinessUidVarCreatebusiness": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceBusinessUidVar"
+              },
+              "PathPart": "createBusiness",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -1165,6 +1179,51 @@
               }
             }
           },
+          "ApiGatewayMethodBusinessUidVarCreatebusinessOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBusinessUidVarCreatebusiness"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodHelloGet": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -1429,7 +1488,8 @@
               "HttpMethod": "GET",
               "RequestParameters": {
                 "method.request.querystring.offset": false,
-                "method.request.querystring.limit": false
+                "method.request.querystring.limit": false,
+                "method.request.querystring.type": false
               },
               "ResourceId": {
                 "Ref": "ApiGatewayResourceFeedGetfeed"
@@ -1469,7 +1529,50 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1605166318127": {
+          "ApiGatewayMethodBusinessUidVarCreatebusinessPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceBusinessUidVarCreatebusiness"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "CreateBusinessLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1605265781863": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1484,13 +1587,15 @@
               "ApiGatewayMethodPostUidVarPostidVarBoostpostOptions",
               "ApiGatewayMethodPostUidVarPostidVarDeletepostOptions",
               "ApiGatewayMethodFeedGetfeedOptions",
+              "ApiGatewayMethodBusinessUidVarCreatebusinessOptions",
               "ApiGatewayMethodHelloGet",
               "ApiGatewayMethodPostUidVarCreatepostPut",
               "ApiGatewayMethodPostUidVarPostidVarGetpostGet",
               "ApiGatewayMethodPostUidVarPostidVarHidepostGet",
               "ApiGatewayMethodPostUidVarPostidVarBoostpostGet",
               "ApiGatewayMethodPostUidVarPostidVarDeletepostGet",
-              "ApiGatewayMethodFeedGetfeedGet"
+              "ApiGatewayMethodFeedGetfeedGet",
+              "ApiGatewayMethodBusinessUidVarCreatebusinessPut"
             ]
           },
           "HelloLambdaPermissionApiGateway": {
@@ -1751,6 +1856,43 @@
                 ]
               }
             }
+          },
+          "CreateBusinessLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateBusinessLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
           }
         },
         "Outputs": {
@@ -1762,49 +1904,55 @@
           "HelloLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloLambdaVersion0F6JRKVvPACfTK6tDPImzFSLscVMuyVK9kA8hhFdBY"
+              "Ref": "HelloLambdaVersion5CCj33RVuJ6j56N9VSzqU9V3x4SQ5Bo22YZGeaA"
             }
           },
           "CreatePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreatePostLambdaVersionOtOrxSQGPJFHjnrr92rabVHfjhWbtEwn8n1W37mDvk"
+              "Ref": "CreatePostLambdaVersionG3d5lTsuPGYvD2jZ6kygpeBPO6nGT8WBPnYZrUoY"
             }
           },
           "GetPostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetPostLambdaVersionUA5wBKsbOVnYq6irGYdnJKZNqTjcOaYwasCk4zbObk"
+              "Ref": "GetPostLambdaVersion0DIFHc0tF0VHDbeFCIBXrcXode4MGFl7CDwctVM"
             }
           },
           "HidePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HidePostLambdaVersionVOsvklmSzUpXBct6iqzisfo4ngUcEvVFtu6WQ76x2DQ"
+              "Ref": "HidePostLambdaVersionSiWQsWUuGdJs5SQkI4CQB2RGRIo6PFd6ScuCqJoMn0"
             }
           },
           "BoostPostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "BoostPostLambdaVersionL2VGBZoTYbn7tK3a2hr7JjA4MCN8HuwgIc4QiU"
+              "Ref": "BoostPostLambdaVersion8CMwJo1NQnxVbH5K3Qg7r0oUJC6QzWWzjgyBqZcb7o"
             }
           },
           "DeletePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeletePostLambdaVersionn6dtNtMc24mtYFsov7msBAFBSfRVNJWkp072POIn4"
+              "Ref": "DeletePostLambdaVersion0kh4Pm5JvNcwx01OwfuvDW5loXP1FQ7BIRt7mCTuhng"
             }
           },
           "ImageResizeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ImageResizeLambdaVersionaqSjGUzlTvFkMrobWz5nOdupF3LdoQ1NadjFjgI1Fk"
+              "Ref": "ImageResizeLambdaVersionlaNZ2ikNADgOvlP2SHCoLSDWsQNelLmybsD1bExo"
             }
           },
           "GetFeedLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetFeedLambdaVersion0TrN7vZSW90MFi0JmTa4iq2aT0jQHLWSnin4tcV4"
+              "Ref": "GetFeedLambdaVersion4G5hObQGSXxR21sa8KGnRFejlGlS43e3TM8gLbjM"
+            }
+          },
+          "CreateBusinessLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateBusinessLambdaVersionAp0qgKTFsvXKiFoDs6EyTQUyKARXYknMmJidipN0UGs"
             }
           },
           "ServiceEndpoint": {
@@ -1933,7 +2081,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HelloLambdaVersion0F6JRKVvPACfTK6tDPImzFSLscVMuyVK9kA8hhFdBY"
+        "versionLogicalId": "HelloLambdaVersion5CCj33RVuJ6j56N9VSzqU9V3x4SQ5Bo22YZGeaA"
       },
       "createPost": {
         "handler": "services/post/handler.createPost",
@@ -1973,7 +2121,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreatePostLambdaVersionOtOrxSQGPJFHjnrr92rabVHfjhWbtEwn8n1W37mDvk"
+        "versionLogicalId": "CreatePostLambdaVersionG3d5lTsuPGYvD2jZ6kygpeBPO6nGT8WBPnYZrUoY"
       },
       "getPost": {
         "handler": "services/post/handler.getPost",
@@ -2013,7 +2161,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetPostLambdaVersionUA5wBKsbOVnYq6irGYdnJKZNqTjcOaYwasCk4zbObk"
+        "versionLogicalId": "GetPostLambdaVersion0DIFHc0tF0VHDbeFCIBXrcXode4MGFl7CDwctVM"
       },
       "hidePost": {
         "handler": "services/post/handler.hidePost",
@@ -2053,7 +2201,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HidePostLambdaVersionVOsvklmSzUpXBct6iqzisfo4ngUcEvVFtu6WQ76x2DQ"
+        "versionLogicalId": "HidePostLambdaVersionSiWQsWUuGdJs5SQkI4CQB2RGRIo6PFd6ScuCqJoMn0"
       },
       "boostPost": {
         "handler": "services/post/handler.boostPost",
@@ -2093,7 +2241,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "BoostPostLambdaVersionL2VGBZoTYbn7tK3a2hr7JjA4MCN8HuwgIc4QiU"
+        "versionLogicalId": "BoostPostLambdaVersion8CMwJo1NQnxVbH5K3Qg7r0oUJC6QzWWzjgyBqZcb7o"
       },
       "deletePost": {
         "handler": "services/post/handler.deletePost",
@@ -2133,20 +2281,11 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "DeletePostLambdaVersionn6dtNtMc24mtYFsov7msBAFBSfRVNJWkp072POIn4"
+        "versionLogicalId": "DeletePostLambdaVersion0kh4Pm5JvNcwx01OwfuvDW5loXP1FQ7BIRt7mCTuhng"
       },
       "imageResize": {
         "handler": "services/post/handler.imageResize",
-        "events": [
-          {
-            "s3": {
-              "bucket": "artalleys-gn-image-bucket",
-              "event": "s3:ObjectCreated:*",
-              "rules": [],
-              "existing": true
-            }
-          }
-        ],
+        "events": [],
         "name": "artalleys-gn-prod-imageResize",
         "package": {
           "artifact": ".serverless/artalleys-gn.zip"
@@ -2155,7 +2294,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "ImageResizeLambdaVersionaqSjGUzlTvFkMrobWz5nOdupF3LdoQ1NadjFjgI1Fk"
+        "versionLogicalId": "ImageResizeLambdaVersionlaNZ2ikNADgOvlP2SHCoLSDWsQNelLmybsD1bExo"
       },
       "getFeed": {
         "handler": "services/feed/handler.getFeed",
@@ -2167,7 +2306,8 @@
               "request": {
                 "parameters": {
                   "method.request.querystring.offset": false,
-                  "method.request.querystring.limit": false
+                  "method.request.querystring.limit": false,
+                  "method.request.querystring.type": false
                 }
               },
               "cors": {
@@ -2201,7 +2341,47 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetFeedLambdaVersion0TrN7vZSW90MFi0JmTa4iq2aT0jQHLWSnin4tcV4"
+        "versionLogicalId": "GetFeedLambdaVersion4G5hObQGSXxR21sa8KGnRFejlGlS43e3TM8gLbjM"
+      },
+      "createBusiness": {
+        "handler": "services/business/handler.createBusiness",
+        "events": [
+          {
+            "http": {
+              "method": "put",
+              "path": "business/{uid}/createBusiness",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "PUT"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-createBusiness",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "CreateBusinessLambdaVersionAp0qgKTFsvXKiFoDs6EyTQUyKARXYknMmJidipN0UGs"
       }
     },
     "configValidationMode": "warn",
@@ -2228,7 +2408,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/artalleys-gn/prod/1605166344725-2020-11-12T07:32:24.725Z",
+    "artifactDirectoryName": "serverless/artalleys-gn/prod/1605265800740-2020-11-13T11:10:00.740Z",
     "artifact": ""
   }
 }
