@@ -9,9 +9,8 @@ import {
   OneToMany,
   JoinColumn,
 } from "typeorm";
-import { PostLocation } from "../entity/PostLocation";
-import { BusinessImage } from "../entity/BusinessImage";
-import { Post } from "../entity/Post";
+import { Image } from "../entity/Image";
+import { Location } from "../entity/Location";
 
 @Entity("business")
 @Unique(["businessId"])
@@ -67,19 +66,13 @@ export class Business {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => BusinessImage, (businessImage) => businessImage.business, {
+  @OneToMany(() => Image, (image) => image.business, {
     cascade: ["insert", "update", "remove"],
   })
-  businessImage: BusinessImage[];
+  businessImage: Image[];
 
-  @OneToOne(() => PostLocation, (postLocation) => postLocation.post, {
+  @OneToOne(() => Location, (location) => location.business, {
     cascade: ["insert", "update", "remove"],
   })
-  postLocation: PostLocation;
-
-  @OneToOne(() => Post, (post) => post.business, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "post" })
-  post: Post;
+  businessLocation: Location;
 }

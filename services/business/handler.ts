@@ -1,36 +1,26 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import * as crypto from "crypto";
-import { Post } from "../../src/entity/Post";
 import { Business } from "../../src/entity/Business";
-import { BusinessImage } from "../../src/entity/BusinessImage";
-import { PostLocation } from "../../src/entity/PostLocation";
-import {
-  putObject,
-  getObject,
-  deleteObject,
-  deleteMessage,
-  sendMessage,
-} from "../util/aws";
+import { Image } from "../../src/entity/Image";
+import { Location } from "../../src/entity/Location";
+import { putObject, sendMessage } from "../util/aws";
 
 export const createBusiness = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const businessRepository = connection.getRepository(Business);
-  const postLocationRepository = connection.getRepository(PostLocation);
-  const businessImageRepository = connection.getRepository(BusinessImage);
+  // const connection = await getDatabaseConnection();
+  // const businessRepository = connection.getRepository(Business);
+  // const locationRepository = connection.getRepository(Location);
+  // const imageRepository = connection.getRepository(Image);
 
   const uid: string = event.pathParameters["uid"];
-  const postId: string = event.pathParameters["postId"];
   const businessId = crypto.randomBytes(10).toString("hex");
   const data: any = JSON.parse(event.body);
 
   let business: Business = new Business();
-  let postLocation: PostLocation = new PostLocation();
-  let businessImage: BusinessImage = new BusinessImage();
+  let location: Location = new Location();
 
   let {
     title,
@@ -42,11 +32,9 @@ export const createBusiness = async (
     descriptions,
   }: Business = data;
 
-  postLocation.longtitude = data.location.longtitude;
-  postLocation.latitude = data.location.latitude;
-  await postLocationRepository.save(postLocation);
-
-  const postEntity: Post = await postRepository.findOne({ postId: postId });
+  location.longtitude = data.location.longtitude;
+  location.latitude = data.location.latitude;
+  // await locationRepository.save(location);
 
   business.businessId = businessId;
   business.title = title;
@@ -56,28 +44,27 @@ export const createBusiness = async (
   business.workingHoursDescriptions = workingHoursDescriptions;
   business.homepage = homepage;
   business.descriptions = descriptions;
-  business.postLocation = postLocation;
-  business.post = postEntity;
-  await businessRepository.save(business);
+  business.businessLocation = location;
+  // await businessRepository.save(business);
 
   for (let index in data.image) {
     let imageName = crypto.randomBytes(10).toString("hex");
 
-    await businessImageRepository
-      .createQueryBuilder()
-      .insert()
-      .into(BusinessImage)
-      .values({
-        business: business,
-        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/business/${businessId}/origin/${imageName}.png`,
-      })
-      .execute();
+    // await imageRepository
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .into(Image)
+    //   .values({
+    //     business: business,
+    //     url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/business/${businessId}/origin/${imageName}.png`,
+    //   })
+    //   .execute();
 
     const originalImage = Buffer.from(data.image[index], "base64");
 
     await putObject(
       originalImage,
-      `${postId}/${businessId}/origin/${imageName}.png`
+      `${uid}/business/${businessId}/origin/${imageName}.png`
     );
     await sendMessage(`${uid}/business/${businessId}/origin/${imageName}.png`);
   }

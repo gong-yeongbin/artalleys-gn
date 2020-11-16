@@ -6,12 +6,14 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from "typeorm";
 
 import { Post } from "../entity/Post";
+import { Business } from "./Business";
 
-@Entity("post_image")
-export class PostImage {
+@Entity("image")
+export class Image {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
@@ -29,4 +31,10 @@ export class PostImage {
   })
   @JoinColumn({ name: "post" })
   post: Post;
+
+  @ManyToOne(() => Business, (business) => business.businessImage, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "business" })
+  business: Business;
 }

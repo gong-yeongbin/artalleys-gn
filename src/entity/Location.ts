@@ -9,9 +9,10 @@ import {
   Unique,
 } from "typeorm";
 import { Post } from "./Post";
+import { Business } from "./Business";
 
-@Entity("post_location")
-export class PostLocation {
+@Entity("location")
+export class Location {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
@@ -32,4 +33,10 @@ export class PostLocation {
   })
   @JoinColumn({ name: "post" })
   post: Post;
+
+  @OneToOne(() => Business, (business) => business.businessLocation, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "business" })
+  business: Business;
 }

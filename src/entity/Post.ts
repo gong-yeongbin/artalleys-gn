@@ -9,9 +9,8 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from "typeorm";
-import { PostLocation } from "../entity/PostLocation";
-import { PostImage } from "../entity/PostImage";
-import { Business } from "./Business";
+import { Location } from "../entity/Location";
+import { Image } from "../entity/Image";
 
 @Entity("post")
 @Unique(["postId"])
@@ -74,18 +73,13 @@ export class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => PostImage, (postImage) => postImage.post, {
+  @OneToMany(() => Image, (image) => image.post, {
     cascade: ["insert", "update", "remove"],
   })
-  postImage: PostImage[];
+  postImage: Image[];
 
-  @OneToOne(() => PostLocation, (postLocation) => postLocation.post, {
+  @OneToOne(() => Location, (location) => location.post, {
     cascade: ["insert", "update", "remove"],
   })
-  postLocation: PostLocation;
-
-  @OneToOne(() => Business, (business) => business.post, {
-    cascade: ["insert", "update", "remove"],
-  })
-  business: Business;
+  postLocation: Location;
 }
