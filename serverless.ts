@@ -84,6 +84,30 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    createBusiness: {
+      handler: "services/business/handler.createBusiness",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "post/{uid}/createBusiness",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getBusiness: {
+      handler: "services/business/handler.getBusiness",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{uid}/{postId}/getBusiness",
+            cors: true,
+          },
+        },
+      ],
+    },
     hidePost: {
       handler: "services/post/handler.hidePost",
       events: [
@@ -120,9 +144,6 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    imageResize: {
-      handler: "services/post/handler.imageResize",
-    },
     getFeed: {
       handler: "services/feed/handler.getFeed",
       events: [
@@ -135,6 +156,7 @@ const serverlessConfiguration: Serverless = {
                 querystrings: {
                   offset: false,
                   limit: false,
+                  order: false,
                   type: false,
                 },
               },
@@ -144,17 +166,135 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    createBusiness: {
-      handler: "services/business/handler.createBusiness",
+    getBusinessFeed: {
+      handler: "services/feed/handler.getBusinessFeed",
       events: [
         {
           http: {
-            method: "put",
-            path: "business/{uid}/{businessId}/createBusiness",
+            method: "get",
+            path: "feed/getBusinessFeed",
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+              },
+            },
             cors: true,
           },
         },
       ],
+    },
+    addComment: {
+      handler: "services/common/handler.addComment",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "comment/{postId}/addComment",
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
+    getComment: {
+      handler: "services/common/handler.getComment",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{postId}/getComment",
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
+    getReply: {
+      handler: "services/common/handler.getReply",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{postId}/{commentId}/getReply",
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                  commentId: true,
+                },
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
+    modifyComment: {
+      handler: "services/common/handler.modifyComment",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "comment/{commentId}/modifyComment",
+            request: {
+              parameters: {
+                paths: {
+                  commentId: true,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
+    deleteComment: {
+      handler: "services/common/handler.deleteComment",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{commentId}/deleteComment",
+            request: {
+              parameters: {
+                paths: {
+                  commentId: true,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
+    imageResize: {
+      handler: "services/post/handler.imageResize",
     },
   },
 };

@@ -5,12 +5,9 @@ import {
   SQSEvent,
   SQSRecord,
 } from "aws-lambda";
-import * as crypto from "crypto";
 import * as jimp from "jimp";
+import { name } from "../util/util";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { Post } from "../../src/entity/Post";
-import { Image } from "../../src/entity/Image";
-import { Location } from "../../src/entity/Location";
 import {
   putObject,
   getObject,
@@ -18,7 +15,10 @@ import {
   deleteMessage,
   sendMessage,
 } from "../util/aws";
-import { Business } from "../../src/entity/Business";
+import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
+import { PostBuilder, PostData } from "../../src/dto/PostDto";
+
+const { CLOUDFRONT_IMAGE } = process.env;
 
 /**
  * @api {put}  /post/:uid/createPost     Create Post
@@ -27,7 +27,7 @@ import { Business } from "../../src/entity/Business";
  *
  * @apiParam (PathParam) {String} uid                                   uid
  * @apiParam (Body) {String{30}}  title                                 post title
- * @apiParam (Body) {String="sell","buy","business"}  type             post type
+ * @apiParam (Body) {String="sell","buy","business"}  type              post type
  * @apiParam (Body) {String} condition                                  post condition
  * @apiParam (Body) {Object} [location]                                 post location(type: sell)
  * @apiParam (Body) {Object} location.latitude                          post location latitude
@@ -61,57 +61,52 @@ export const createPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  // const connection = await getDatabaseConnection();
-  // const postRepository = connection.getRepository(Post);
-  // const locationRepository = connection.getRepository(Location);
-  // const imageRepository = connection.getRepository(Image);
+  const connection = await getDatabaseConnection();
+  const postRepository = connection.getRepository(Post);
+  const postNormalRepository = connection.getRepository(PostNormal);
+  const imageRepository = connection.getRepository(Image);
 
   const uid: string = event.pathParameters["uid"];
-  const postId = crypto.randomBytes(10).toString("hex");
+  const postId = name(10);
   const data: any = JSON.parse(event.body);
 
   let post: Post = new Post();
+  let postNormal: PostNormal = new PostNormal();
   let location: Location = new Location();
 
-  let {
-    type,
-    title,
-    category,
-    price = 0,
-    firmOnPrice = false,
-    descriptions,
-    condition,
-    number,
-  }: Post = data;
+  let { title, number }: Post = data;
+
+  let { type, category, price = 0, descriptions, condition }: PostNormal = data;
 
   location.longtitude = data.location.longtitude;
   location.latitude = data.location.latitude;
-  // await locationRepository.save(location);
+
+  postNormal.type = type.toLowerCase();
+  postNormal.category = category.toLowerCase();
+  postNormal.price = price;
+  postNormal.descriptions = descriptions;
+  postNormal.condition = condition.toLowerCase();
+  await postNormalRepository.save(postNormal);
 
   post.postId = postId;
-  post.type = type.toLowerCase();
   post.title = title;
-  post.category = category.toLowerCase();
-  post.price = price;
-  post.firmOnPrice = firmOnPrice;
-  post.descriptions = descriptions;
-  post.condition = condition.toLowerCase();
   post.number = number;
   post.postLocation = location;
-  // await postRepository.save(post);
+  post.normal = postNormal;
+  await postRepository.save(post);
 
   for (let index in data.image) {
-    let imageName = crypto.randomBytes(10).toString("hex");
+    let imageName = name(8);
 
-    // await imageRepository
-    //   .createQueryBuilder()
-    //   .insert()
-    //   .into(Image)
-    //   .values({
-    //     post: post,
-    //     url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/post/${postId}/origin/${imageName}.png`,
-    //   })
-    //   .execute();
+    await imageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Image)
+      .values({
+        post: post,
+        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/post/${postId}/origin/${imageName}.png`,
+      })
+      .execute();
 
     const originalImage = Buffer.from(data.image[index], "base64");
 
@@ -177,6 +172,7 @@ export const getPost = async (
   const postRepository = connection.getRepository(Post);
   const postEntity = await postRepository
     .createQueryBuilder("post")
+    .leftJoinAndSelect("post.normal", "normal")
     .leftJoinAndSelect("post.postLocation", "postLocation")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.postId = :postId", { postId: postId })
@@ -189,9 +185,13 @@ export const getPost = async (
     };
   }
 
+  const postDto: PostData = new PostBuilder(postEntity)
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+
   return {
     statusCode: 200,
-    body: JSON.stringify(postEntity),
+    body: JSON.stringify(postDto),
   };
 };
 
@@ -216,15 +216,11 @@ export const boostPost = async (
 
   const connection = await getDatabaseConnection();
   const postRepository = connection.getRepository(Post);
-
-  await postRepository
-    .createQueryBuilder()
-    .update(Post)
-    .set({
-      updatedAt: Date,
-    })
-    .where("postId = :postId", { postId: postId })
-    .execute();
+  const postEntity = await postRepository.findOne({
+    postId: postId,
+  });
+  postEntity.updatedAt = new Date();
+  postRepository.save(postEntity);
 
   return {
     statusCode: 200,
@@ -252,15 +248,12 @@ export const hidePost = async (
 
   const connection = await getDatabaseConnection();
   const postRepository = connection.getRepository(Post);
+  const postEntity = await postRepository.findOne({ postId: postId });
+  postEntity.hide === true
+    ? (postEntity.hide = false)
+    : (postEntity.hide = true);
 
-  await postRepository
-    .createQueryBuilder()
-    .update(Post)
-    .set({
-      hide: true,
-    })
-    .where("postId = :postId", { postId: postId })
-    .execute();
+  postRepository.save(postEntity);
 
   return {
     statusCode: 200,
@@ -335,7 +328,6 @@ export const imageResize = async (
 
     const connection = await getDatabaseConnection();
     const postRepository = connection.getRepository(Post);
-    const businessRepository = connection.getRepository(Business);
     const imageRepository = connection.getRepository(Image);
 
     const imageObject: any = await getObject(receiveData as string);
@@ -347,15 +339,8 @@ export const imageResize = async (
       "resize"
     )}`;
 
-    if (type === "post") {
-      const postEntity: Post = await postRepository.findOne({ postId: id });
-      image.post = postEntity;
-    } else {
-      const businessEntity: Business = await businessRepository.findOne({
-        businessId: id,
-      });
-      image.business = businessEntity;
-    }
+    const postEntity: Post = await postRepository.findOne({ postId: id });
+    image.post = postEntity;
 
     await imageRepository.save(image);
 

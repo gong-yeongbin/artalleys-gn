@@ -1,7 +1,7 @@
-import { Post } from "../../entity/Post";
-import { replaceHost } from "../../../services/util/http";
+import { Post } from "../entity/Entity";
+import { replaceHost } from "../../services/util/http";
 
-export interface PostData {
+export interface PostFeedData {
   postId: string;
   title: string;
   price: number;
@@ -9,23 +9,24 @@ export interface PostData {
   url: string;
 }
 
-export class FeedBuilder {
-  private _postData: PostData[];
+export class PostFeedBuilder {
+  private _postData: PostFeedData[];
 
   constructor(post: Post[]) {
-    const postData: PostData[] = post.map((value, index) => {
+    const postData: PostFeedData[] = post.map((value, index) => {
       return {
         postId: value.postId,
         title: value.title,
-        price: value.price,
-        active: value.active,
+        view: value.view,
+        price: value.normal.price,
+        active: value.normal.active,
         url: value.postImage[0].url,
       };
     });
     this._postData = postData;
   }
 
-  public replaceHost(newHost: string): FeedBuilder {
+  public replaceHost(newHost: string): PostFeedBuilder {
     this._postData.map((value, index) => {
       this._postData[index].url = replaceHost(
         this._postData[index].url,

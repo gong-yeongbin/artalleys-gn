@@ -9,11 +9,10 @@ import {
   Unique,
 } from "typeorm";
 
-import { Post } from "../entity/Post";
-import { Business } from "./Business";
+import { Post } from "../entity/Entity";
 
 @Entity("image")
-export class Image {
+export default class Image {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
@@ -31,10 +30,4 @@ export class Image {
   })
   @JoinColumn({ name: "post" })
   post: Post;
-
-  @ManyToOne(() => Business, (business) => business.businessImage, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "business" })
-  business: Business;
 }

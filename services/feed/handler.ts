@@ -1,7 +1,11 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { FeedBuilder, PostData } from "../../src/dto/feed/FeedDto";
-import { Post } from "../../src/entity/Post";
+import { PostFeedBuilder, PostFeedData } from "../../src/dto/PostFeedDto";
+import {
+  BusinessFeedBuilder,
+  BusinessFeedData,
+} from "../../src/dto/BusinessFeedDto";
+import { Post } from "../../src/entity/Entity";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -76,14 +80,53 @@ export const getFeed = async (
 
   const postEntity: Post[] = await postRepository
     .createQueryBuilder("post")
+    .leftJoinAndSelect("post.normal", "normal")
     .leftJoinAndSelect("post.postImage", "postImage")
-    .where("post.hide = false AND post.type = :type", { type: type })
+    .where("post.hide = false AND normal.type = :type", { type: type })
     .orderBy("post.updated_at", queryOrder)
     .offset(queryOffset)
     .limit(queryLimit)
     .getMany();
 
-  const feedDto: PostData[] = new FeedBuilder(postEntity)
+  const feedDto: PostFeedData[] = new PostFeedBuilder(postEntity)
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(feedDto),
+  };
+};
+
+export const getBusinessFeed = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const {
+    offset = 0,
+    limit = 10,
+    type = "sell",
+    order = "DESC",
+  } = event.queryStringParameters;
+  const connection = await getDatabaseConnection();
+  const postRepository = connection.getRepository(Post);
+
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "ASC" | "DESC" =
+    order.toUpperCase() == "ASC" ? "ASC" : "DESC";
+
+  const postEntity: Post[] = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.business", "business")
+    .leftJoinAndSelect("post.postImage", "postImage")
+    .where("post.hide = false")
+    .orderBy("post.updated_at", queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .getMany();
+
+  const feedDto: BusinessFeedData[] = new BusinessFeedBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 

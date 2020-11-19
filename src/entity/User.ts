@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 @Entity("user")
-export class User {
+export default class User {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 

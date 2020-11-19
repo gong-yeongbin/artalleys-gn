@@ -5,12 +5,16 @@ import {
   DefaultNamingStrategy,
   DatabaseType,
 } from "typeorm";
-import { User } from "../entity/User";
-import { Post } from "../entity/Post";
-import { PostLocation } from "../entity/PostLocation";
-import { Location } from "../entity/Location";
-import { Business } from "../entity/Business";
-import { Image } from "../entity/Image";
+
+import {
+  Post,
+  User,
+  Location,
+  Image,
+  PostNormal,
+  PostBusiness,
+  Comment,
+} from "../entity/Entity";
 
 const {
   DB_TYPE,
@@ -21,7 +25,7 @@ const {
   DB_DATABASE,
   DB_SYNCHRONIZE,
 } = process.env;
-const entity = [User, Post, PostLocation, Location, Business, Image];
+const entity = [User, Post, Location, Image, PostNormal, PostBusiness, Comment];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   type: "mysql",
