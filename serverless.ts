@@ -188,7 +188,7 @@ const serverlessConfiguration: Serverless = {
       ],
     },
     addComment: {
-      handler: "services/common/handler.addComment",
+      handler: "services/comment/handler.addComment",
       events: [
         {
           http: {
@@ -207,7 +207,7 @@ const serverlessConfiguration: Serverless = {
       ],
     },
     getComment: {
-      handler: "services/common/handler.getComment",
+      handler: "services/comment/handler.getComment",
       events: [
         {
           http: {
@@ -231,7 +231,7 @@ const serverlessConfiguration: Serverless = {
       ],
     },
     getReply: {
-      handler: "services/common/handler.getReply",
+      handler: "services/comment/handler.getReply",
       events: [
         {
           http: {
@@ -256,7 +256,7 @@ const serverlessConfiguration: Serverless = {
       ],
     },
     modifyComment: {
-      handler: "services/common/handler.modifyComment",
+      handler: "services/comment/handler.modifyComment",
       events: [
         {
           http: {
@@ -275,7 +275,7 @@ const serverlessConfiguration: Serverless = {
       ],
     },
     deleteComment: {
-      handler: "services/common/handler.deleteComment",
+      handler: "services/comment/handler.deleteComment",
       events: [
         {
           http: {
