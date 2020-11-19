@@ -21,6 +21,9 @@ export default class PostNormal {
   @Column({ name: "price", type: "integer", nullable: true, default: 0 })
   price: number;
 
+  @Column({ name: "firmOnPrice", type: "boolean", default: true })
+  firmOnPrice: boolean;
+
   @Column({
     name: "descriptions",
     type: "nvarchar",

@@ -1,3 +1,4 @@
+import { Integer } from "aws-sdk/clients/apigateway";
 import {
   ConnectionOptions,
   Connection,
@@ -28,7 +29,7 @@ const {
 const entity = [User, Post, Location, Image, PostNormal, PostBusiness, Comment];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: "mysql",
+  type: DB_TYPE as "mysql" | "mariadb",
   host: DB_HOST,
   port: 3306,
   username: DB_USERNAME,

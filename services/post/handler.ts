@@ -28,6 +28,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (PathParam) {String} uid                                   uid
  * @apiParam (Body) {String{30}}  title                                 post title
  * @apiParam (Body) {String="sell","buy","business"}  type              post type
+ * @apiParam (Body) {String} category                                   post category
  * @apiParam (Body) {String} condition                                  post condition
  * @apiParam (Body) {Object} [location]                                 post location(type: sell)
  * @apiParam (Body) {Object} location.latitude                          post location latitude
@@ -76,7 +77,14 @@ export const createPost = async (
 
   let { title, number }: Post = data;
 
-  let { type, category, price = 0, descriptions, condition }: PostNormal = data;
+  let {
+    type,
+    category,
+    price = 0,
+    descriptions,
+    condition,
+    firmOnPrice = true,
+  }: PostNormal = data;
 
   location.longtitude = data.location.longtitude;
   location.latitude = data.location.latitude;
@@ -84,6 +92,7 @@ export const createPost = async (
   postNormal.type = type.toLowerCase();
   postNormal.category = category.toLowerCase();
   postNormal.price = price;
+  postNormal.firmOnPrice = firmOnPrice;
   postNormal.descriptions = descriptions;
   postNormal.condition = condition.toLowerCase();
   await postNormalRepository.save(postNormal);

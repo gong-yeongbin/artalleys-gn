@@ -7,6 +7,49 @@ import { BusinessBuilder, BusinessData } from "../../src/dto/BusinessDto";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
+/**
+ * @api {put}  /post/:uid/createPost     Create Business Post
+ * @apiName Create Business Post
+ * @apiGroup Post
+ *
+ * @apiParam (PathParam) {String} uid                                   uid
+ * @apiParam (Body) {String{30}}  title                                 title
+ * @apiParam (Body) {String}  detailTitle                               detailTitle
+ * @apiParam (Body) {Object} location                                   location
+ * @apiParam (Body) {Object} location.latitude                          location latitude
+ * @apiParam (Body) {Object} location.longtitude                        location longtitude
+ * @apiParam (Body) {String} address                                    address
+ * @apiParam (Body) {Number} number                                     number
+ * @apiParam (Body) {Object} workingHours                               workingHours
+ * @apiParam (Body) {Object} workingHours.start                         workingHours start
+ * @apiParam (Body) {Object} workingHours.end                           workingHours end
+ * @apiParam (Body) {String} workingHoursDescriptions                   workingHoursDescriptions
+ * @apiParam (Body) {String} homepage                                   homepage
+ * @apiParam (Body) {String{300}} descriptions                          post descriptions
+ * @apiParam (Body) {base64} image                                      post image
+ *
+ *
+ * @apiParamExample {json} Request Body
+{
+	"title": "business title",
+	"detailTitle": "organic food",
+	"location": {
+							"longtitude": 12.123,
+							"latitude": 13.123
+						 },
+	"address": "seoul",
+	"number": 2112341234,
+  "workingHours": {
+										"start": 1000,
+										"end": 2200
+									},
+	"workingHoursDescriptions":"testestsetestts",
+	"homepage":"www.asdf.com",
+	"descriptions":"hahahahahahah",
+	"image": ["testtesttesttest........"]
+ }
+ * @apiSuccess (200 OK) {String} NoContent                              Success
+ **/
 export const createBusiness = async (
   event: APIGatewayEvent,
   context: Context
@@ -81,6 +124,40 @@ export const createBusiness = async (
   };
 };
 
+/**
+ * @api {get}  /post/:uid/:postId/getBusiness     Get Business Post
+ * @apiName Get Business Post
+ * @apiGroup Post
+ *
+ * @apiParam (PathParam) {String} uid                                   uid
+ * @apiParam (PathParam) {String} postId                                postId
+ *
+ *
+ * @apiParamExample {json} Response
+{
+  "postId": "4f62a7cb423ac3ff3faf",
+  "title": "business title",
+  "view": 0,
+  "detailTitle": "organic food",
+  "address": "seoul",
+  "startTime": 1000,
+  "endTime": 2200,
+  "homePage": "www.asdf.com",
+  "workingHoursDescriptions": "testestsetestts",
+  "descriptions": "hahahahahahah",
+  "url": [
+    "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
+  ],
+  "location": {
+    "longtitude": 12,
+    "latitude": 13
+  },
+  "createdAt": "2020-11-16T22:50:32.965Z",
+  "updatedAt": "2020-11-16T22:50:32.965Z"
+}
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
 export const getBusiness = async (
   event: APIGatewayEvent,
   context: Context

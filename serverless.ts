@@ -149,7 +149,7 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: "get",
+            method: "put",
             path: "feed/getFeed",
             request: {
               parameters: {
