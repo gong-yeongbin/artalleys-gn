@@ -14,6 +14,7 @@ export class PostFeedBuilder {
 
   constructor(post: Post[]) {
     const postData: PostFeedData[] = post.map((value, index) => {
+      console.log(value);
       return {
         postId: value.postId,
         title: value.title,

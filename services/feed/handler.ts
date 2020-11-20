@@ -16,7 +16,6 @@ const { CLOUDFRONT_IMAGE } = process.env;
  *
  * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
  * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
- * @apiParam (QueryStringParam) {String=DESC,ASC} order                                order
  * @apiParam (QueryStringParam) {String=sell,buy} type                                 type
  * 
  * @apiParam (body) {Array} [setCategory]       setCategory                            category
@@ -24,6 +23,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (body) {Array} [setPrice] setPrice                                        price
  * @apiParam (body) {Array} [setPrice] setPrice.min                                    min price
  * @apiParam (body) {Array} [setPrice] setPrice.max                                    max price
+ * @apiParam (body) {boolean} [hide] hide                                              hide
  *
  * @apiParamExample request
 {	
@@ -85,6 +85,7 @@ export const getFeed = async (
     .leftJoinAndSelect("post.normal", "normal")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.hide = false AND normal.type = :isType", { isType: queryType })
+    .andWhere("normal.active = :isActive", { isActive: hide })
     .andWhere("normal.category NOT IN (:isCategory)", {
       isCategory: querySetCategory,
     })
@@ -174,5 +175,229 @@ export const getBusinessFeed = async (
   return {
     statusCode: 200,
     body: JSON.stringify(feedDto),
+  };
+};
+
+/**
+ * @api {get}  /feed/getSearchFeed     get Search Feed
+ * @apiName Get Search Feed
+ * @apiGroup Feed
+ *
+ * @apiParam (QueryStringParam) {Number}[offset=0] offset                               offset
+ * @apiParam (QueryStringParam) {Number}[limit=10] limit                                limit
+ * @apiParam (Body) {String=buy,sell} type                                              type
+ * @apiParam (Body) {String} search                                                     search
+ * @apiParam (Body) {String=newest,closest,price}[setFilter="newest"]                   setFilter
+ * @apiParam (Body) {String=DESC,ASC}[order="DESC"]                                     order
+ * @apiParam (Body) {Boolean}[hide="false"]                                             hide
+  * @apiParamExample request
+{	
+  "type": "buy"
+	"search":"hwajangpyoom",
+	"setFilter": "newest",
+	"setPrice":	{		
+									"min":0,
+									"max":1001
+               },
+  "order": "DESC",
+	"hide": false
+}
+ * @apiParamExample response
+[
+  {
+    "postId": "e085b6dc01c7cce649f9",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1001,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
+  },
+  {
+    "postId": "b96ff8643d495ce9777a",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
+  }
+]
+ **/
+export const getSearchFeed = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connection = await getDatabaseConnection();
+  const postRepository = connection.getRepository(Post);
+
+  const { offset = 0, limit = 10 } = event.queryStringParameters;
+
+  const {
+    type,
+    search,
+    setFilter = "newest",
+    setPrice,
+    order,
+    hide = false,
+  } = JSON.parse(event.body);
+
+  const queryType: "sell" | "buy" = type;
+  const querySearch: string = search;
+  const queryPriceMin: number = setPrice.min;
+  const queryPriceMax: number = setPrice.max;
+  const queryOrder: "DESC" | "ASC" =
+    order.toUpperCase() == "DESC" ? "DESC" : "ASC";
+
+  const queryOrderType: string =
+    setFilter.toLowerCase() == "newest"
+      ? "post.updated_at"
+      : setFilter.toLowerCase() == "price"
+      ? "normal.price"
+      : "";
+
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+
+  let query = postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.normal", "normal")
+    .leftJoinAndSelect("post.postImage", "image")
+    .where("normal.type = :type", { type: queryType })
+    .andWhere("post.title like :title", { title: `%${querySearch}%` })
+    .orderBy(queryOrderType, queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit);
+
+  if (hide != null && hide == true) {
+    query = query.andWhere("normal.active != :isHide", { isHide: "soldout" });
+  }
+
+  if (setPrice != null) {
+    query = query.andWhere("normal.price between :isMin and :isMax", {
+      isMin: queryPriceMin,
+      isMax: queryPriceMax,
+    });
+  }
+
+  const postEntity: Post[] = await query.getMany();
+
+  const postDto: PostFeedData[] = new PostFeedBuilder(postEntity)
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(postDto),
+  };
+};
+
+/**
+ * @api {get}  /feed/getCategoryFeed     get Category Feed
+ * @apiName Get Category Feed
+ * @apiGroup Feed
+ *
+ * @apiParam (QueryStringParam) {Number}[offset=0] offset                               offset
+ * @apiParam (QueryStringParam) {Number}[limit=10] limit                                limit
+ * @apiParam (Body) {String=buy,sell} type                                              type
+ * @apiParam (Body) {String} category                                                   category
+ * @apiParam (Body) {String=newest,closest,price}[setFilter="newest"]                   setFilter
+ * @apiParam (Body) {String=DESC,ASC}[order="DESC"]                                     order
+ * @apiParam (Body) {Boolean}[hide="false"]                                             hide
+  * @apiParamExample request
+{	
+  "type": "buy"
+	"category":"hwajangpyoom category",
+	"setFilter": "newest",
+	"setPrice":	{		
+									"min":0,
+									"max":1001
+               },
+  "order": "DESC",
+	"hide": false
+}
+ * @apiParamExample response
+[
+  {
+    "postId": "e085b6dc01c7cce649f9",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
+  },
+  {
+    "postId": "b96ff8643d495ce9777a",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
+  }
+]
+ **/
+
+export const getCategoryFeed = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connection = await getDatabaseConnection();
+  const postRepository = connection.getRepository(Post);
+
+  const { offset = 0, limit = 10 } = event.queryStringParameters;
+
+  const {
+    type,
+    category,
+    setFilter = "newest",
+    setPrice,
+    order,
+    hide = false,
+  } = JSON.parse(event.body);
+
+  const queryType: "sell" | "buy" = type;
+  const queryCategory: string = category;
+  const queryPriceMin: number = setPrice.min;
+  const queryPriceMax: number = setPrice.max;
+  const queryOrder: "DESC" | "ASC" =
+    order.toUpperCase() == "DESC" ? "DESC" : "ASC";
+
+  const queryOrderType: string =
+    setFilter.toLowerCase() == "newest"
+      ? "post.updated_at"
+      : setFilter.toLowerCase() == "price"
+      ? "normal.price"
+      : "";
+
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+
+  let query = postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.normal", "normal")
+    .leftJoinAndSelect("post.postImage", "image")
+    .where("normal.type = :type", { type: queryType })
+    .andWhere("normal.category = :category", { category: queryCategory })
+    .orderBy(queryOrderType, queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit);
+
+  if (hide != null && hide == true) {
+    query = query.andWhere("normal.active != :isHide", { isHide: "soldout" });
+  }
+
+  if (setPrice != null) {
+    query = query.andWhere("normal.price between :isMin and :isMax", {
+      isMin: queryPriceMin,
+      isMax: queryPriceMax,
+    });
+  }
+
+  const postEntity: Post[] = await query.getMany();
+
+  const postDto: PostFeedData[] = new PostFeedBuilder(postEntity)
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(postDto),
   };
 };
