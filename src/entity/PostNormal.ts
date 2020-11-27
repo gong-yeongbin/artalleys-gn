@@ -38,9 +38,7 @@ export default class PostNormal {
   @Column({ name: "active", type: "nvarchar", default: "active" })
   active: string;
 
-  @OneToOne(() => Post, (post) => post.normal, {
-    onDelete: "CASCADE",
-  })
+  @OneToOne(() => Post)
   @JoinColumn({ name: "post" })
   post: Post;
 }

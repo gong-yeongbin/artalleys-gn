@@ -17,6 +17,7 @@ import {
 } from "../util/aws";
 import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
 import { PostBuilder, PostData } from "../../src/dto/PostDto";
+import { getRepository } from "typeorm";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -66,6 +67,7 @@ export const createPost = async (
   const postRepository = connection.getRepository(Post);
   const postNormalRepository = connection.getRepository(PostNormal);
   const imageRepository = connection.getRepository(Image);
+  const locationRepository = connection.getRepository(Location);
 
   const uid: string = event.pathParameters["uid"];
   const postId = name(10);
@@ -86,8 +88,10 @@ export const createPost = async (
     firmOnPrice = true,
   }: PostNormal = data;
 
-  location.longtitude = data.location.longtitude;
-  location.latitude = data.location.latitude;
+  post.postId = postId;
+  post.title = title;
+  post.number = number;
+  await postRepository.save(post);
 
   postNormal.type = type.toLowerCase();
   postNormal.category = category.toLowerCase();
@@ -95,14 +99,12 @@ export const createPost = async (
   postNormal.firmOnPrice = firmOnPrice;
   postNormal.descriptions = descriptions;
   postNormal.condition = condition.toLowerCase();
+  // postNormal.post = post;
   await postNormalRepository.save(postNormal);
 
-  post.postId = postId;
-  post.title = title;
-  post.number = number;
-  post.postLocation = location;
-  post.normal = postNormal;
-  await postRepository.save(post);
+  location.longtitude = data.location.longtitude;
+  location.latitude = data.location.latitude;
+  await locationRepository.save(location);
 
   for (let index in data.image) {
     let imageName = name(8);
@@ -193,7 +195,7 @@ export const getPost = async (
       body: "null",
     };
   }
-
+  console.log(postEntity);
   const postDto: PostData = new PostBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();

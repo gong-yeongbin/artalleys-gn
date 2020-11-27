@@ -26,10 +26,4 @@ export default class Location {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
-
-  @OneToOne(() => Post, (post) => post.postLocation, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "post" })
-  post: Post;
 }

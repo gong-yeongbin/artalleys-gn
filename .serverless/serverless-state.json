@@ -9,23 +9,9 @@
       "stage": "prod",
       "runtime": "nodejs12.x",
       "region": "us-east-2",
+      "websocketsApiRouteSelectionExpression": "$request.body.action",
       "apiGateway": {
         "minimumCompressionSize": 1024
-      },
-      "environment": {
-        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-        "DB_TYPE": "mysql",
-        "DB_HOST": "localhost",
-        "DB_PORT": "3306",
-        "DB_USERNAME": "root",
-        "DB_PASSWORD": "1111",
-        "DB_DATABASE": "gn",
-        "BUCKET_NAME": "artalleys-gn-image-bucket",
-        "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
-        "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
-        "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
-        "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
-        "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
       },
       "iamRoleStatements": [
         {
@@ -53,6 +39,20 @@
       ],
       "variableSyntax": "\\${([^{}:]+?(?:\\(|:)(?:[^:{}][^{}]*?)?)}",
       "versionFunctions": true,
+      "environment": {
+        "DB_TYPE": "mysql",
+        "DB_HOST": "localhost",
+        "DB_PORT": "3306",
+        "DB_USERNAME": "root",
+        "DB_PASSWORD": "1111",
+        "DB_DATABASE": "gn",
+        "BUCKET_NAME": "artalleys-gn-image-bucket",
+        "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+        "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+        "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+        "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+        "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+      },
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
         "Description": "The AWS CloudFormation template for this Serverless application",
@@ -129,6 +129,18 @@
               "LogGroupName": "/aws/lambda/artalleys-gn-prod-getPost"
             }
           },
+          "CreateBusinessLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-createBusiness"
+            }
+          },
+          "GetBusinessLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-getBusiness"
+            }
+          },
           "HidePostLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
@@ -147,22 +159,76 @@
               "LogGroupName": "/aws/lambda/artalleys-gn-prod-deletePost"
             }
           },
-          "ImageResizeLogGroup": {
-            "Type": "AWS::Logs::LogGroup",
-            "Properties": {
-              "LogGroupName": "/aws/lambda/artalleys-gn-prod-imageResize"
-            }
-          },
           "GetFeedLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/artalleys-gn-prod-getFeed"
             }
           },
-          "CreateBusinessLogGroup": {
+          "GetCategoryFeedLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/artalleys-gn-prod-createBusiness"
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-getCategoryFeed"
+            }
+          },
+          "GetSearchFeedLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-getSearchFeed"
+            }
+          },
+          "GetBusinessFeedLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-getBusinessFeed"
+            }
+          },
+          "AddCommentLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-addComment"
+            }
+          },
+          "GetCommentLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-getComment"
+            }
+          },
+          "GetReplyLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-getReply"
+            }
+          },
+          "ImageResizeLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-imageResize"
+            }
+          },
+          "OnConnectLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-onConnect"
+            }
+          },
+          "OnDisconnectLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-onDisconnect"
+            }
+          },
+          "OnDefaultLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-onDefault"
+            }
+          },
+          "OnSendMessageLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/artalleys-gn-prod-onSendMessage"
             }
           },
           "IamRoleLambdaExecution": {
@@ -227,6 +293,17 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][1]"
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "execute-api:ManageConnections"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:execute-api:*:*:*/@connections/*"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -255,7 +332,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-hello",
               "Handler": "handler.hello",
@@ -270,7 +347,6 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
                   "DB_TYPE": "mysql",
                   "DB_HOST": "localhost",
                   "DB_PORT": "3306",
@@ -290,14 +366,14 @@
               "HelloLogGroup"
             ]
           },
-          "HelloLambdaVersionyNzESRsuZodg8EC41d3PKk8wzxjDitFvKCwb2sDJg": {
+          "HelloLambdaVersionCCT0afDFktlR4G0W7Hs9sYdngHl8r2PQGtqNFBVytD0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HelloLambdaFunction"
               },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
             }
           },
           "CreatePostLambdaFunction": {
@@ -307,7 +383,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-createPost",
               "Handler": "services/post/handler.createPost",
@@ -322,7 +398,6 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
                   "DB_TYPE": "mysql",
                   "DB_HOST": "localhost",
                   "DB_PORT": "3306",
@@ -342,14 +417,14 @@
               "CreatePostLogGroup"
             ]
           },
-          "CreatePostLambdaVersion37BzaTPe0DvNKruXBqrgh96gGEEcH6VBcJ519cwU": {
+          "CreatePostLambdaVersionTpehwUl27CKl3ojpgEpH6B2rWf0tf2fT9a2UWJwTzE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreatePostLambdaFunction"
               },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
             }
           },
           "GetPostLambdaFunction": {
@@ -359,7 +434,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-getPost",
               "Handler": "services/post/handler.getPost",
@@ -374,7 +449,6 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
                   "DB_TYPE": "mysql",
                   "DB_HOST": "localhost",
                   "DB_PORT": "3306",
@@ -394,274 +468,14 @@
               "GetPostLogGroup"
             ]
           },
-          "GetPostLambdaVersionObsZRwJwBORr0Q7pZF4WuNc92JVIgGFpsEszlcKDbE": {
+          "GetPostLambdaVersion4NRxJUFowXeDq88IdlrYOIXfWcPIh85xu8CJZTiclGQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetPostLambdaFunction"
               },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
-            }
-          },
-          "HidePostLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Code": {
-                "S3Bucket": {
-                  "Ref": "ServerlessDeploymentBucket"
-                },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
-              },
-              "FunctionName": "artalleys-gn-prod-hidePost",
-              "Handler": "services/post/handler.hidePost",
-              "MemorySize": 1024,
-              "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
-              },
-              "Runtime": "nodejs12.x",
-              "Timeout": 6,
-              "Environment": {
-                "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "DB_TYPE": "mysql",
-                  "DB_HOST": "localhost",
-                  "DB_PORT": "3306",
-                  "DB_USERNAME": "root",
-                  "DB_PASSWORD": "1111",
-                  "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket",
-                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
-                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
-                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
-                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
-                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
-                }
-              }
-            },
-            "DependsOn": [
-              "HidePostLogGroup"
-            ]
-          },
-          "HidePostLambdaVersion78XdKTnJ3SL9zihCroVeRM7UIwcrdpwbSmnm3BqWyE": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "HidePostLambdaFunction"
-              },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
-            }
-          },
-          "BoostPostLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Code": {
-                "S3Bucket": {
-                  "Ref": "ServerlessDeploymentBucket"
-                },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
-              },
-              "FunctionName": "artalleys-gn-prod-boostPost",
-              "Handler": "services/post/handler.boostPost",
-              "MemorySize": 1024,
-              "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
-              },
-              "Runtime": "nodejs12.x",
-              "Timeout": 6,
-              "Environment": {
-                "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "DB_TYPE": "mysql",
-                  "DB_HOST": "localhost",
-                  "DB_PORT": "3306",
-                  "DB_USERNAME": "root",
-                  "DB_PASSWORD": "1111",
-                  "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket",
-                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
-                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
-                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
-                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
-                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
-                }
-              }
-            },
-            "DependsOn": [
-              "BoostPostLogGroup"
-            ]
-          },
-          "BoostPostLambdaVersioncZOBtb1YiVDIE5c9Xk07PeZiKh9J00NskfimioDUkQ": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "BoostPostLambdaFunction"
-              },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
-            }
-          },
-          "DeletePostLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Code": {
-                "S3Bucket": {
-                  "Ref": "ServerlessDeploymentBucket"
-                },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
-              },
-              "FunctionName": "artalleys-gn-prod-deletePost",
-              "Handler": "services/post/handler.deletePost",
-              "MemorySize": 1024,
-              "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
-              },
-              "Runtime": "nodejs12.x",
-              "Timeout": 6,
-              "Environment": {
-                "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "DB_TYPE": "mysql",
-                  "DB_HOST": "localhost",
-                  "DB_PORT": "3306",
-                  "DB_USERNAME": "root",
-                  "DB_PASSWORD": "1111",
-                  "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket",
-                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
-                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
-                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
-                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
-                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
-                }
-              }
-            },
-            "DependsOn": [
-              "DeletePostLogGroup"
-            ]
-          },
-          "DeletePostLambdaVersionWC3067xKnAuI7lRG8GXSorD9OHfqW8avZ2P5RcbhuA": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "DeletePostLambdaFunction"
-              },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
-            }
-          },
-          "ImageResizeLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Code": {
-                "S3Bucket": {
-                  "Ref": "ServerlessDeploymentBucket"
-                },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
-              },
-              "FunctionName": "artalleys-gn-prod-imageResize",
-              "Handler": "services/post/handler.imageResize",
-              "MemorySize": 1024,
-              "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
-              },
-              "Runtime": "nodejs12.x",
-              "Timeout": 6,
-              "Environment": {
-                "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "DB_TYPE": "mysql",
-                  "DB_HOST": "localhost",
-                  "DB_PORT": "3306",
-                  "DB_USERNAME": "root",
-                  "DB_PASSWORD": "1111",
-                  "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket",
-                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
-                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
-                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
-                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
-                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
-                }
-              }
-            },
-            "DependsOn": [
-              "ImageResizeLogGroup"
-            ]
-          },
-          "ImageResizeLambdaVersion37h5DvLTejWj8x8qd0t11Xi8XFo91nW7Z88ujxyPbxA": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "ImageResizeLambdaFunction"
-              },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
-            }
-          },
-          "GetFeedLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Code": {
-                "S3Bucket": {
-                  "Ref": "ServerlessDeploymentBucket"
-                },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
-              },
-              "FunctionName": "artalleys-gn-prod-getFeed",
-              "Handler": "services/feed/handler.getFeed",
-              "MemorySize": 1024,
-              "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
-              },
-              "Runtime": "nodejs12.x",
-              "Timeout": 6,
-              "Environment": {
-                "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "DB_TYPE": "mysql",
-                  "DB_HOST": "localhost",
-                  "DB_PORT": "3306",
-                  "DB_USERNAME": "root",
-                  "DB_PASSWORD": "1111",
-                  "DB_DATABASE": "gn",
-                  "BUCKET_NAME": "artalleys-gn-image-bucket",
-                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
-                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
-                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
-                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
-                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
-                }
-              }
-            },
-            "DependsOn": [
-              "GetFeedLogGroup"
-            ]
-          },
-          "GetFeedLambdaVersionHLqjHrXwebFNKRJEsVsGFD47nIaBKMQnqLSbrwwowA": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "GetFeedLambdaFunction"
-              },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
             }
           },
           "CreateBusinessLambdaFunction": {
@@ -671,7 +485,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z/artalleys-gn.zip"
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
               },
               "FunctionName": "artalleys-gn-prod-createBusiness",
               "Handler": "services/business/handler.createBusiness",
@@ -686,7 +500,6 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
                   "DB_TYPE": "mysql",
                   "DB_HOST": "localhost",
                   "DB_PORT": "3306",
@@ -706,14 +519,830 @@
               "CreateBusinessLogGroup"
             ]
           },
-          "CreateBusinessLambdaVersionha6kyCTLWlI8KOykgdLwzXjy8cAhPrGQBTZsU9rAST4": {
+          "CreateBusinessLambdaVersionpDKcQQFIm6ZEcSejRLjMX966nWSfqpo4fr9G3Y3tzeM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateBusinessLambdaFunction"
               },
-              "CodeSha256": "eeCjjNauy2aIwBvBqXDeE1Yo6d2Vfw7dX4B0C/20jS8="
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetBusinessLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getBusiness",
+              "Handler": "services/business/handler.getBusiness",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetBusinessLogGroup"
+            ]
+          },
+          "GetBusinessLambdaVersiontMvx9vr8gkxOxudW4uJxjzi9VzREby8heOibJ8ywc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetBusinessLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "HidePostLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-hidePost",
+              "Handler": "services/post/handler.hidePost",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "HidePostLogGroup"
+            ]
+          },
+          "HidePostLambdaVersionh3qz1gR0PtwD4RkUd5b6miQRh3NWLlgTJpACqQyP9M": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "HidePostLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "BoostPostLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-boostPost",
+              "Handler": "services/post/handler.boostPost",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "BoostPostLogGroup"
+            ]
+          },
+          "BoostPostLambdaVersion5KZU6KZLCsTa271Nw3jm8Fh5GnovM7KhtfF9tZ8d4k": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "BoostPostLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "DeletePostLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-deletePost",
+              "Handler": "services/post/handler.deletePost",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "DeletePostLogGroup"
+            ]
+          },
+          "DeletePostLambdaVersion675gaU6l6NrqRW4qmQJVcJy11Qd1ld2xZxZ8DqsNM0": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeletePostLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetFeedLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getFeed",
+              "Handler": "services/feed/handler.getFeed",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetFeedLogGroup"
+            ]
+          },
+          "GetFeedLambdaVersionF531MWcon6ld9qwIkAdTdN8VAVek12NbxuQBKZPZ4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetFeedLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetCategoryFeedLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getCategoryFeed",
+              "Handler": "services/feed/handler.getCategoryFeed",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetCategoryFeedLogGroup"
+            ]
+          },
+          "GetCategoryFeedLambdaVersionRtSSWiVMXs5Z7JL3xBh0r1Y1P56b0C1WQW6dva7HGQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetCategoryFeedLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetSearchFeedLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getSearchFeed",
+              "Handler": "services/feed/handler.getSearchFeed",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetSearchFeedLogGroup"
+            ]
+          },
+          "GetSearchFeedLambdaVersionUxcTcK8Z8aTyOa47jVwp8ZpjgSyia961lmZIZyxTDVI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetSearchFeedLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetBusinessFeedLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getBusinessFeed",
+              "Handler": "services/feed/handler.getBusinessFeed",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetBusinessFeedLogGroup"
+            ]
+          },
+          "GetBusinessFeedLambdaVersionGQQjo3VCFLDPgCoZbhcVthsECStcZJkbMHeDDtRNVtw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetBusinessFeedLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "AddCommentLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-addComment",
+              "Handler": "services/comment/handler.addComment",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "AddCommentLogGroup"
+            ]
+          },
+          "AddCommentLambdaVersionwHa1AqBtUJYjAeZSaR0mkZP4F26cSh0WFysAWL2WG2U": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AddCommentLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetCommentLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getComment",
+              "Handler": "services/comment/handler.getComment",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetCommentLogGroup"
+            ]
+          },
+          "GetCommentLambdaVersionI091RjChUob9yVnY2N3wEjn6iQcbZlRiIePFvUDZayU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetCommentLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "GetReplyLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-getReply",
+              "Handler": "services/comment/handler.getReply",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetReplyLogGroup"
+            ]
+          },
+          "GetReplyLambdaVersion2vR81sBa4wU8IbRYzCWiRDTssx0w6qj2XaimNbg8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetReplyLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "ImageResizeLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-imageResize",
+              "Handler": "services/post/handler.imageResize",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "ImageResizeLogGroup"
+            ]
+          },
+          "ImageResizeLambdaVersion5L2cKo1SZnQXSWNM4GHhr4uVfGYHnPw7Oyn3dY0bhjg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ImageResizeLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "OnConnectLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-onConnect",
+              "Handler": "services/chat-socket/handler.onConnect",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "OnConnectLogGroup"
+            ]
+          },
+          "OnConnectLambdaVersionvTvaMKCxqyFZosasRZ4dMgYVlMivJW5zjwfnN8a4UA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "OnConnectLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "OnDisconnectLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-onDisconnect",
+              "Handler": "services/chat-socket/handler.onDisconnect",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "OnDisconnectLogGroup"
+            ]
+          },
+          "OnDisconnectLambdaVersionlU4r3Ol4w1iMR4poDUsk7H0YxuJ5mtmc3YTn7Atio": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "OnDisconnectLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "OnDefaultLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-onDefault",
+              "Handler": "services/chat-socket/handler.onDefault",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "OnDefaultLogGroup"
+            ]
+          },
+          "OnDefaultLambdaVersionRR0d6xZgS71Rzc3UxQGUOIvlH0vV6kPuA8PhmMMtc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "OnDefaultLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
+            }
+          },
+          "OnSendMessageLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z/artalleys-gn.zip"
+              },
+              "FunctionName": "artalleys-gn-prod-onSendMessage",
+              "Handler": "services/chat-socket/handler.onSendMessage",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_TYPE": "mysql",
+                  "DB_HOST": "localhost",
+                  "DB_PORT": "3306",
+                  "DB_USERNAME": "root",
+                  "DB_PASSWORD": "1111",
+                  "DB_DATABASE": "gn",
+                  "BUCKET_NAME": "artalleys-gn-image-bucket",
+                  "BUCKET_SERVICE_ENDPOINT": "s3.us-east-2.amazonaws.com",
+                  "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+                  "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
+                  "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
+                  "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize"
+                }
+              }
+            },
+            "DependsOn": [
+              "OnSendMessageLogGroup"
+            ]
+          },
+          "OnSendMessageLambdaVersion8SpnoVNAeENfm5Hmv8yOTK3g2dnxXfJXIO5bYQzRkBE": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "OnSendMessageLambdaFunction"
+              },
+              "CodeSha256": "qxZs/tTd+1vODhLOB7jkfWemf44fei+iFkUqTS3oryA="
             }
           },
           "ApiGatewayRestApi": {
@@ -807,6 +1436,18 @@
               }
             }
           },
+          "ApiGatewayResourcePostUidVarPostidVarGetbusiness": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourcePostUidVarPostidVar"
+              },
+              "PathPart": "getBusiness",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayResourcePostUidVarPostidVarHidepost": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
@@ -843,6 +1484,18 @@
               }
             }
           },
+          "ApiGatewayResourcePostUidVarCreatebusiness": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourcePostUidVar"
+              },
+              "PathPart": "createBusiness",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayResourceFeed": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
@@ -870,7 +1523,43 @@
               }
             }
           },
-          "ApiGatewayResourceBusiness": {
+          "ApiGatewayResourceFeedGetcategoryfeed": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceFeed"
+              },
+              "PathPart": "getCategoryFeed",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceFeedGetsearchfeed": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceFeed"
+              },
+              "PathPart": "getSearchFeed",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceFeedGetbusinessfeed": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceFeed"
+              },
+              "PathPart": "getBusinessFeed",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceComment": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
@@ -879,43 +1568,67 @@
                   "RootResourceId"
                 ]
               },
-              "PathPart": "business",
+              "PathPart": "comment",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayResourceBusinessUidVar": {
+          "ApiGatewayResourceCommentPostidVar": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
-                "Ref": "ApiGatewayResourceBusiness"
+                "Ref": "ApiGatewayResourceComment"
               },
-              "PathPart": "{uid}",
+              "PathPart": "{postId}",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayResourceBusinessUidVarBusinessidVar": {
+          "ApiGatewayResourceCommentPostidVarAddcomment": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
-                "Ref": "ApiGatewayResourceBusinessUidVar"
+                "Ref": "ApiGatewayResourceCommentPostidVar"
               },
-              "PathPart": "{businessId}",
+              "PathPart": "addComment",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayResourceBusinessUidVarBusinessidVarCreatebusiness": {
+          "ApiGatewayResourceCommentPostidVarGetcomment": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
-                "Ref": "ApiGatewayResourceBusinessUidVarBusinessidVar"
+                "Ref": "ApiGatewayResourceCommentPostidVar"
               },
-              "PathPart": "createBusiness",
+              "PathPart": "getComment",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceCommentPostidVarCommentidVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceCommentPostidVar"
+              },
+              "PathPart": "{commentId}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceCommentPostidVarCommentidVarGetreply": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarCommentidVar"
+              },
+              "PathPart": "getReply",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -1005,6 +1718,96 @@
               },
               "ResourceId": {
                 "Ref": "ApiGatewayResourcePostUidVarPostidVarGetpost"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodPostUidVarCreatebusinessOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourcePostUidVarCreatebusiness"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodPostUidVarPostidVarGetbusinessOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourcePostUidVarPostidVarGetbusiness"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -1175,7 +1978,7 @@
                     "ResponseParameters": {
                       "method.response.header.Access-Control-Allow-Origin": "'*'",
                       "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PUT'"
                     },
                     "ResponseTemplates": {
                       "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
@@ -1191,7 +1994,7 @@
               }
             }
           },
-          "ApiGatewayMethodBusinessUidVarBusinessidVarCreatebusinessOptions": {
+          "ApiGatewayMethodFeedGetcategoryfeedOptions": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "AuthorizationType": "NONE",
@@ -1229,7 +2032,232 @@
                 ]
               },
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBusinessUidVarBusinessidVarCreatebusiness"
+                "Ref": "ApiGatewayResourceFeedGetcategoryfeed"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodFeedGetsearchfeedOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFeedGetsearchfeed"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodFeedGetbusinessfeedOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFeedGetbusinessfeed"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodCommentPostidVarAddcommentOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarAddcomment"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodCommentPostidVarGetcommentOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarGetcomment"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodCommentPostidVarCommentidVarGetreplyOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarCommentidVarGetreply"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -1354,6 +2382,92 @@
                       {
                         "Fn::GetAtt": [
                           "GetPostLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodPostUidVarCreatebusinessPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourcePostUidVarCreatebusiness"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "CreateBusinessLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodPostUidVarPostidVarGetbusinessGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourcePostUidVarPostidVarGetbusiness"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetBusinessLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -1494,13 +2608,14 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayMethodFeedGetfeedGet": {
+          "ApiGatewayMethodFeedGetfeedPut": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
-              "HttpMethod": "GET",
+              "HttpMethod": "PUT",
               "RequestParameters": {
                 "method.request.querystring.offset": false,
                 "method.request.querystring.limit": false,
+                "method.request.querystring.order": false,
                 "method.request.querystring.type": false
               },
               "ResourceId": {
@@ -1541,13 +2656,16 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayMethodBusinessUidVarBusinessidVarCreatebusinessPut": {
+          "ApiGatewayMethodFeedGetcategoryfeedPut": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "PUT",
-              "RequestParameters": {},
+              "RequestParameters": {
+                "method.request.querystring.offset": false,
+                "method.request.querystring.limit": false
+              },
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBusinessUidVarBusinessidVarCreatebusiness"
+                "Ref": "ApiGatewayResourceFeedGetcategoryfeed"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -1572,7 +2690,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "CreateBusinessLambdaFunction",
+                          "GetCategoryFeedLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -1584,7 +2702,237 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1605506234455": {
+          "ApiGatewayMethodFeedGetsearchfeedPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {
+                "method.request.querystring.offset": false,
+                "method.request.querystring.limit": false
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFeedGetsearchfeed"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetSearchFeedLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodFeedGetbusinessfeedGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {
+                "method.request.querystring.offset": false,
+                "method.request.querystring.limit": false,
+                "method.request.querystring.order": false
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFeedGetbusinessfeed"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetBusinessFeedLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodCommentPostidVarAddcommentPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarAddcomment"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "AddCommentLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodCommentPostidVarGetcommentGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {
+                "method.request.querystring.offset": false,
+                "method.request.querystring.limit": false,
+                "method.request.querystring.order": false
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarGetcomment"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetCommentLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodCommentPostidVarCommentidVarGetreplyGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {
+                "method.request.querystring.offset": false,
+                "method.request.querystring.limit": false,
+                "method.request.querystring.order": false
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCommentPostidVarCommentidVarGetreply"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetReplyLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1606464101719": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1595,19 +2943,33 @@
             "DependsOn": [
               "ApiGatewayMethodPostUidVarCreatepostOptions",
               "ApiGatewayMethodPostUidVarPostidVarGetpostOptions",
+              "ApiGatewayMethodPostUidVarCreatebusinessOptions",
+              "ApiGatewayMethodPostUidVarPostidVarGetbusinessOptions",
               "ApiGatewayMethodPostUidVarPostidVarHidepostOptions",
               "ApiGatewayMethodPostUidVarPostidVarBoostpostOptions",
               "ApiGatewayMethodPostUidVarPostidVarDeletepostOptions",
               "ApiGatewayMethodFeedGetfeedOptions",
-              "ApiGatewayMethodBusinessUidVarBusinessidVarCreatebusinessOptions",
+              "ApiGatewayMethodFeedGetcategoryfeedOptions",
+              "ApiGatewayMethodFeedGetsearchfeedOptions",
+              "ApiGatewayMethodFeedGetbusinessfeedOptions",
+              "ApiGatewayMethodCommentPostidVarAddcommentOptions",
+              "ApiGatewayMethodCommentPostidVarGetcommentOptions",
+              "ApiGatewayMethodCommentPostidVarCommentidVarGetreplyOptions",
               "ApiGatewayMethodHelloGet",
               "ApiGatewayMethodPostUidVarCreatepostPut",
               "ApiGatewayMethodPostUidVarPostidVarGetpostGet",
+              "ApiGatewayMethodPostUidVarCreatebusinessPut",
+              "ApiGatewayMethodPostUidVarPostidVarGetbusinessGet",
               "ApiGatewayMethodPostUidVarPostidVarHidepostGet",
               "ApiGatewayMethodPostUidVarPostidVarBoostpostGet",
               "ApiGatewayMethodPostUidVarPostidVarDeletepostGet",
-              "ApiGatewayMethodFeedGetfeedGet",
-              "ApiGatewayMethodBusinessUidVarBusinessidVarCreatebusinessPut"
+              "ApiGatewayMethodFeedGetfeedPut",
+              "ApiGatewayMethodFeedGetcategoryfeedPut",
+              "ApiGatewayMethodFeedGetsearchfeedPut",
+              "ApiGatewayMethodFeedGetbusinessfeedGet",
+              "ApiGatewayMethodCommentPostidVarAddcommentPut",
+              "ApiGatewayMethodCommentPostidVarGetcommentGet",
+              "ApiGatewayMethodCommentPostidVarCommentidVarGetreplyGet"
             ]
           },
           "HelloLambdaPermissionApiGateway": {
@@ -1690,6 +3052,80 @@
               "FunctionName": {
                 "Fn::GetAtt": [
                   "GetPostLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "CreateBusinessLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateBusinessLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetBusinessLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetBusinessLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1869,12 +3305,12 @@
               }
             }
           },
-          "CreateBusinessLambdaPermissionApiGateway": {
+          "GetCategoryFeedLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "CreateBusinessLambdaFunction",
+                  "GetCategoryFeedLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1905,6 +3341,508 @@
                 ]
               }
             }
+          },
+          "GetSearchFeedLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetSearchFeedLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetBusinessFeedLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetBusinessFeedLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "AddCommentLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AddCommentLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetCommentLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetCommentLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetReplyLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetReplyLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "WebsocketsApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "prod-artalleys-gn-websockets",
+              "RouteSelectionExpression": "$request.body.action",
+              "Description": "Serverless Websockets",
+              "ProtocolType": "WEBSOCKET"
+            }
+          },
+          "OnConnectWebsocketsIntegration": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "OnConnectLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            }
+          },
+          "OnDisconnectWebsocketsIntegration": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "OnDisconnectLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            }
+          },
+          "OnDefaultWebsocketsIntegration": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "OnDefaultLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            }
+          },
+          "OnSendMessageWebsocketsIntegration": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "OnSendMessageLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            }
+          },
+          "OnConnectLambdaPermissionWebsockets": {
+            "Type": "AWS::Lambda::Permission",
+            "DependsOn": [
+              "WebsocketsApi",
+              "OnConnectLambdaFunction"
+            ],
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "OnConnectLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com"
+            }
+          },
+          "OnDisconnectLambdaPermissionWebsockets": {
+            "Type": "AWS::Lambda::Permission",
+            "DependsOn": [
+              "WebsocketsApi",
+              "OnDisconnectLambdaFunction"
+            ],
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "OnDisconnectLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com"
+            }
+          },
+          "OnDefaultLambdaPermissionWebsockets": {
+            "Type": "AWS::Lambda::Permission",
+            "DependsOn": [
+              "WebsocketsApi",
+              "OnDefaultLambdaFunction"
+            ],
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "OnDefaultLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com"
+            }
+          },
+          "OnSendMessageLambdaPermissionWebsockets": {
+            "Type": "AWS::Lambda::Permission",
+            "DependsOn": [
+              "WebsocketsApi",
+              "OnSendMessageLambdaFunction"
+            ],
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "OnSendMessageLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com"
+            }
+          },
+          "SconnectWebsocketsRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "RouteKey": "$connect",
+              "AuthorizationType": "NONE",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "OnConnectWebsocketsIntegration"
+                    }
+                  ]
+                ]
+              }
+            }
+          },
+          "SdisconnectWebsocketsRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "RouteKey": "$disconnect",
+              "AuthorizationType": "NONE",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "OnDisconnectWebsocketsIntegration"
+                    }
+                  ]
+                ]
+              }
+            }
+          },
+          "SdefaultWebsocketsRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "RouteKey": "$default",
+              "AuthorizationType": "NONE",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "OnDefaultWebsocketsIntegration"
+                    }
+                  ]
+                ]
+              }
+            }
+          },
+          "onSendMessageWebsocketsRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "RouteKey": "onSendMessage",
+              "AuthorizationType": "NONE",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "OnSendMessageWebsocketsIntegration"
+                    }
+                  ]
+                ]
+              }
+            }
+          },
+          "WebsocketsDeploymentStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "StageName": "prod",
+              "Description": "Serverless Websockets",
+              "DeploymentId": {
+                "Ref": "WebsocketsDeploymentj0pJebWe7fitDTppz6OyvELuSBKyY2bCIGs66XjNSe4"
+              }
+            }
+          },
+          "WebsocketsDeploymentj0pJebWe7fitDTppz6OyvELuSBKyY2bCIGs66XjNSe4": {
+            "Type": "AWS::ApiGatewayV2::Deployment",
+            "DependsOn": [
+              "SconnectWebsocketsRoute",
+              "SdisconnectWebsocketsRoute",
+              "SdefaultWebsocketsRoute",
+              "onSendMessageWebsocketsRoute"
+            ],
+            "Properties": {
+              "ApiId": {
+                "Ref": "WebsocketsApi"
+              },
+              "Description": "Serverless Websockets"
+            }
           }
         },
         "Outputs": {
@@ -1916,55 +3854,121 @@
           "HelloLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloLambdaVersionyNzESRsuZodg8EC41d3PKk8wzxjDitFvKCwb2sDJg"
+              "Ref": "HelloLambdaVersionCCT0afDFktlR4G0W7Hs9sYdngHl8r2PQGtqNFBVytD0"
             }
           },
           "CreatePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreatePostLambdaVersion37BzaTPe0DvNKruXBqrgh96gGEEcH6VBcJ519cwU"
+              "Ref": "CreatePostLambdaVersionTpehwUl27CKl3ojpgEpH6B2rWf0tf2fT9a2UWJwTzE"
             }
           },
           "GetPostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetPostLambdaVersionObsZRwJwBORr0Q7pZF4WuNc92JVIgGFpsEszlcKDbE"
-            }
-          },
-          "HidePostLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "HidePostLambdaVersion78XdKTnJ3SL9zihCroVeRM7UIwcrdpwbSmnm3BqWyE"
-            }
-          },
-          "BoostPostLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "BoostPostLambdaVersioncZOBtb1YiVDIE5c9Xk07PeZiKh9J00NskfimioDUkQ"
-            }
-          },
-          "DeletePostLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "DeletePostLambdaVersionWC3067xKnAuI7lRG8GXSorD9OHfqW8avZ2P5RcbhuA"
-            }
-          },
-          "ImageResizeLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "ImageResizeLambdaVersion37h5DvLTejWj8x8qd0t11Xi8XFo91nW7Z88ujxyPbxA"
-            }
-          },
-          "GetFeedLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "GetFeedLambdaVersionHLqjHrXwebFNKRJEsVsGFD47nIaBKMQnqLSbrwwowA"
+              "Ref": "GetPostLambdaVersion4NRxJUFowXeDq88IdlrYOIXfWcPIh85xu8CJZTiclGQ"
             }
           },
           "CreateBusinessLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateBusinessLambdaVersionha6kyCTLWlI8KOykgdLwzXjy8cAhPrGQBTZsU9rAST4"
+              "Ref": "CreateBusinessLambdaVersionpDKcQQFIm6ZEcSejRLjMX966nWSfqpo4fr9G3Y3tzeM"
+            }
+          },
+          "GetBusinessLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetBusinessLambdaVersiontMvx9vr8gkxOxudW4uJxjzi9VzREby8heOibJ8ywc"
+            }
+          },
+          "HidePostLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "HidePostLambdaVersionh3qz1gR0PtwD4RkUd5b6miQRh3NWLlgTJpACqQyP9M"
+            }
+          },
+          "BoostPostLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "BoostPostLambdaVersion5KZU6KZLCsTa271Nw3jm8Fh5GnovM7KhtfF9tZ8d4k"
+            }
+          },
+          "DeletePostLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeletePostLambdaVersion675gaU6l6NrqRW4qmQJVcJy11Qd1ld2xZxZ8DqsNM0"
+            }
+          },
+          "GetFeedLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetFeedLambdaVersionF531MWcon6ld9qwIkAdTdN8VAVek12NbxuQBKZPZ4"
+            }
+          },
+          "GetCategoryFeedLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetCategoryFeedLambdaVersionRtSSWiVMXs5Z7JL3xBh0r1Y1P56b0C1WQW6dva7HGQ"
+            }
+          },
+          "GetSearchFeedLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetSearchFeedLambdaVersionUxcTcK8Z8aTyOa47jVwp8ZpjgSyia961lmZIZyxTDVI"
+            }
+          },
+          "GetBusinessFeedLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetBusinessFeedLambdaVersionGQQjo3VCFLDPgCoZbhcVthsECStcZJkbMHeDDtRNVtw"
+            }
+          },
+          "AddCommentLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AddCommentLambdaVersionwHa1AqBtUJYjAeZSaR0mkZP4F26cSh0WFysAWL2WG2U"
+            }
+          },
+          "GetCommentLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetCommentLambdaVersionI091RjChUob9yVnY2N3wEjn6iQcbZlRiIePFvUDZayU"
+            }
+          },
+          "GetReplyLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetReplyLambdaVersion2vR81sBa4wU8IbRYzCWiRDTssx0w6qj2XaimNbg8"
+            }
+          },
+          "ImageResizeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ImageResizeLambdaVersion5L2cKo1SZnQXSWNM4GHhr4uVfGYHnPw7Oyn3dY0bhjg"
+            }
+          },
+          "OnConnectLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "OnConnectLambdaVersionvTvaMKCxqyFZosasRZ4dMgYVlMivJW5zjwfnN8a4UA"
+            }
+          },
+          "OnDisconnectLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "OnDisconnectLambdaVersionlU4r3Ol4w1iMR4poDUsk7H0YxuJ5mtmc3YTn7Atio"
+            }
+          },
+          "OnDefaultLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "OnDefaultLambdaVersionRR0d6xZgS71Rzc3UxQGUOIvlH0vV6kPuA8PhmMMtc"
+            }
+          },
+          "OnSendMessageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "OnSendMessageLambdaVersion8SpnoVNAeENfm5Hmv8yOTK3g2dnxXfJXIO5bYQzRkBE"
             }
           },
           "ServiceEndpoint": {
@@ -1976,6 +3980,29 @@
                   "https://",
                   {
                     "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/prod"
+                ]
+              ]
+            }
+          },
+          "ServiceEndpointWebsocket": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "wss://",
+                  {
+                    "Ref": "WebsocketsApi"
                   },
                   ".execute-api.",
                   {
@@ -2064,13 +4091,18 @@
     "custom": {
       "webpack": {
         "webpackConfig": "./webpack.config.js",
-        "includeModules": true
+        "includeModules": {
+          "forceInclude": [
+            "mysql"
+          ]
+        },
+        "packager": "npm"
       }
     },
     "plugins": [
       "serverless-webpack",
-      "serverless-offline",
-      "serverless-dotenv-plugin"
+      "serverless-dotenv-plugin",
+      "serverless-offline"
     ],
     "pluginsData": {},
     "functions": {
@@ -2093,7 +4125,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HelloLambdaVersionyNzESRsuZodg8EC41d3PKk8wzxjDitFvKCwb2sDJg"
+        "versionLogicalId": "HelloLambdaVersionCCT0afDFktlR4G0W7Hs9sYdngHl8r2PQGtqNFBVytD0"
       },
       "createPost": {
         "handler": "services/post/handler.createPost",
@@ -2133,7 +4165,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreatePostLambdaVersion37BzaTPe0DvNKruXBqrgh96gGEEcH6VBcJ519cwU"
+        "versionLogicalId": "CreatePostLambdaVersionTpehwUl27CKl3ojpgEpH6B2rWf0tf2fT9a2UWJwTzE"
       },
       "getPost": {
         "handler": "services/post/handler.getPost",
@@ -2173,7 +4205,87 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetPostLambdaVersionObsZRwJwBORr0Q7pZF4WuNc92JVIgGFpsEszlcKDbE"
+        "versionLogicalId": "GetPostLambdaVersion4NRxJUFowXeDq88IdlrYOIXfWcPIh85xu8CJZTiclGQ"
+      },
+      "createBusiness": {
+        "handler": "services/business/handler.createBusiness",
+        "events": [
+          {
+            "http": {
+              "method": "put",
+              "path": "post/{uid}/createBusiness",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "PUT"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-createBusiness",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "CreateBusinessLambdaVersionpDKcQQFIm6ZEcSejRLjMX966nWSfqpo4fr9G3Y3tzeM"
+      },
+      "getBusiness": {
+        "handler": "services/business/handler.getBusiness",
+        "events": [
+          {
+            "http": {
+              "method": "get",
+              "path": "post/{uid}/{postId}/getBusiness",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-getBusiness",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetBusinessLambdaVersiontMvx9vr8gkxOxudW4uJxjzi9VzREby8heOibJ8ywc"
       },
       "hidePost": {
         "handler": "services/post/handler.hidePost",
@@ -2213,7 +4325,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HidePostLambdaVersion78XdKTnJ3SL9zihCroVeRM7UIwcrdpwbSmnm3BqWyE"
+        "versionLogicalId": "HidePostLambdaVersionh3qz1gR0PtwD4RkUd5b6miQRh3NWLlgTJpACqQyP9M"
       },
       "boostPost": {
         "handler": "services/post/handler.boostPost",
@@ -2253,7 +4365,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "BoostPostLambdaVersioncZOBtb1YiVDIE5c9Xk07PeZiKh9J00NskfimioDUkQ"
+        "versionLogicalId": "BoostPostLambdaVersion5KZU6KZLCsTa271Nw3jm8Fh5GnovM7KhtfF9tZ8d4k"
       },
       "deletePost": {
         "handler": "services/post/handler.deletePost",
@@ -2293,12 +4405,47 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "DeletePostLambdaVersionWC3067xKnAuI7lRG8GXSorD9OHfqW8avZ2P5RcbhuA"
+        "versionLogicalId": "DeletePostLambdaVersion675gaU6l6NrqRW4qmQJVcJy11Qd1ld2xZxZ8DqsNM0"
       },
-      "imageResize": {
-        "handler": "services/post/handler.imageResize",
-        "events": [],
-        "name": "artalleys-gn-prod-imageResize",
+      "getFeed": {
+        "handler": "services/feed/handler.getFeed",
+        "events": [
+          {
+            "http": {
+              "method": "put",
+              "path": "feed/getFeed",
+              "request": {
+                "parameters": {
+                  "method.request.querystring.offset": false,
+                  "method.request.querystring.limit": false,
+                  "method.request.querystring.order": false,
+                  "method.request.querystring.type": false
+                }
+              },
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "PUT"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-getFeed",
         "package": {
           "artifact": ".serverless/artalleys-gn.zip"
         },
@@ -2306,20 +4453,112 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "ImageResizeLambdaVersion37h5DvLTejWj8x8qd0t11Xi8XFo91nW7Z88ujxyPbxA"
+        "versionLogicalId": "GetFeedLambdaVersionF531MWcon6ld9qwIkAdTdN8VAVek12NbxuQBKZPZ4"
       },
-      "getFeed": {
-        "handler": "services/feed/handler.getFeed",
+      "getCategoryFeed": {
+        "handler": "services/feed/handler.getCategoryFeed",
+        "events": [
+          {
+            "http": {
+              "method": "put",
+              "path": "feed/getCategoryFeed",
+              "request": {
+                "parameters": {
+                  "method.request.querystring.offset": false,
+                  "method.request.querystring.limit": false
+                }
+              },
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "PUT"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-getCategoryFeed",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetCategoryFeedLambdaVersionRtSSWiVMXs5Z7JL3xBh0r1Y1P56b0C1WQW6dva7HGQ"
+      },
+      "getSearchFeed": {
+        "handler": "services/feed/handler.getSearchFeed",
+        "events": [
+          {
+            "http": {
+              "method": "put",
+              "path": "feed/getSearchFeed",
+              "request": {
+                "parameters": {
+                  "method.request.querystring.offset": false,
+                  "method.request.querystring.limit": false
+                }
+              },
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "PUT"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-getSearchFeed",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetSearchFeedLambdaVersionUxcTcK8Z8aTyOa47jVwp8ZpjgSyia961lmZIZyxTDVI"
+      },
+      "getBusinessFeed": {
+        "handler": "services/feed/handler.getBusinessFeed",
         "events": [
           {
             "http": {
               "method": "get",
-              "path": "feed/getFeed",
+              "path": "feed/getBusinessFeed",
               "request": {
                 "parameters": {
                   "method.request.querystring.offset": false,
                   "method.request.querystring.limit": false,
-                  "method.request.querystring.type": false
+                  "method.request.querystring.order": false
                 }
               },
               "cors": {
@@ -2345,7 +4584,7 @@
             }
           }
         ],
-        "name": "artalleys-gn-prod-getFeed",
+        "name": "artalleys-gn-prod-getBusinessFeed",
         "package": {
           "artifact": ".serverless/artalleys-gn.zip"
         },
@@ -2353,15 +4592,15 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetFeedLambdaVersionHLqjHrXwebFNKRJEsVsGFD47nIaBKMQnqLSbrwwowA"
+        "versionLogicalId": "GetBusinessFeedLambdaVersionGQQjo3VCFLDPgCoZbhcVthsECStcZJkbMHeDDtRNVtw"
       },
-      "createBusiness": {
-        "handler": "services/business/handler.createBusiness",
+      "addComment": {
+        "handler": "services/comment/handler.addComment",
         "events": [
           {
             "http": {
               "method": "put",
-              "path": "business/{uid}/{businessId}/createBusiness",
+              "path": "comment/{postId}/addComment",
               "cors": {
                 "origins": [
                   "*"
@@ -2385,7 +4624,7 @@
             }
           }
         ],
-        "name": "artalleys-gn-prod-createBusiness",
+        "name": "artalleys-gn-prod-addComment",
         "package": {
           "artifact": ".serverless/artalleys-gn.zip"
         },
@@ -2393,7 +4632,190 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreateBusinessLambdaVersionha6kyCTLWlI8KOykgdLwzXjy8cAhPrGQBTZsU9rAST4"
+        "versionLogicalId": "AddCommentLambdaVersionwHa1AqBtUJYjAeZSaR0mkZP4F26cSh0WFysAWL2WG2U"
+      },
+      "getComment": {
+        "handler": "services/comment/handler.getComment",
+        "events": [
+          {
+            "http": {
+              "method": "get",
+              "path": "comment/{postId}/getComment",
+              "request": {
+                "parameters": {
+                  "method.request.querystring.offset": false,
+                  "method.request.querystring.limit": false,
+                  "method.request.querystring.order": false
+                }
+              },
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-getComment",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetCommentLambdaVersionI091RjChUob9yVnY2N3wEjn6iQcbZlRiIePFvUDZayU"
+      },
+      "getReply": {
+        "handler": "services/comment/handler.getReply",
+        "events": [
+          {
+            "http": {
+              "method": "get",
+              "path": "comment/{postId}/{commentId}/getReply",
+              "request": {
+                "parameters": {
+                  "method.request.querystring.offset": false,
+                  "method.request.querystring.limit": false,
+                  "method.request.querystring.order": false
+                }
+              },
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-getReply",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetReplyLambdaVersion2vR81sBa4wU8IbRYzCWiRDTssx0w6qj2XaimNbg8"
+      },
+      "imageResize": {
+        "handler": "services/post/handler.imageResize",
+        "events": [],
+        "name": "artalleys-gn-prod-imageResize",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "ImageResizeLambdaVersion5L2cKo1SZnQXSWNM4GHhr4uVfGYHnPw7Oyn3dY0bhjg"
+      },
+      "onConnect": {
+        "handler": "services/chat-socket/handler.onConnect",
+        "events": [
+          {
+            "websocket": {
+              "route": "$connect"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-onConnect",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "OnConnectLambdaVersionvTvaMKCxqyFZosasRZ4dMgYVlMivJW5zjwfnN8a4UA"
+      },
+      "onDisconnect": {
+        "handler": "services/chat-socket/handler.onDisconnect",
+        "events": [
+          {
+            "websocket": {
+              "route": "$disconnect"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-onDisconnect",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "OnDisconnectLambdaVersionlU4r3Ol4w1iMR4poDUsk7H0YxuJ5mtmc3YTn7Atio"
+      },
+      "onDefault": {
+        "handler": "services/chat-socket/handler.onDefault",
+        "events": [
+          {
+            "websocket": {
+              "route": "$default"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-onDefault",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "OnDefaultLambdaVersionRR0d6xZgS71Rzc3UxQGUOIvlH0vV6kPuA8PhmMMtc"
+      },
+      "onSendMessage": {
+        "handler": "services/chat-socket/handler.onSendMessage",
+        "events": [
+          {
+            "websocket": {
+              "route": "onSendMessage"
+            }
+          }
+        ],
+        "name": "artalleys-gn-prod-onSendMessage",
+        "package": {
+          "artifact": ".serverless/artalleys-gn.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "OnSendMessageLambdaVersion8SpnoVNAeENfm5Hmv8yOTK3g2dnxXfJXIO5bYQzRkBE"
       }
     },
     "configValidationMode": "warn",
@@ -2420,7 +4842,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/artalleys-gn/prod/1605506256071-2020-11-16T05:57:36.071Z",
+    "artifactDirectoryName": "serverless/artalleys-gn/prod/1606464120231-2020-11-27T08:02:00.231Z",
     "artifact": ""
   }
 }

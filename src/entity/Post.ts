@@ -33,25 +33,34 @@ export default class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => PostNormal, (postNormal) => postNormal.post, {
-    cascade: ["insert", "update", "remove"],
-  })
-  normal: PostNormal;
-
-  @OneToOne(() => PostBusiness, (postBusiness) => postBusiness.post, {
-    cascade: ["insert", "update", "remove"],
-  })
+  @OneToOne(() => PostBusiness)
+  @JoinColumn({ name: "business" })
   business: PostBusiness;
+
+  @OneToOne(() => Location)
+  postLocation: Location;
+
+  // @OneToOne(() => PostNormal, (postNormal) => postNormal.post, {
+  //   cascade: ["insert", "update", "remove"],
+  // })
+  // normal: PostNormal;
+
+  // @OneToOne(() => PostBusiness, {
+  //   cascade: ["insert", "update", "remove"],
+  // })
+  // @JoinColumn({ name: "id" })
+  // business: PostBusiness;
 
   @OneToMany(() => Image, (image) => image.post, {
     cascade: ["insert", "update", "remove"],
   })
   postImage: Image[];
 
-  @OneToOne(() => Location, (location) => location.post, {
-    cascade: ["insert", "update", "remove"],
-  })
-  postLocation: Location;
+  // @OneToOne(() => Location, {
+  //   cascade: ["insert", "update", "remove"],
+  // })
+  // @JoinColumn({ name: "id" })
+  // location: Location;
 
   @Column({ name: "hide", type: "boolean", default: false })
   hide: boolean;

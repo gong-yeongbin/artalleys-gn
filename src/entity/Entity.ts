@@ -7,3 +7,4 @@ export { default as Image } from "./Image";
 export { default as Location } from "./Location";
 export { default as User } from "./User";
 export { default as Comment } from "./Comment";
+export { default as Chat } from "./Chat";

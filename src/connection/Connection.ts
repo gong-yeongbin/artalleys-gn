@@ -15,7 +15,11 @@ import {
   PostNormal,
   PostBusiness,
   Comment,
+  Chat,
 } from "../entity/Entity";
+
+import { RelationLoader } from "typeorm/query-builder/RelationLoader";
+import { RelationIdLoader } from "typeorm/query-builder/RelationIdLoader";
 
 const {
   DB_TYPE,
@@ -26,16 +30,27 @@ const {
   DB_DATABASE,
   DB_SYNCHRONIZE,
 } = process.env;
-const entity = [User, Post, Location, Image, PostNormal, PostBusiness, Comment];
+const entity = [
+  User,
+  Post,
+  Location,
+  Image,
+  PostNormal,
+  PostBusiness,
+  Comment,
+  Chat,
+];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   type: DB_TYPE as "mysql" | "mariadb",
-  host: DB_HOST,
+  host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
+  // host: "localhost",
   port: 3306,
   username: DB_USERNAME,
-  password: DB_PASSWORD,
+  password: "neibors1!",
+  // password: DB_PASSWORD,
   database: DB_DATABASE,
-  synchronize: true,
+  synchronize: false,
   entities: entity,
 };
 

@@ -1,6 +1,4 @@
-import { S3, SQS } from "aws-sdk";
 import type { Serverless } from "serverless/aws";
-import { putObject } from "./services/util/aws";
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -13,25 +11,26 @@ const serverlessConfiguration: Serverless = {
   custom: {
     webpack: {
       webpackConfig: "./webpack.config.js",
-      includeModules: true,
+      includeModules: {
+        forceInclude: ["mysql"],
+      },
+      packager: "npm",
     },
   },
   // Add the serverless-webpack plugin
   plugins: [
     "serverless-webpack",
-    "serverless-offline",
     "serverless-dotenv-plugin",
+    "serverless-offline",
   ],
   provider: {
     name: "aws",
     stage: "prod",
     runtime: "nodejs12.x",
     region: "us-east-2",
+    websocketsApiRouteSelectionExpression: "$request.body.action",
     apiGateway: {
       minimumCompressionSize: 1024,
-    },
-    environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
     },
     iamRoleStatements: [
       {
@@ -234,13 +233,6 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "put",
             path: "comment/{postId}/addComment",
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
             cors: true,
           },
         },
@@ -255,9 +247,6 @@ const serverlessConfiguration: Serverless = {
             path: "comment/{postId}/getComment",
             request: {
               parameters: {
-                paths: {
-                  postId: true,
-                },
                 querystrings: {
                   offset: false,
                   limit: false,
@@ -279,10 +268,6 @@ const serverlessConfiguration: Serverless = {
             path: "comment/{postId}/{commentId}/getReply",
             request: {
               parameters: {
-                paths: {
-                  postId: true,
-                  commentId: true,
-                },
                 querystrings: {
                   offset: false,
                   limit: false,
@@ -295,46 +280,60 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    modifyComment: {
-      handler: "services/comment/handler.modifyComment",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "comment/{commentId}/modifyComment",
-            request: {
-              parameters: {
-                paths: {
-                  commentId: true,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
-    deleteComment: {
-      handler: "services/comment/handler.deleteComment",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "comment/{commentId}/deleteComment",
-            request: {
-              parameters: {
-                paths: {
-                  commentId: true,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
+    // modifyComment: {
+    //   handler: "services/comment/handler.modifyComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "comment/{commentId}/modifyComment",
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // deleteComment: {
+    //   handler: "services/comment/handler.deleteComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "comment/{commentId}/deleteComment",
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
     imageResize: {
       handler: "services/post/handler.imageResize",
+    },
+    onConnect: {
+      handler: "services/chat-socket/handler.onConnect",
+      events: [
+        {
+          websocket: { route: "$connect" },
+        },
+      ],
+    },
+    onDisconnect: {
+      handler: "services/chat-socket/handler.onDisconnect",
+      events: [{ websocket: { route: "$disconnect" } }],
+    },
+    onDefault: {
+      handler: "services/chat-socket/handler.onDefault",
+      events: [
+        {
+          websocket: { route: "$default" },
+        },
+      ],
+    },
+    onSendMessage: {
+      handler: "services/chat-socket/handler.onSendMessage",
+      events: [
+        {
+          websocket: { route: "onSendMessage" },
+        },
+      ],
     },
   },
 };

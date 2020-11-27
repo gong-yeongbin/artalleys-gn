@@ -83,7 +83,7 @@ export const createBusiness = async (
   post.postId = postId;
   post.title = title;
   post.number = number;
-  post.postLocation = location;
+  // post.postLocation = location;
   await postRepository.save(post);
 
   postBusiness.detailTitle = detailTitle;
@@ -93,7 +93,7 @@ export const createBusiness = async (
   postBusiness.descriptions = descriptions;
   postBusiness.workingHoursDescriptions = workingHoursDescriptions;
   postBusiness.homepage = homepage;
-  postBusiness.post = post;
+  // postBusiness.post = post;
   postBusinessRepository.save(postBusiness);
 
   for (let index in data.image) {
