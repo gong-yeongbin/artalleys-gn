@@ -38,7 +38,7 @@ export default class PostNormal {
   @Column({ name: "active", type: "nvarchar", default: "active" })
   active: string;
 
-  @OneToOne(() => Post)
+  @OneToOne(() => Post, (post) => post.normal)
   @JoinColumn({ name: "post" })
   post: Post;
 }

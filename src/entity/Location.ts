@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
-  Unique,
 } from "typeorm";
 import { Post } from "../entity/Entity";
 
@@ -26,4 +25,8 @@ export default class Location {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToOne(() => Post, (post) => post.location)
+  @JoinColumn({ name: "post" })
+  post: Post;
 }

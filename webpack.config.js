@@ -1,51 +1,33 @@
+const webpack = require('webpack'); 
 const path = require('path');
 const slsw = require('serverless-webpack');
-const nodeExternals = require('webpack-node-externals');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+/**
+  TypeOrm does not work well with webpack, we inject a env variable here to be used at .env.ts
+  to define how typeorm will receive it's params.
+*/
+slsw.lib.serverless.service.provider.environment.isWebpacked = true;
 
 module.exports = {
-  context: __dirname,
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   entry: slsw.lib.entries,
-  devtool: slsw.lib.webpack.isLocal ? 'cheap-module-eval-source-map' : 'source-map',
+  optimization: { minimize: false },
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
-    symlinks: false,
-    cacheWithContext: false,
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },
+  plugins: [
+    new webpack.IgnorePlugin(/^pg-native$/)
+  ],
   output: {
     libraryTarget: 'commonjs',
     path: path.join(__dirname, '.webpack'),
     filename: '[name].js',
   },
   target: 'node',
-  externals: [nodeExternals()],
   module: {
     rules: [
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-      {
-        test: /\.(tsx?)$/,
-        loader: 'ts-loader',
-        exclude: [
-          [
-            path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '.serverless'),
-            path.resolve(__dirname, '.webpack'),
-          ],
-        ],
-        options: {
-          transpileOnly: true,
-          experimentalWatchApi: true,
-        },
-      },
+      { test: /\.tsx?$/, loader: 'ts-loader' },
     ],
   },
-  plugins: [
-    // new ForkTsCheckerWebpackPlugin({
-    //   eslint: true,
-    //   eslintOptions: {
-    //     cache: true
-    //   }
-    // })
-  ],
 };

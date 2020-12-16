@@ -99,11 +99,12 @@ export const createPost = async (
   postNormal.firmOnPrice = firmOnPrice;
   postNormal.descriptions = descriptions;
   postNormal.condition = condition.toLowerCase();
-  // postNormal.post = post;
+  postNormal.post = post;
   await postNormalRepository.save(postNormal);
 
   location.longtitude = data.location.longtitude;
   location.latitude = data.location.latitude;
+  location.post = post;
   await locationRepository.save(location);
 
   for (let index in data.image) {
@@ -195,7 +196,6 @@ export const getPost = async (
       body: "null",
     };
   }
-  console.log(postEntity);
   const postDto: PostData = new PostBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
@@ -238,6 +238,7 @@ export const boostPost = async (
     body: "",
   };
 };
+
 /**
  * @api {get}  /post/:uid/:postId/getPost     hide Post
  * @apiName Hide Post

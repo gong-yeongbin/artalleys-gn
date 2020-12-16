@@ -16,6 +16,7 @@ import {
   PostBusiness,
   Comment,
   Chat,
+  ChatRoom,
 } from "../entity/Entity";
 
 import { RelationLoader } from "typeorm/query-builder/RelationLoader";
@@ -39,6 +40,7 @@ const entity = [
   PostBusiness,
   Comment,
   Chat,
+  ChatRoom,
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
@@ -50,7 +52,7 @@ const CONNECTION_OPTIONS: ConnectionOptions = {
   password: "neibors1!",
   // password: DB_PASSWORD,
   database: DB_DATABASE,
-  synchronize: false,
+  synchronize: true,
   entities: entity,
 };
 

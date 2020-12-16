@@ -42,4 +42,8 @@ export default class PostBusiness {
     length: 300,
   })
   descriptions: string;
+
+  @OneToOne(() => Post, (post) => post.business)
+  @JoinColumn({ name: "post" })
+  post: Post;
 }

@@ -8,7 +8,13 @@ import {
   OneToMany,
   JoinColumn,
 } from "typeorm";
-import { Location, Image, PostNormal, PostBusiness } from "../entity/Entity";
+import {
+  Location,
+  Image,
+  PostNormal,
+  PostBusiness,
+  ChatRoom,
+} from "../entity/Entity";
 
 @Entity("post")
 export default class Post {
@@ -33,34 +39,34 @@ export default class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => PostBusiness)
-  @JoinColumn({ name: "business" })
-  business: PostBusiness;
-
   @OneToOne(() => Location)
   postLocation: Location;
 
-  // @OneToOne(() => PostNormal, (postNormal) => postNormal.post, {
-  //   cascade: ["insert", "update", "remove"],
-  // })
-  // normal: PostNormal;
+  @OneToOne(() => PostNormal, (postNormal) => postNormal.post, {
+    cascade: ["insert", "update", "remove"],
+  })
+  normal: PostNormal;
 
-  // @OneToOne(() => PostBusiness, {
-  //   cascade: ["insert", "update", "remove"],
-  // })
-  // @JoinColumn({ name: "id" })
-  // business: PostBusiness;
+  @OneToOne(() => PostBusiness, {
+    cascade: ["insert", "update", "remove"],
+  })
+  business: PostBusiness;
+
+  @OneToOne(() => Location, {
+    cascade: ["insert", "update", "remove"],
+  })
+  location: Location;
 
   @OneToMany(() => Image, (image) => image.post, {
     cascade: ["insert", "update", "remove"],
   })
   postImage: Image[];
 
-  // @OneToOne(() => Location, {
-  //   cascade: ["insert", "update", "remove"],
-  // })
-  // @JoinColumn({ name: "id" })
-  // location: Location;
+  @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.post, {
+    cascade: ["insert", "update", "remove"],
+    nullable: true,
+  })
+  chatRoom: ChatRoom[];
 
   @Column({ name: "hide", type: "boolean", default: false })
   hide: boolean;

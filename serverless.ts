@@ -315,6 +315,14 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    onConnect2: {
+      handler: "services/chat-socket/handler.onConnect2",
+      events: [
+        {
+          websocket: { route: "connect2" },
+        },
+      ],
+    },
     onDisconnect: {
       handler: "services/chat-socket/handler.onDisconnect",
       events: [{ websocket: { route: "$disconnect" } }],
@@ -332,6 +340,38 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           websocket: { route: "onSendMessage" },
+        },
+      ],
+    },
+    getChatRoomList: {
+      handler: "services/chat-socket/handler.getChatRoomList",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "chat/getChatRoomList",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getChatContentList: {
+      handler: "services/chat-socket/handler.getChatContentList",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "chat/{receiveId}/getChatContentList",
+            cors: true,
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                },
+              },
+            },
+          },
         },
       ],
     },

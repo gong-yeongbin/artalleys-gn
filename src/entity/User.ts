@@ -26,6 +26,9 @@ export default class User {
   @Column({ name: "profile_image", type: "nvarchar", length: 1024 })
   profileImage: string;
 
+  @Column({ name: "connection_id", type: "nvarchar", nullable: true })
+  connectionId: string;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
