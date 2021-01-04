@@ -44,14 +44,14 @@ const entity = [
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: DB_TYPE as "mysql" | "mariadb",
-  host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
-  // host: "localhost",
+  type: "mysql",
+  // host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
+  host: "localhost",
   port: 3306,
-  username: DB_USERNAME,
-  password: "neibors1!",
-  // password: DB_PASSWORD,
-  database: DB_DATABASE,
+  username: "root",
+  // password: "neibors1!",
+  password: "1111",
+  database: "gn",
   synchronize: true,
   entities: entity,
 };

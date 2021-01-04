@@ -4,9 +4,11 @@ import {
   OneToMany,
   JoinColumn,
   ManyToOne,
+  Entity,
 } from "typeorm";
 import { Post, Chat } from "./Entity";
 
+@Entity("chat_room")
 export default class ChatRoom {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
@@ -26,9 +28,9 @@ export default class ChatRoom {
   @JoinColumn({ name: "post" })
   post: Post;
 
-  @OneToMany(() => Chat, (chat) => chat.chatRoom, {
-    cascade: ["insert", "update", "remove"],
-    nullable: true,
-  })
-  chat: Chat[];
+  // @OneToMany(() => Chat, (chat) => chat.chatRoom, {
+  //   cascade: ["insert", "update", "remove"],
+  //   nullable: true,
+  // })
+  // chat: Chat[];
 }

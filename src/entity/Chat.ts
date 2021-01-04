@@ -29,9 +29,9 @@ export default class Chat {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.chat, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "chat_room" })
-  chatRoom: ChatRoom;
+  // @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.chat, {
+  //   onDelete: "CASCADE",
+  // })
+  // @JoinColumn({ name: "chat_room" })
+  // chatRoom: ChatRoom;
 }
