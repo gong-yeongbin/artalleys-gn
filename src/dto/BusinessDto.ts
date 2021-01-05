@@ -1,7 +1,7 @@
 import { Post } from "../entity/Entity";
 import { replaceHost } from "../../services/util/http";
 interface Location {
-  longtitude: number;
+  longitude: number;
   latitude: number;
 }
 export interface BusinessData {
@@ -30,8 +30,8 @@ export class BusinessBuilder {
       postImage[index] = value.url;
     });
     const postLocation: Location = {
-      longtitude: post.postLocation.longtitude,
-      latitude: post.postLocation.latitude,
+      longitude: post.location.longitude,
+      latitude: post.location.latitude,
     };
     const businessData: BusinessData = {
       postId: post.postId,

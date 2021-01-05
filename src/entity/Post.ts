@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   OneToOne,
   OneToMany,
-  JoinColumn,
 } from "typeorm";
 import {
   Location,
@@ -39,9 +38,6 @@ export default class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => Location)
-  postLocation: Location;
-
   @OneToOne(() => PostNormal, (postNormal) => postNormal.post, {
     cascade: ["insert", "update", "remove"],
   })
@@ -52,10 +48,13 @@ export default class Post {
   })
   business: PostBusiness;
 
-  @OneToOne(() => Location, {
+  @OneToOne(() => Location, (location) => location.post, {
     cascade: ["insert", "update", "remove"],
   })
   location: Location;
+
+  // @OneToOne(() => Location)
+  // location: Location;
 
   @OneToMany(() => Image, (image) => image.post, {
     cascade: ["insert", "update", "remove"],

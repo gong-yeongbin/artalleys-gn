@@ -6,7 +6,7 @@ import { name } from "../util/util";
 import { CommentBuilder, CommentData } from "../../src/dto/CommentDto";
 import { ReplyBuilder, ReplyData } from "../../src/dto/ReplyDto";
 /**
- * @api {put} /comment/:postId/getFeed     add comment
+ * @api {put} /comment/:postId/addComment     add comment
  * @apiName Add Comment
  * @apiGroup Comment
  *

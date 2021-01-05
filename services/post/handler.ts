@@ -16,39 +16,42 @@ import {
   sendMessage,
 } from "../util/aws";
 import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
-import { PostBuilder, PostData } from "../../src/dto/PostDto";
-import { getRepository } from "typeorm";
+import { PostBuilder } from "../../src/dto/PostDto";
+import { PostType } from "../../src/types/postType";
+import { getRepository, Connection, Repository } from "typeorm";
+import { authorizeToken } from "../util/authorizer";
+import * as middy from "middy";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
 /**
- * @api {put}  /post/:uid/createPost     Create Post
+ * @api {put}  /post/createPost     Create Post
  * @apiName Create Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
- * @apiParam (Body) {String{30}}  title                                 post title
- * @apiParam (Body) {String="sell","buy","business"}  type              post type
- * @apiParam (Body) {String} category                                   post category
- * @apiParam (Body) {String} condition                                  post condition
- * @apiParam (Body) {Object} [location]                                 post location(type: sell)
- * @apiParam (Body) {Object} location.latitude                          post location latitude
- * @apiParam (Body) {Object} location.longtitude                        post location longtitude
- * @apiParam (Body) {number} [price]                                    post price
- * @apiParam (Body) {boolean} firmOnPrice                               post firm on price
- * @apiParam (Body) {number} [number]                                   post number(type: business)
- * @apiParam (Body) {String{300}} descriptions                          post descriptions
- * @apiParam (Body) {boolean} [hide]                                    post hide
- * @apiParam (Body) {base64} image                                      post image
+ * @apiParam (Header)   {string}  authorization                             Bearer Token
+ * @apiParam (Body)     {String{30}}  title                                 post title
+ * @apiParam (Body)     {String="sell","buy","business"}  type              post type
+ * @apiParam (Body)     {String} category                                   post category
+ * @apiParam (Body)     {String} condition                                  post condition
+ * @apiParam (Body)     {Object} [location]                                 post location(type: sell)
+ * @apiParam (Body)     {Object} location.latitude                          post location latitude
+ * @apiParam (Body)     {Object} location.longitude                        post location longitude
+ * @apiParam (Body)     {number} [price]                                    post price
+ * @apiParam (Body)     {boolean} firmOnPrice                               post firm on price
+ * @apiParam (Body)     {number} [number]                                   post number(type: business)
+ * @apiParam (Body)     {String{300}} descriptions                          post descriptions
+ * @apiParam (Body)     {boolean} [hide]                                    post hide
+ * @apiParam (Body)     {base64} image                                      post image
+ *    
  *
- *
- * @apiParamExample {json} Request Body
+ * @apiParamExample {json} Request Body   
  {
    "title": "hwajangpyoom",
    "type": "buy",
    "category":"hwajangpyoom category",
    "condition": "other",
-   "location": {"latitude":"12.123","longtitude":"13.123"},
+   "location": {"latitude":"12.123","longitude":"13.123"},
    "price": 1000,
    "firmOnPrice": true,
    "number": 12312341234,
@@ -59,18 +62,21 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
 
-export const createPost = async (
+const createPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postNormalRepository = connection.getRepository(PostNormal);
-  const imageRepository = connection.getRepository(Image);
-  const locationRepository = connection.getRepository(Location);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postNormalRepository: Repository<PostNormal> = connection.getRepository(
+    PostNormal
+  );
+  const imageRepository: Repository<Image> = connection.getRepository(Image);
+  const locationRepository: Repository<Location> = connection.getRepository(
+    Location
+  );
 
-  const uid: string = event.pathParameters["uid"];
-  const postId = name(10);
+  const postId: string = name(10);
   const data: any = JSON.parse(event.body);
 
   let post: Post = new Post();
@@ -102,13 +108,13 @@ export const createPost = async (
   postNormal.post = post;
   await postNormalRepository.save(postNormal);
 
-  location.longtitude = data.location.longtitude;
+  location.longitude = data.location.longitude;
   location.latitude = data.location.latitude;
   location.post = post;
   await locationRepository.save(location);
 
   for (let index in data.image) {
-    let imageName = name(8);
+    let imageName: string = name(8);
 
     await imageRepository
       .createQueryBuilder()
@@ -116,17 +122,14 @@ export const createPost = async (
       .into(Image)
       .values({
         post: post,
-        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/post/${postId}/origin/${imageName}.png`,
+        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${postId}/origin/${imageName}.png`,
       })
       .execute();
 
     const originalImage = Buffer.from(data.image[index], "base64");
 
-    await putObject(
-      originalImage,
-      `${uid}/post/${postId}/origin/${imageName}.png`
-    );
-    await sendMessage(`${uid}/post/${postId}/origin/${imageName}.png`);
+    await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
+    await sendMessage(`post/${postId}/origin/${imageName}.png`);
   }
 
   return {
@@ -136,56 +139,48 @@ export const createPost = async (
 };
 
 /**
- * @api {get}  /post/:uid/:postId/getPost     Get Post
+ * @api {get}  /post/:postId/getPost     Get Post
  * @apiName Get Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
- * @apiParam (PathParam) {String} postId                                postId
+ * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
  * @apiParamExample {json} Response
  {
-  "id": "56",
-  "postId": "aafde3c18d762d3c03ca0943b9cfe6",
-  "type": "buy",
-  "title": "hwajangpyoom",
-  "category": "hwajangpyoom category",
-  "price": 0,
-  "firmOnPrice": false,
-  "descriptions": "test hwajangpyoom e da",
-  "condition": "other",
-  "view": 0,
-  "number": null,
-  "active": "active",
-  "hide": false,
-  "createdAt": "2020-11-10T22:00:07.315Z",
-  "updatedAt": "2020-11-10T22:00:07.315Z",
-  "postLocation": {
-    "id": "49",
-    "longtitude": 13,
-    "latitude": 12,
-    "createdAt": "2020-11-10T22:00:07.285Z",
-    "updatedAt": "2020-11-10T22:00:07.000Z"
-  },
-  "postImage": []
+  "data": {
+    "postId": "9d6e2f86817916714223",
+    "type": "buy",
+    "category": "hwajangpyoom category",
+    "title": "hwajangpyoom",
+    "descriptions": "test hwajangpyoom e da",
+    "condition": "other",
+    "view": 0,
+    "number": null,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/9d6e2f86817916714223/origin/0fb98393c62f216e.png",
+    "location": {
+      "latitude": 12,
+      "longitude": 13
+    }
+  }
 }
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const getPost = async (
+const getPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const uid: string = event.pathParameters["uid"];
   const postId: string = event.pathParameters["postId"];
-
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postEntity = await postRepository
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.normal", "normal")
-    .leftJoinAndSelect("post.postLocation", "postLocation")
+    .leftJoinAndSelect("post.location", "location")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.postId = :postId", { postId: postId })
     .getOne();
@@ -196,7 +191,7 @@ export const getPost = async (
       body: "null",
     };
   }
-  const postDto: PostData = new PostBuilder(postEntity)
+  const postDto: any = new PostBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 
@@ -207,27 +202,26 @@ export const getPost = async (
 };
 
 /**
- * @api {get}  /post/:uid/:postId/boostPost     boost Post
+ * @api {get}  /post/:postId/boostPost     boost Post
  * @apiName Boost Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
- * @apiParam (PathParam) {String} postId                                postId
+ * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const boostPost = async (
+const boostPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const uid: string = event.pathParameters["uid"];
   const postId: string = event.pathParameters["postId"];
 
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postEntity = await postRepository.findOne({
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post = await postRepository.findOne({
     postId: postId,
   });
   postEntity.updatedAt = new Date();
@@ -240,27 +234,26 @@ export const boostPost = async (
 };
 
 /**
- * @api {get}  /post/:uid/:postId/getPost     hide Post
+ * @api {get}  /post/:postId/getPost     hide Post
  * @apiName Hide Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
- * @apiParam (PathParam) {String} postId                                postId
+ * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const hidePost = async (
+const hidePost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const uid: string = event.pathParameters["uid"];
   const postId: string = event.pathParameters["postId"];
 
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postEntity = await postRepository.findOne({ postId: postId });
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post = await postRepository.findOne({ postId: postId });
   postEntity.hide === true
     ? (postEntity.hide = false)
     : (postEntity.hide = true);
@@ -274,28 +267,27 @@ export const hidePost = async (
 };
 
 /**
- * @api {get}  /post/:uid/:postId/deletePost     delete Post
+ * @api {get}  /post/:postId/deletePost     delete Post
  * @apiName Delete Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
- * @apiParam (PathParam) {String} postId                                postId
+ * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const deletePost = async (
+const deletePost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const uid: string = event.pathParameters["uid"];
   const postId: string = event.pathParameters["postId"];
 
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
 
-  const postEntity = await postRepository
+  const postEntity: Post = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.postId = :postId", { postId: postId })
@@ -309,7 +301,7 @@ export const deletePost = async (
   }
 
   for (let index in postEntity.postImage) {
-    let objecyKey = postEntity.postImage[index].url.replace(
+    let objecyKey: string = postEntity.postImage[index].url.replace(
       "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/",
       ""
     );
@@ -356,7 +348,7 @@ export const imageResize = async (
 
     await imageRepository.save(image);
 
-    const resizeImageData = await (await jimp.read(imageBuffer)).resize(
+    const resizeImageData: jimp = await (await jimp.read(imageBuffer)).resize(
       jimp.AUTO,
       360
     );
@@ -370,4 +362,17 @@ export const imageResize = async (
 
     await deleteMessage(record.receiptHandle);
   }
+};
+
+const wrappedGetPost = middy(getPost).use(authorizeToken());
+const wrappedCreatePost = middy(createPost).use(authorizeToken());
+const wrappedDeletePost = middy(deletePost).use(authorizeToken());
+const wrappedHidePost = middy(hidePost).use(authorizeToken());
+const wrappedBoostPost = middy(boostPost).use(authorizeToken());
+export {
+  wrappedGetPost as getPost,
+  wrappedCreatePost as createPost,
+  wrappedDeletePost as deletePost,
+  wrappedHidePost as hidePost,
+  wrappedBoostPost as boostPost,
 };

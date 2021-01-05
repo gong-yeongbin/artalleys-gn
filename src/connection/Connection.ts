@@ -31,6 +31,7 @@ const {
   DB_DATABASE,
   DB_SYNCHRONIZE,
 } = process.env;
+
 const entity = [
   User,
   Post,
@@ -44,15 +45,13 @@ const entity = [
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: DB_TYPE as "mysql" | "mariadb",
-  host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
-  // host: "localhost",
-  port: 3306,
+  type: DB_TYPE as "mysql",
+  host: DB_HOST,
+  port: Number(DB_PORT),
   username: DB_USERNAME,
-  password: "neibors1!",
-  // password: DB_PASSWORD,
+  password: DB_PASSWORD,
   database: DB_DATABASE,
-  synchronize: true,
+  synchronize: Boolean(DB_SYNCHRONIZE),
   entities: entity,
 };
 

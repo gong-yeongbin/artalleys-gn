@@ -14,8 +14,8 @@ export default class Location {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
-  @Column({ name: "longtitude", type: "integer" })
-  longtitude: number;
+  @Column({ name: "longitude", type: "integer" })
+  longitude: number;
 
   @Column({ name: "latitude", type: "integer" })
   latitude: number;

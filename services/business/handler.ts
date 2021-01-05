@@ -4,29 +4,31 @@ import { putObject, sendMessage } from "../util/aws";
 import { Post, Image, Location, PostBusiness } from "../../src/entity/Entity";
 import { name } from "../util/util";
 import { BusinessBuilder, BusinessData } from "../../src/dto/BusinessDto";
+import { authorizeToken } from "../util/authorizer";
+import * as middy from "middy";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
 /**
- * @api {put}  /post/:uid/createPost     Create Business Post
+ * @api {put}  /post/createPost     Create Business Post
  * @apiName Create Business Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
- * @apiParam (Body) {String{30}}  title                                 title
- * @apiParam (Body) {String}  detailTitle                               detailTitle
- * @apiParam (Body) {Object} location                                   location
- * @apiParam (Body) {Object} location.latitude                          location latitude
- * @apiParam (Body) {Object} location.longtitude                        location longtitude
- * @apiParam (Body) {String} address                                    address
- * @apiParam (Body) {Number} number                                     number
- * @apiParam (Body) {Object} workingHours                               workingHours
- * @apiParam (Body) {Object} workingHours.start                         workingHours start
- * @apiParam (Body) {Object} workingHours.end                           workingHours end
- * @apiParam (Body) {String} workingHoursDescriptions                   workingHoursDescriptions
- * @apiParam (Body) {String} homepage                                   homepage
- * @apiParam (Body) {String{300}} descriptions                          post descriptions
- * @apiParam (Body) {base64} image                                      post image
+ * @apiParam (Header) {string}  authorization                             Bearer Token
+ * @apiParam (Body)   {String{30}}  title                                 title
+ * @apiParam (Body)   {String }  detailTitle                               detailTitle
+ * @apiParam (Body)   {Object} location                                   location
+ * @apiParam (Body)   {Object} location.latitude                          location latitude
+ * @apiParam (Body)   {Object} location.longitude                        location longitude
+ * @apiParam (Body)   {String} address                                    address
+ * @apiParam (Body)   {Number} number                                     number
+ * @apiParam (Body)   {Object} workingHours                               workingHours
+ * @apiParam (Body)   {Object} workingHours.start                         workingHours start
+ * @apiParam (Body)   {Object} workingHours.end                           workingHours end
+ * @apiParam (Body)   {String} workingHoursDescriptions                   workingHoursDescriptions
+ * @apiParam (Body)   {String} homepage                                   homepage
+ * @apiParam (Body)   {String{300}} descriptions                          post descriptions
+ * @apiParam (Body)   {base64} image                                      post image
  *
  *
  * @apiParamExample {json} Request Body
@@ -34,7 +36,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
 	"title": "business title",
 	"detailTitle": "organic food",
 	"location": {
-							"longtitude": 12.123,
+							"longitude": 12.123,
 							"latitude": 13.123
 						 },
 	"address": "seoul",
@@ -50,7 +52,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
-export const createBusiness = async (
+const createBusiness = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
@@ -59,7 +61,6 @@ export const createBusiness = async (
   const postBusinessRepository = connection.getRepository(PostBusiness);
   const imageRepository = connection.getRepository(Image);
 
-  const uid: string = event.pathParameters["uid"];
   const postId = name(10);
   const data: any = JSON.parse(event.body);
 
@@ -77,13 +78,13 @@ export const createBusiness = async (
     homepage,
   }: PostBusiness = data;
 
-  location.longtitude = data.location.longtitude;
+  location.longitude = data.location.longitude;
   location.latitude = data.location.latitude;
 
   post.postId = postId;
   post.title = title;
   post.number = number;
-  // post.postLocation = location;
+  post.location = location;
   await postRepository.save(post);
 
   postBusiness.detailTitle = detailTitle;
@@ -105,17 +106,14 @@ export const createBusiness = async (
       .into(Image)
       .values({
         post: post,
-        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${uid}/post/${postId}/origin/${imageName}.png`,
+        url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${postId}/origin/${imageName}.png`,
       })
       .execute();
 
     const originalImage = Buffer.from(data.image[index], "base64");
 
-    await putObject(
-      originalImage,
-      `${uid}/post/${postId}/origin/${imageName}.png`
-    );
-    await sendMessage(`${uid}/post/${postId}/origin/${imageName}.png`);
+    await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
+    await sendMessage(`post/${postId}/origin/${imageName}.png`);
   }
 
   return {
@@ -125,11 +123,11 @@ export const createBusiness = async (
 };
 
 /**
- * @api {get}  /post/:uid/:postId/getBusiness     Get Business Post
+ * @api {get}  /post/:postId/getBusiness     Get Business Post
  * @apiName Get Business Post
  * @apiGroup Post
  *
- * @apiParam (PathParam) {String} uid                                   uid
+ * @apiParam (Header)   {string}  authorization                         Bearer Token
  * @apiParam (PathParam) {String} postId                                postId
  *
  *
@@ -149,7 +147,7 @@ export const createBusiness = async (
     "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
   ],
   "location": {
-    "longtitude": 12,
+    "longitude": 12,
     "latitude": 13
   },
   "createdAt": "2020-11-16T22:50:32.965Z",
@@ -158,11 +156,10 @@ export const createBusiness = async (
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const getBusiness = async (
+const getBusiness = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const uid: string = event.pathParameters["uid"];
   const postId: string = event.pathParameters["postId"];
 
   const connection = await getDatabaseConnection();
@@ -170,7 +167,7 @@ export const getBusiness = async (
   const postEntity = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.business", "business")
-    .leftJoinAndSelect("post.postLocation", "postLocation")
+    .leftJoinAndSelect("post.location", "location")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.postId = :postId", { postId: postId })
     .getOne();
@@ -190,4 +187,12 @@ export const getBusiness = async (
     statusCode: 200,
     body: JSON.stringify(businessDto),
   };
+};
+
+const wrappedGetBusiness = middy(getBusiness).use(authorizeToken());
+const wrappedCreateBusiness = middy(createBusiness).use(authorizeToken());
+
+export {
+  wrappedGetBusiness as getBusiness,
+  wrappedCreateBusiness as createBusiness,
 };

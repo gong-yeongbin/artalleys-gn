@@ -2,7 +2,7 @@ import type { Serverless } from "serverless/aws";
 
 const serverlessConfiguration: Serverless = {
   service: {
-    name: "artalleys-gn",
+    name: "goodneibors",
     // app and org for use with dashboard.serverless.com
     // app: your-app-name,
     // org: your-org-name,
@@ -55,6 +55,7 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "hello",
+            cors: true,
           },
         },
       ],
@@ -65,19 +66,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "put",
-            path: "post/{uid}/createPost",
-            cors: true,
-          },
-        },
-      ],
-    },
-    getPost: {
-      handler: "services/post/handler.getPost",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "post/{uid}/{postId}/getPost",
+            path: "post/createPost",
             cors: true,
           },
         },
@@ -89,7 +78,19 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "put",
-            path: "post/{uid}/createBusiness",
+            path: "post/createBusiness",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getPost: {
+      handler: "services/post/handler.getPost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{postId}/getPost",
             cors: true,
           },
         },
@@ -101,8 +102,15 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "get",
-            path: "post/{uid}/{postId}/getBusiness",
+            path: "post/{postId}/getBusiness",
             cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
           },
         },
       ],
@@ -113,8 +121,15 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "get",
-            path: "post/{uid}/{postId}/hidePost",
+            path: "post/{postId}/hidePost",
             cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
           },
         },
       ],
@@ -125,8 +140,15 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "get",
-            path: "post/{uid}/{postId}/boostPost",
+            path: "post/{postId}/boostPost",
             cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
           },
         },
       ],
@@ -137,8 +159,15 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "get",
-            path: "post/{uid}/{postId}/deletePost",
+            path: "post/{postId}/deletePost",
             cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
           },
         },
       ],
@@ -226,60 +255,49 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    addComment: {
-      handler: "services/comment/handler.addComment",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "comment/{postId}/addComment",
-            cors: true,
-          },
-        },
-      ],
-    },
-    getComment: {
-      handler: "services/comment/handler.getComment",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "comment/{postId}/getComment",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
-    getReply: {
-      handler: "services/comment/handler.getReply",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "comment/{postId}/{commentId}/getReply",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
+    // addComment: {
+    //   handler: "services/comment/handler.addComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "comment/{postId}/addComment",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // getComment: {
+    //   handler: "services/comment/handler.getComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "comment/{postId}/getComment",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //               order: false,
+    //             },
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
     // modifyComment: {
     //   handler: "services/comment/handler.modifyComment",
     //   events: [
@@ -288,6 +306,13 @@ const serverlessConfiguration: Serverless = {
     //         method: "put",
     //         path: "comment/{commentId}/modifyComment",
     //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               commentId: true,
+    //             },
+    //           },
+    //         },
     //       },
     //     },
     //   ],
@@ -299,6 +324,38 @@ const serverlessConfiguration: Serverless = {
     //       http: {
     //         method: "get",
     //         path: "comment/{commentId}/deleteComment",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               commentId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // getReply: {
+    //   handler: "services/comment/handler.getReply",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "comment/{postId}/{commentId}/getReply",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //               order: false,
+    //             },
+    //             paths: {
+    //               postId: true,
+    //               commentId: true,
+    //             },
+    //           },
+    //         },
     //         cors: true,
     //       },
     //     },
@@ -368,6 +425,9 @@ const serverlessConfiguration: Serverless = {
                 querystrings: {
                   offset: false,
                   limit: false,
+                },
+                paths: {
+                  receiveId: true,
                 },
               },
             },

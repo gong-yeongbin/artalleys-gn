@@ -1,41 +1,12 @@
 import { Post } from "../entity/Entity";
+import { PostType } from "../types/postType";
 import { replaceHost } from "../../services/util/http";
 
-interface Location {
-  longtitude: number;
-  latitude: number;
-}
-
-export interface PostData {
-  postId: string;
-  type: string;
-  category: string;
-  title: string;
-  descriptions: string;
-  condition: string;
-  view: number;
-  number: number;
-  price: number;
-  active: string;
-  url: string[];
-  location: Location;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export class PostBuilder {
-  private _postData: PostData;
+  private _data: PostType;
 
   constructor(post: Post) {
-    const postImage: string[] = [];
-    post.postImage.map((value, index) => {
-      postImage[index] = value.url;
-    });
-    const postLocation: Location = {
-      longtitude: post.postLocation.longtitude,
-      latitude: post.postLocation.latitude,
-    };
-    const postData: PostData = {
+    this._data = {
       postId: post.postId,
       type: post.normal.type,
       category: post.normal.category,
@@ -46,26 +17,23 @@ export class PostBuilder {
       number: post.number,
       price: post.normal.price,
       active: post.normal.active,
-      url: postImage,
-      location: postLocation,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
+      url: post.postImage[0].url,
+      location: {
+        latitude: post.location.latitude,
+        longitude: post.location.longitude,
+      },
     };
-
-    this._postData = postData;
   }
 
   public replaceHost(newHost: string): PostBuilder {
-    this._postData.url.map((value, index) => {
-      this._postData.url[index] = replaceHost(
-        this._postData.url[index],
-        newHost
-      );
-    });
+    this._data.url = replaceHost(this._data.url, newHost);
+
     return this;
   }
 
   public build() {
-    return this._postData;
+    return {
+      data: this._data,
+    };
   }
 }
