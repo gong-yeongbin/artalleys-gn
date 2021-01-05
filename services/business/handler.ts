@@ -83,7 +83,7 @@ export const createBusiness = async (
   post.postId = postId;
   post.title = title;
   post.number = number;
-  // post.postLocation = location;
+  post.location = location;
   await postRepository.save(post);
 
   postBusiness.detailTitle = detailTitle;
@@ -170,7 +170,7 @@ export const getBusiness = async (
   const postEntity = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.business", "business")
-    .leftJoinAndSelect("post.postLocation", "postLocation")
+    .leftJoinAndSelect("post.location", "location")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.postId = :postId", { postId: postId })
     .getOne();

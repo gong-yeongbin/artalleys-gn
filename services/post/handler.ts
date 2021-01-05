@@ -18,6 +18,8 @@ import {
 import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
 import { PostBuilder, PostData } from "../../src/dto/PostDto";
 import { getRepository } from "typeorm";
+import { authorizeToken } from "../util/authorizer";
+import * as middy from "middy";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -59,7 +61,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
 
-export const createPost = async (
+const createPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
@@ -173,19 +175,17 @@ export const createPost = async (
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const getPost = async (
+const getPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const uid: string = event.pathParameters["uid"];
   const postId: string = event.pathParameters["postId"];
-
   const connection = await getDatabaseConnection();
   const postRepository = connection.getRepository(Post);
   const postEntity = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.normal", "normal")
-    .leftJoinAndSelect("post.postLocation", "postLocation")
+    .leftJoinAndSelect("post.location", "location")
     .leftJoinAndSelect("post.postImage", "postImage")
     .where("post.postId = :postId", { postId: postId })
     .getOne();
@@ -218,7 +218,7 @@ export const getPost = async (
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const boostPost = async (
+const boostPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
@@ -251,7 +251,7 @@ export const boostPost = async (
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const hidePost = async (
+const hidePost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
@@ -285,7 +285,7 @@ export const hidePost = async (
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-export const deletePost = async (
+const deletePost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
@@ -370,4 +370,16 @@ export const imageResize = async (
 
     await deleteMessage(record.receiptHandle);
   }
+};
+
+const wrappedGetPost = middy(getPost).use(authorizeToken());
+const wrappedCreatePost = middy(createPost).use(authorizeToken());
+const wrappedDeletePost = middy(deletePost).use(authorizeToken());
+const wrappedHidePost = middy(hidePost).use(authorizeToken());
+
+export {
+  wrappedGetPost as getPost,
+  wrappedCreatePost as createPost,
+  wrappedDeletePost as deletePost,
+  wrappedHidePost as hidePost,
 };

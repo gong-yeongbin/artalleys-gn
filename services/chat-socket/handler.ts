@@ -151,8 +151,6 @@ export const onSendMessage = async (
   chat.message = message;
   await chatRepository.save(chat);
 
-  console.log(chatRoomEntity.chat.length);
-
   const api: ApiGatewayManagementApi = new ApiGatewayManagementApi({
     apiVersion: "2018-11-29",
     endpoint:

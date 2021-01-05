@@ -14,16 +14,21 @@ export default class User {
   @Column({ name: "uid", type: "nvarchar" })
   uid: string;
 
-  @Column({ name: "phone_number", type: "integer" })
-  phoneNumber: number;
+  @Column({ name: "phone_number", type: "nvarchar" })
+  phoneNumber: string;
 
-  @Column({ name: "email", type: "nvarchar", length: 45 })
+  @Column({ name: "email", type: "nvarchar", length: 45, nullable: true })
   email: string;
 
-  @Column({ name: "nick_name", type: "nvarchar", length: 45 })
+  @Column({ name: "nick_name", type: "nvarchar", length: 45, nullable: true })
   nickName: string;
 
-  @Column({ name: "profile_image", type: "nvarchar", length: 1024 })
+  @Column({
+    name: "profile_image",
+    type: "nvarchar",
+    length: 1024,
+    nullable: true,
+  })
   profileImage: string;
 
   @Column({ name: "connection_id", type: "nvarchar", nullable: true })

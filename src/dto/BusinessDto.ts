@@ -30,8 +30,8 @@ export class BusinessBuilder {
       postImage[index] = value.url;
     });
     const postLocation: Location = {
-      longtitude: post.postLocation.longtitude,
-      latitude: post.postLocation.latitude,
+      longtitude: post.location.longtitude,
+      latitude: post.location.latitude,
     };
     const businessData: BusinessData = {
       postId: post.postId,

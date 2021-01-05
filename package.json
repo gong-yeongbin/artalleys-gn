@@ -11,9 +11,12 @@
       "docs": "apidoc -i services/ -o docs/"
    },
    "dependencies": {
+      "@firebase/app": "^0.6.13",
       "@types/jimp": "^0.2.28",
       "aws-sdk": "^2.788.0",
+      "firebase-admin": "^9.4.2",
       "jimp": "^0.16.1",
+      "middy": "^0.36.0",
       "moment": "^2.29.1",
       "mysql": "^2.18.1",
       "reflect-metadata": "^0.1.10",
@@ -21,7 +24,6 @@
       "typeorm": "0.2.29"
    },
    "devDependencies": {
-      "@types/aws-lambda": "^8.10.17",
       "@types/node": "^8.0.29",
       "@types/serverless": "^1.72.5",
       "@typescript-eslint/eslint-plugin": "^4.6.1",
