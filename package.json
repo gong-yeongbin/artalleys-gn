@@ -6,8 +6,8 @@
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
       "start": "ts-node src/index.ts",
-      "deploy": "sls deploy --aws-profile artalleys",
-      "local": "sls offline --env local",
+      "deploy": "NODE_ENV=production sls deploy --aws-profile artalleys",
+      "local": "NODE_ENV=development sls offline --env local",
       "docs": "apidoc -i services/ -o docs/"
    },
    "dependencies": {

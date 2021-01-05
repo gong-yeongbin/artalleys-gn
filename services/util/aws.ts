@@ -1,4 +1,4 @@
-import * as AWS from "aws-sdk";
+import { S3, SQS } from "aws-sdk";
 
 const {
   BUCKET_NAME,
@@ -7,17 +7,17 @@ const {
   SQS_IMAGE_RESIZE_QUEUE_URL,
 } = process.env;
 
-const s3: AWS.S3 = new AWS.S3({
+const s3: S3 = new S3({
   region: "us-east-2",
   endpoint: BUCKET_SERVICE_ENDPOINT,
 });
 
-const sqs: AWS.SQS = new AWS.SQS({
+const sqs: SQS = new SQS({
   endpoint: SQS_IMAGE_RESIZE_ENDPOIN_URL,
   apiVersion: "2012-11-05",
 });
 
-export const putObject = async (data: Buffer, key: string) => {
+export const putObject = async (data: Buffer, key: string): Promise<void> => {
   await s3
     .putObject({
       Bucket: BUCKET_NAME,
@@ -28,7 +28,7 @@ export const putObject = async (data: Buffer, key: string) => {
     .promise();
 };
 
-export const getObject = async (key: string) => {
+export const getObject = async (key: string): Promise<S3.GetObjectOutput> => {
   return await s3
     .getObject({
       Bucket: BUCKET_NAME,
@@ -37,11 +37,11 @@ export const getObject = async (key: string) => {
     .promise();
 };
 
-export const deleteObject = async (key: string) => {
+export const deleteObject = async (key: string): Promise<void> => {
   await s3.deleteObject({ Bucket: BUCKET_NAME, Key: key }).promise();
 };
 
-export const sendMessage = async (messageBody: string) => {
+export const sendMessage = async (messageBody: string): Promise<void> => {
   await sqs
     .sendMessage({
       MessageBody: messageBody,
@@ -50,7 +50,7 @@ export const sendMessage = async (messageBody: string) => {
     .promise();
 };
 
-export const deleteMessage = async (receiptHandle: string) => {
+export const deleteMessage = async (receiptHandle: string): Promise<void> => {
   await sqs
     .deleteMessage({
       QueueUrl: SQS_IMAGE_RESIZE_QUEUE_URL,
