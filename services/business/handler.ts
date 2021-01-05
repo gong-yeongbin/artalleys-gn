@@ -19,7 +19,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)   {String }  detailTitle                               detailTitle
  * @apiParam (Body)   {Object} location                                   location
  * @apiParam (Body)   {Object} location.latitude                          location latitude
- * @apiParam (Body)   {Object} location.longtitude                        location longtitude
+ * @apiParam (Body)   {Object} location.longitude                        location longitude
  * @apiParam (Body)   {String} address                                    address
  * @apiParam (Body)   {Number} number                                     number
  * @apiParam (Body)   {Object} workingHours                               workingHours
@@ -36,7 +36,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
 	"title": "business title",
 	"detailTitle": "organic food",
 	"location": {
-							"longtitude": 12.123,
+							"longitude": 12.123,
 							"latitude": 13.123
 						 },
 	"address": "seoul",
@@ -78,7 +78,7 @@ const createBusiness = async (
     homepage,
   }: PostBusiness = data;
 
-  location.longtitude = data.location.longtitude;
+  location.longitude = data.location.longitude;
   location.latitude = data.location.latitude;
 
   post.postId = postId;
@@ -147,7 +147,7 @@ const createBusiness = async (
     "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
   ],
   "location": {
-    "longtitude": 12,
+    "longitude": 12,
     "latitude": 13
   },
   "createdAt": "2020-11-16T22:50:32.965Z",

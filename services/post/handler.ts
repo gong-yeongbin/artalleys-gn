@@ -16,7 +16,8 @@ import {
   sendMessage,
 } from "../util/aws";
 import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
-import { PostBuilder, PostData } from "../../src/dto/PostDto";
+import { PostBuilder } from "../../src/dto/PostDto";
+import { PostType } from "../../src/types/postType";
 import { getRepository, Connection, Repository } from "typeorm";
 import { authorizeToken } from "../util/authorizer";
 import * as middy from "middy";
@@ -35,7 +36,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)     {String} condition                                  post condition
  * @apiParam (Body)     {Object} [location]                                 post location(type: sell)
  * @apiParam (Body)     {Object} location.latitude                          post location latitude
- * @apiParam (Body)     {Object} location.longtitude                        post location longtitude
+ * @apiParam (Body)     {Object} location.longitude                        post location longitude
  * @apiParam (Body)     {number} [price]                                    post price
  * @apiParam (Body)     {boolean} firmOnPrice                               post firm on price
  * @apiParam (Body)     {number} [number]                                   post number(type: business)
@@ -50,7 +51,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
    "type": "buy",
    "category":"hwajangpyoom category",
    "condition": "other",
-   "location": {"latitude":"12.123","longtitude":"13.123"},
+   "location": {"latitude":"12.123","longitude":"13.123"},
    "price": 1000,
    "firmOnPrice": true,
    "number": 12312341234,
@@ -107,7 +108,7 @@ const createPost = async (
   postNormal.post = post;
   await postNormalRepository.save(postNormal);
 
-  location.longtitude = data.location.longtitude;
+  location.longitude = data.location.longitude;
   location.latitude = data.location.latitude;
   location.post = post;
   await locationRepository.save(location);
@@ -148,29 +149,23 @@ const createPost = async (
  *
  * @apiParamExample {json} Response
  {
-  "id": "56",
-  "postId": "aafde3c18d762d3c03ca0943b9cfe6",
-  "type": "buy",
-  "title": "hwajangpyoom",
-  "category": "hwajangpyoom category",
-  "price": 0,
-  "firmOnPrice": false,
-  "descriptions": "test hwajangpyoom e da",
-  "condition": "other",
-  "view": 0,
-  "number": null,
-  "active": "active",
-  "hide": false,
-  "createdAt": "2020-11-10T22:00:07.315Z",
-  "updatedAt": "2020-11-10T22:00:07.315Z",
-  "postLocation": {
-    "id": "49",
-    "longtitude": 13,
-    "latitude": 12,
-    "createdAt": "2020-11-10T22:00:07.285Z",
-    "updatedAt": "2020-11-10T22:00:07.000Z"
-  },
-  "postImage": []
+  "data": {
+    "postId": "9d6e2f86817916714223",
+    "type": "buy",
+    "category": "hwajangpyoom category",
+    "title": "hwajangpyoom",
+    "descriptions": "test hwajangpyoom e da",
+    "condition": "other",
+    "view": 0,
+    "number": null,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/9d6e2f86817916714223/origin/0fb98393c62f216e.png",
+    "location": {
+      "latitude": 12,
+      "longitude": 13
+    }
+  }
 }
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
@@ -196,7 +191,7 @@ const getPost = async (
       body: "null",
     };
   }
-  const postDto: PostData = new PostBuilder(postEntity)
+  const postDto: any = new PostBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 

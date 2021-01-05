@@ -92,13 +92,6 @@ const serverlessConfiguration: Serverless = {
             method: "get",
             path: "post/{postId}/getPost",
             cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
           },
         },
       ],
@@ -262,112 +255,112 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    addComment: {
-      handler: "services/comment/handler.addComment",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "comment/{postId}/addComment",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    getComment: {
-      handler: "services/comment/handler.getComment",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "comment/{postId}/getComment",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
-                },
-                paths: {
-                  postId: true,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
-    modifyComment: {
-      handler: "services/comment/handler.modifyComment",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "comment/{commentId}/modifyComment",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  commentId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    deleteComment: {
-      handler: "services/comment/handler.deleteComment",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "comment/{commentId}/deleteComment",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  commentId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    getReply: {
-      handler: "services/comment/handler.getReply",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "comment/{postId}/{commentId}/getReply",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
-                },
-                paths: {
-                  postId: true,
-                  commentId: true,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
+    // addComment: {
+    //   handler: "services/comment/handler.addComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "comment/{postId}/addComment",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // getComment: {
+    //   handler: "services/comment/handler.getComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "comment/{postId}/getComment",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //               order: false,
+    //             },
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // modifyComment: {
+    //   handler: "services/comment/handler.modifyComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "comment/{commentId}/modifyComment",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               commentId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // deleteComment: {
+    //   handler: "services/comment/handler.deleteComment",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "comment/{commentId}/deleteComment",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               commentId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // getReply: {
+    //   handler: "services/comment/handler.getReply",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "comment/{postId}/{commentId}/getReply",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //               order: false,
+    //             },
+    //             paths: {
+    //               postId: true,
+    //               commentId: true,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
     imageResize: {
       handler: "services/post/handler.imageResize",
     },
