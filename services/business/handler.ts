@@ -3,8 +3,9 @@ import { getDatabaseConnection } from "../../src/connection/Connection";
 import { putObject, sendMessage } from "../util/aws";
 import { Post, Image, Location, PostBusiness } from "../../src/entity/Entity";
 import { name } from "../util/util";
-import { BusinessBuilder, BusinessData } from "../../src/dto/BusinessDto";
+import { BusinessBuilder } from "../../src/dto/BusinessDto";
 import { authorizeToken } from "../util/authorizer";
+import { getRepository, Connection, Repository } from "typeorm";
 import * as middy from "middy";
 
 const { CLOUDFRONT_IMAGE } = process.env;
@@ -56,12 +57,14 @@ const createBusiness = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postBusinessRepository = connection.getRepository(PostBusiness);
-  const imageRepository = connection.getRepository(Image);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postBusinessRepository: Repository<PostBusiness> = connection.getRepository(
+    PostBusiness
+  );
+  const imageRepository: Repository<Image> = connection.getRepository(Image);
 
-  const postId = name(10);
+  const postId: string = name(10);
   const data: any = JSON.parse(event.body);
 
   let post: Post = new Post();
@@ -94,11 +97,11 @@ const createBusiness = async (
   postBusiness.descriptions = descriptions;
   postBusiness.workingHoursDescriptions = workingHoursDescriptions;
   postBusiness.homepage = homepage;
-  // postBusiness.post = post;
+  postBusiness.post = post;
   postBusinessRepository.save(postBusiness);
 
   for (let index in data.image) {
-    let imageName = name(8);
+    let imageName: string = name(8);
 
     await imageRepository
       .createQueryBuilder()
@@ -110,7 +113,7 @@ const createBusiness = async (
       })
       .execute();
 
-    const originalImage = Buffer.from(data.image[index], "base64");
+    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
     await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
     await sendMessage(`post/${postId}/origin/${imageName}.png`);
@@ -133,25 +136,25 @@ const createBusiness = async (
  *
  * @apiParamExample {json} Response
 {
-  "postId": "4f62a7cb423ac3ff3faf",
-  "title": "business title",
-  "view": 0,
-  "detailTitle": "organic food",
-  "address": "seoul",
-  "startTime": 1000,
-  "endTime": 2200,
-  "homePage": "www.asdf.com",
-  "workingHoursDescriptions": "testestsetestts",
-  "descriptions": "hahahahahahah",
-  "url": [
-    "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
-  ],
-  "location": {
-    "longitude": 12,
-    "latitude": 13
-  },
-  "createdAt": "2020-11-16T22:50:32.965Z",
-  "updatedAt": "2020-11-16T22:50:32.965Z"
+  "data": {
+    "postId": "3557ba5c30a1e6d54eca",
+    "title": "business title",
+    "view": 0,
+    "detailTitle": "organic food",
+    "address": "seoul",
+    "startTime": 1000,
+    "endTime": 2200,
+    "homePage": "www.asdf.com",
+    "workingHoursDescriptions": "testestsetestts",
+    "descriptions": "hahahahahahah",
+    "url": [
+      "d19j7dhfxgaxy7.cloudfront.net/post/3557ba5c30a1e6d54eca/origin/0b84d60577798570.png"
+    ],
+    "location": {
+      "longitude": 12,
+      "latitude": 13
+    }
+  }
 }
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
@@ -162,9 +165,9 @@ const getBusiness = async (
 ): Promise<ProxyResult> => {
   const postId: string = event.pathParameters["postId"];
 
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
-  const postEntity = await postRepository
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.business", "business")
     .leftJoinAndSelect("post.location", "location")
@@ -179,7 +182,7 @@ const getBusiness = async (
     };
   }
 
-  const businessDto: BusinessData = new BusinessBuilder(postEntity)
+  const businessDto: any = new BusinessBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 

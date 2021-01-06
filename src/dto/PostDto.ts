@@ -1,9 +1,9 @@
 import { Post } from "../entity/Entity";
-import { PostType } from "../types/postType";
+import { NormalType } from "../types/dataType";
 import { replaceHost } from "../../services/util/http";
 
 export class PostBuilder {
-  private _data: PostType;
+  private _data: NormalType;
 
   constructor(post: Post) {
     this._data = {
@@ -17,7 +17,7 @@ export class PostBuilder {
       number: post.number,
       price: post.normal.price,
       active: post.normal.active,
-      url: post.postImage[0].url,
+      url: [post.postImage[0].url],
       location: {
         latitude: post.location.latitude,
         longitude: post.location.longitude,
@@ -26,8 +26,7 @@ export class PostBuilder {
   }
 
   public replaceHost(newHost: string): PostBuilder {
-    this._data.url = replaceHost(this._data.url, newHost);
-
+    this._data.url[0] = replaceHost(this._data.url[0], newHost);
     return this;
   }
 

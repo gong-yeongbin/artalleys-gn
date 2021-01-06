@@ -43,7 +43,7 @@ export default class Post {
   })
   normal: PostNormal;
 
-  @OneToOne(() => PostBusiness, {
+  @OneToOne(() => PostBusiness, (postBusiness) => postBusiness.post, {
     cascade: ["insert", "update", "remove"],
   })
   business: PostBusiness;

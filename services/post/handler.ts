@@ -17,7 +17,7 @@ import {
 } from "../util/aws";
 import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
 import { PostBuilder } from "../../src/dto/PostDto";
-import { PostType } from "../../src/types/postType";
+import { PostType } from "../../src/types/dataType";
 import { getRepository, Connection, Repository } from "typeorm";
 import { authorizeToken } from "../util/authorizer";
 import * as middy from "middy";
