@@ -44,6 +44,7 @@ export class BusinessBuilder {
       homePage: post.business.homepage,
       workingHoursDescriptions: post.business.workingHoursDescriptions,
       descriptions: post.business.descriptions,
+<<<<<<< Updated upstream
       url: postImage,
       location: postLocation,
       createdAt: post.createdAt,
@@ -59,6 +60,22 @@ export class BusinessBuilder {
         this._businessData.url[index],
         newHost
       );
+=======
+      url: [],
+      location: {
+        longitude: post.location.longitude,
+        latitude: post.location.latitude,
+      },
+    };
+    post.postImage.map((value, index) => {
+      this._data.url.push(post.postImage[index].url);
+    });
+  }
+
+  public replaceHost(newHost: string): BusinessBuilder {
+    this._data.url.map((value, index) => {
+      this._data.url[index] = replaceHost(this._data.url[index], newHost);
+>>>>>>> Stashed changes
     });
     return this;
   }

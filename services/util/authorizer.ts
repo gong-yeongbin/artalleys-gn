@@ -18,11 +18,11 @@ const authorizeToken = (): MiddlewareObject<any, any> => {
         });
       }
 
-      if (!handler.event || !handler.event.headers["authorization"]) {
+      if (!handler.event || !handler.event.headers["Authorization"]) {
         return new Error("token missing");
       }
 
-      const token: string = handler.event.headers["authorization"];
+      const token: string = handler.event.headers["Authorization"];
       let uid: string;
       let phoneNumber: string;
 

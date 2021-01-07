@@ -1,20 +1,14 @@
 import { Post } from "../entity/Entity";
 import { replaceHost } from "../../services/util/http";
-
-export interface PostFeedData {
-  postId: string;
-  title: string;
-  price: number;
-  active: string;
-  url: string;
-}
+import { PostFeedType } from "../types/dataType";
 
 export class PostFeedBuilder {
-  private _postData: PostFeedData[];
+  private _data: PostFeedType[];
+  private _meta: object;
 
-  constructor(post: Post[]) {
-    const postData: PostFeedData[] = post.map((value, index) => {
-      console.log(value);
+  constructor(post: Post[], metadata: object) {
+    this._meta = metadata;
+    this._data = post.map((value, index) => {
       return {
         postId: value.postId,
         title: value.title,
@@ -24,20 +18,19 @@ export class PostFeedBuilder {
         url: value.postImage[0].url,
       };
     });
-    this._postData = postData;
   }
 
   public replaceHost(newHost: string): PostFeedBuilder {
-    this._postData.map((value, index) => {
-      this._postData[index].url = replaceHost(
-        this._postData[index].url,
-        newHost
-      );
+    this._data.map((value, index) => {
+      this._data[index].url = replaceHost(this._data[index].url, newHost);
     });
     return this;
   }
 
   public build() {
-    return this._postData;
+    return {
+      data: this._data,
+      _meta: this._meta,
+    };
   }
 }

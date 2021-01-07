@@ -1,45 +1,31 @@
 import { Post } from "../entity/Entity";
 import { replaceHost } from "../../services/util/http";
-
-export interface BusinessFeedData {
-  postId: string;
-  title: string;
-  url: string;
-  view?: number;
-  detailTitle?: string;
-  address?: string;
-  startTime?: number;
-  endTime?: number;
-  homePage?: string;
-  workingHoursDescriptions?: string;
-  descriptions?: string;
-}
+import { BusinessFeedType } from "../types/dataType";
 
 export class BusinessFeedBuilder {
-  private _businessFeedData: BusinessFeedData[];
+  private _data: BusinessFeedType[];
+  private _meta: object;
 
-  constructor(post: Post[]) {
-    const businessFeedData: BusinessFeedData[] = post.map((value, index) => {
+  constructor(post: Post[], metadata: object) {
+    this._data = post.map((value, index) => {
       return {
         postId: value.postId,
         title: value.title,
         url: value.postImage[0].url,
       };
     });
-    this._businessFeedData = businessFeedData;
   }
 
   public replaceHost(newHost: string): BusinessFeedBuilder {
-    this._businessFeedData.map((value, index) => {
-      this._businessFeedData[index].url = replaceHost(
-        this._businessFeedData[index].url,
-        newHost
-      );
+    this._data.map((value, index) => {
+      this._data[index].url = replaceHost(this._data[index].url, newHost);
     });
     return this;
   }
 
   public build() {
-    return this._businessFeedData;
+    return {
+      data: this._data,
+      _meta: this._meta,
   }
 }

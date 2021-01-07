@@ -17,17 +17,30 @@ export class PostBuilder {
       number: post.number,
       price: post.normal.price,
       active: post.normal.active,
+<<<<<<< Updated upstream
       url: post.postImage[0].url,
+=======
+      url: [],
+>>>>>>> Stashed changes
       location: {
         latitude: post.location.latitude,
         longitude: post.location.longitude,
       },
     };
+    post.postImage.map((value, index) => {
+      this._data.url.push(post.postImage[index].url);
+    });
   }
 
   public replaceHost(newHost: string): PostBuilder {
+<<<<<<< Updated upstream
     this._data.url = replaceHost(this._data.url, newHost);
 
+=======
+    this._data.url.map((value, index) => {
+      this._data.url[index] = replaceHost(this._data.url[index], newHost);
+    });
+>>>>>>> Stashed changes
     return this;
   }
 

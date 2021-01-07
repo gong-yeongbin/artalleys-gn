@@ -5,6 +5,10 @@ import { Post, Image, Location, PostBusiness } from "../../src/entity/Entity";
 import { name } from "../util/util";
 import { BusinessBuilder, BusinessData } from "../../src/dto/BusinessDto";
 import { authorizeToken } from "../util/authorizer";
+<<<<<<< Updated upstream
+=======
+import { Connection, Repository } from "typeorm";
+>>>>>>> Stashed changes
 import * as middy from "middy";
 
 const { CLOUDFRONT_IMAGE } = process.env;
@@ -14,7 +18,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiName Create Business Post
  * @apiGroup Post
  *
- * @apiParam (Header) {string}  authorization                             Bearer Token
+ * @apiParam (Header) {string}  Authorization                             Bearer Token
  * @apiParam (Body)   {String{30}}  title                                 title
  * @apiParam (Body)   {String }  detailTitle                               detailTitle
  * @apiParam (Body)   {Object} location                                   location
@@ -127,7 +131,7 @@ const createBusiness = async (
  * @apiName Get Business Post
  * @apiGroup Post
  *
- * @apiParam (Header)   {string}  authorization                         Bearer Token
+ * @apiParam (Header)   {string}  Authorization                         Bearer Token
  * @apiParam (PathParam) {String} postId                                postId
  *
  *

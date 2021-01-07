@@ -1,11 +1,11 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
+import { Connection, Repository, SelectQueryBuilder } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { PostFeedBuilder, PostFeedData } from "../../src/dto/PostFeedDto";
-import {
-  BusinessFeedBuilder,
-  BusinessFeedData,
-} from "../../src/dto/BusinessFeedDto";
+import { PostFeedBuilder } from "../../src/dto/PostFeedDto";
+import { BusinessFeedBuilder } from "../../src/dto/BusinessFeedDto";
 import { Post } from "../../src/entity/Entity";
+import { authorizeToken } from "../util/authorizer";
+import * as middy from "middy";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -14,6 +14,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiName Get Feed
  * @apiGroup Feed
  *
+ * @apiParam (Header)   {string}  Authorization                                        Bearer Token
  * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
  * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
  * @apiParam (QueryStringParam) {String=sell,buy} type                                 type
@@ -35,25 +36,28 @@ const { CLOUDFRONT_IMAGE } = process.env;
 						 	}
 }
  * @apiParamExample response
- [
-  {
-    "postId": "d59704d14321b9c785d350ea596d98",
-    "title": "hwajangpyoom",
-    "price": 1000,
-    "active": "active",
-    "url": "d19j7dhfxgaxy7.cloudfront.net/test1/d59704d14321b9c785d350ea596d98/origin.png"
-  },
-  {
-    "postId": "cf5e31252c127cc003cf4d621fb289",
-    "title": "hwajangpyoom",
-    "price": 1000,
-    "active": "active",
-    "url": "d19j7dhfxgaxy7.cloudfront.net/test1/cf5e31252c127cc003cf4d621fb289/origin.png"
-  },
-]
+ {
+  "data": [
+    {
+      "postId": "58e438d67f0c0fb1e256",
+      "title": "hwajangpyoom",
+      "view": 0,
+      "price": 1000,
+      "active": "active",
+      "url": "d19j7dhfxgaxy7.cloudfront.net/post/58e438d67f0c0fb1e256/origin/7f21ce6a10bc4a75.png"
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 10,
+    "order": "ASC",
+    "total": 1,
+    "count": 1
+  }
+}
  **/
 
-export const getFeed = async (
+const getFeed = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
@@ -65,8 +69,8 @@ export const getFeed = async (
     hide = false,
   } = JSON.parse(event.body);
 
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
 
   const queryOffset: number = Number(offset);
   const queryLimit: number = Number(limit);
@@ -80,7 +84,18 @@ export const getFeed = async (
   const querySetPriceMin: number = setPrice != null ? setPrice.min : null;
   const querySetPriceMax: number = setPrice != null ? setPrice.max : null;
 
-  let query = postRepository
+  let totalquery = postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.normal", "normal")
+    .leftJoinAndSelect("post.postImage", "postImage")
+    .where("post.hide = false AND normal.type = :isType", { isType: queryType })
+    .andWhere("normal.active = :isActive", { isActive: hide })
+    .andWhere("normal.category NOT IN (:isCategory)", {
+      isCategory: querySetCategory,
+    })
+    .orderBy(queryOrderType, queryOrder);
+
+  let query: SelectQueryBuilder<Post> = postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.normal", "normal")
     .leftJoinAndSelect("post.postImage", "postImage")
@@ -100,8 +115,17 @@ export const getFeed = async (
     });
   }
   const postEntity: Post[] = await query.getMany();
+  const postEntityTotalCount: number = await totalquery.getCount();
 
-  const feedDto: PostFeedData[] = new PostFeedBuilder(postEntity)
+  const metadata = {
+    offset: queryOffset,
+    limit: queryLimit,
+    order: queryOrder,
+    total: postEntityTotalCount,
+    count: postEntity.length,
+  };
+
+  const feedDto: any = new PostFeedBuilder(postEntity, metadata)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 
@@ -150,8 +174,8 @@ export const getBusinessFeed = async (
     type = "sell",
     order = "DESC",
   } = event.queryStringParameters;
-  const connection = await getDatabaseConnection();
-  const postRepository = connection.getRepository(Post);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
 
   const queryOffset: number = Number(offset);
   const queryLimit: number = Number(limit);
@@ -168,7 +192,7 @@ export const getBusinessFeed = async (
     .limit(queryLimit)
     .getMany();
 
-  const feedDto: BusinessFeedData[] = new BusinessFeedBuilder(postEntity)
+  const feedDto: any = new BusinessFeedBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 
@@ -280,7 +304,7 @@ export const getSearchFeed = async (
 
   const postEntity: Post[] = await query.getMany();
 
-  const postDto: PostFeedData[] = new PostFeedBuilder(postEntity)
+  const postDto: any = new PostFeedBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
   return {
@@ -392,7 +416,7 @@ export const getCategoryFeed = async (
 
   const postEntity: Post[] = await query.getMany();
 
-  const postDto: PostFeedData[] = new PostFeedBuilder(postEntity)
+  const postDto: any = new PostFeedBuilder(postEntity)
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
 
@@ -401,3 +425,7 @@ export const getCategoryFeed = async (
     body: JSON.stringify(postDto),
   };
 };
+
+const wrappedGetFeed = middy(getFeed).use(authorizeToken());
+
+export { wrappedGetFeed as getFeed };

@@ -29,7 +29,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiName Create Post
  * @apiGroup Post
  *
- * @apiParam (Header)   {string}  authorization                             Bearer Token
+ * @apiParam (Header)   {string}  AuthArization                             Bearer Token
  * @apiParam (Body)     {String{30}}  title                                 post title
  * @apiParam (Body)     {String="sell","buy","business"}  type              post type
  * @apiParam (Body)     {String} category                                   post category
@@ -126,7 +126,7 @@ const createPost = async (
       })
       .execute();
 
-    const originalImage = Buffer.from(data.image[index], "base64");
+    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
     await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
     await sendMessage(`post/${postId}/origin/${imageName}.png`);
@@ -143,7 +143,7 @@ const createPost = async (
  * @apiName Get Post
  * @apiGroup Post
  *
- * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
  * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
@@ -206,7 +206,7 @@ const getPost = async (
  * @apiName Boost Post
  * @apiGroup Post
  *
- * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
  * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
@@ -238,7 +238,7 @@ const boostPost = async (
  * @apiName Hide Post
  * @apiGroup Post
  *
- * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
  * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
@@ -271,7 +271,7 @@ const hidePost = async (
  * @apiName Delete Post
  * @apiGroup Post
  *
- * @apiParam (Header)     {string}  authorization                         Bearer Token
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
  * @apiParam (PathParam)  {String}  postId                                postId
  *
  *
