@@ -6,6 +6,3 @@ tmp/
 temp/
 docs
 src/migration
-
-.env.production
-.env.development

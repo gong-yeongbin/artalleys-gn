@@ -9,14 +9,23 @@ import {
 
 import {
   Post,
+  PostImage,
+  PostStatus,
+  PostCategory,
+  PostCondition,
+  PostType,
+  Business,
+  BusinessImage,
+  BusinessCategory,
+  BusinessPost,
   User,
+  UserImage,
   Location,
-  Image,
-  PostNormal,
-  PostBusiness,
   Comment,
-  Chat,
-  ChatRoom,
+  Followers,
+  Following,
+  Like,
+  LikeType,
 } from "../entity/Entity";
 
 import { RelationLoader } from "typeorm/query-builder/RelationLoader";
@@ -33,15 +42,24 @@ const {
 } = process.env;
 
 const entity = [
-  User,
   Post,
+  PostImage,
+  PostStatus,
+  PostCategory,
+  PostCondition,
+  Business,
+  BusinessImage,
+  BusinessCategory,
+  BusinessPost,
+  PostType,
+  User,
+  UserImage,
   Location,
-  Image,
-  PostNormal,
-  PostBusiness,
   Comment,
-  Chat,
-  ChatRoom,
+  Followers,
+  Following,
+  Like,
+  LikeType,
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {

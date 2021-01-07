@@ -334,7 +334,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-hello",
               "Handler": "handler.hello",
@@ -370,14 +370,14 @@
               "HelloLogGroup"
             ]
           },
-          "HelloLambdaVersionAY92tGtDihDtvNqOtyzIETpSh9FCCunlbMaWUXwdWkg": {
+          "HelloLambdaVersionv2tHY51d4WHMNvU6aZCSSXLFdUDhjQB21D096QAX2w": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HelloLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "CreatePostLambdaFunction": {
@@ -387,7 +387,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-createPost",
               "Handler": "services/post/handler.createPost",
@@ -423,14 +423,14 @@
               "CreatePostLogGroup"
             ]
           },
-          "CreatePostLambdaVersionj8FJexKquzu1jqxO2ofD1tnOgYVLq66zsPRRrQojmf0": {
+          "CreatePostLambdaVersion5nyJ1FBTeE737x64PPXV2X4OUVQuYhOfz2IAWQaKzN0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreatePostLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "CreateBusinessLambdaFunction": {
@@ -440,7 +440,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-createBusiness",
               "Handler": "services/business/handler.createBusiness",
@@ -476,14 +476,14 @@
               "CreateBusinessLogGroup"
             ]
           },
-          "CreateBusinessLambdaVersioncqmhAkhxYGCLVFxC1KbNHE3swgrkUjPA4YsjJkJ4": {
+          "CreateBusinessLambdaVersionOWU3M0nurFktSVFHCP2XYI99aNuRxqDr3qv9Nz2AA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateBusinessLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetPostLambdaFunction": {
@@ -493,7 +493,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getPost",
               "Handler": "services/post/handler.getPost",
@@ -529,14 +529,14 @@
               "GetPostLogGroup"
             ]
           },
-          "GetPostLambdaVersionl2iVkjgcYeQQFMPrQFYGKQvqXWguurviKlV0yLoWV4": {
+          "GetPostLambdaVersion8WisbKq0HIsusKzTRqH2KraHBSDyVUFlvaqYN6uWis": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetPostLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetBusinessLambdaFunction": {
@@ -546,7 +546,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getBusiness",
               "Handler": "services/business/handler.getBusiness",
@@ -582,14 +582,14 @@
               "GetBusinessLogGroup"
             ]
           },
-          "GetBusinessLambdaVersioncUM3yXA99UHhIfzzJV38RRj4AgVwI9NFznVFTveiMk": {
+          "GetBusinessLambdaVersionjIQ0qDjil8axKRF6GmCJaAlT5m4hU8uHUhUI6nA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetBusinessLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "HidePostLambdaFunction": {
@@ -599,7 +599,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-hidePost",
               "Handler": "services/post/handler.hidePost",
@@ -635,14 +635,14 @@
               "HidePostLogGroup"
             ]
           },
-          "HidePostLambdaVersionvLhQJw2x3hK4kOvQLLSixpH7HmeL124d6zejwe1hU": {
+          "HidePostLambdaVersionAylRzHTfIeApUJixMSD40mKdKYCPviJuhL0GoJVgA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HidePostLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "BoostPostLambdaFunction": {
@@ -652,7 +652,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-boostPost",
               "Handler": "services/post/handler.boostPost",
@@ -688,14 +688,14 @@
               "BoostPostLogGroup"
             ]
           },
-          "BoostPostLambdaVersionouuEebl9CG191QkdzgIrkoFvdj6K6Ukkp8EW5LJ5Go": {
+          "BoostPostLambdaVersion5iM3ALbl4CpIYe8VNBtBAoWlQOXFe4tuwXVrNKTIE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "BoostPostLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "DeletePostLambdaFunction": {
@@ -705,7 +705,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-deletePost",
               "Handler": "services/post/handler.deletePost",
@@ -741,14 +741,14 @@
               "DeletePostLogGroup"
             ]
           },
-          "DeletePostLambdaVersionRYNDkQpc5gGmJIGhmyQ03SANUAQ1ulADwtkEomCTj3o": {
+          "DeletePostLambdaVersionMMsmZzfUZn80oyMdDvTF9DMZIN61VW4ra2KP0sa8A": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeletePostLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetFeedLambdaFunction": {
@@ -758,7 +758,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getFeed",
               "Handler": "services/feed/handler.getFeed",
@@ -794,14 +794,14 @@
               "GetFeedLogGroup"
             ]
           },
-          "GetFeedLambdaVersionZT5fN64vvo6r7xuoX5FRR5bcFe5FmdpawFg07uwCZo": {
+          "GetFeedLambdaVersionvpQGmF2lOOqXLGV8NI8FnUZ8RDAnyWkTrqw4jhrNSY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetFeedLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetCategoryFeedLambdaFunction": {
@@ -811,7 +811,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getCategoryFeed",
               "Handler": "services/feed/handler.getCategoryFeed",
@@ -847,14 +847,14 @@
               "GetCategoryFeedLogGroup"
             ]
           },
-          "GetCategoryFeedLambdaVersionZiVKliCMKwGvLTqxeGdXZSn15AMmBbi5QxL1Ood9UU": {
+          "GetCategoryFeedLambdaVersiondVOceTemBeiy5JVnrSjcgEQngSYwJqWV4Y56dTIIiUU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetCategoryFeedLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetSearchFeedLambdaFunction": {
@@ -864,7 +864,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getSearchFeed",
               "Handler": "services/feed/handler.getSearchFeed",
@@ -900,14 +900,14 @@
               "GetSearchFeedLogGroup"
             ]
           },
-          "GetSearchFeedLambdaVersionchzHp7m24pfbLYBQQ5DeaSkpYfBS36PMd9C9c8sX4PU": {
+          "GetSearchFeedLambdaVersionpcB78DRPC94WvqTLBbIeH2R2chQGUOwOrVzaCaZY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetSearchFeedLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetBusinessFeedLambdaFunction": {
@@ -917,7 +917,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getBusinessFeed",
               "Handler": "services/feed/handler.getBusinessFeed",
@@ -953,14 +953,14 @@
               "GetBusinessFeedLogGroup"
             ]
           },
-          "GetBusinessFeedLambdaVersionYKBap05LPrmdaZ9tY0EN120mxZGeqwFqT6uMg1ra0": {
+          "GetBusinessFeedLambdaVersion34DSiyJzBws2lacVl9phiyKZggHPwjEqd5nla9upyw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetBusinessFeedLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "ImageResizeLambdaFunction": {
@@ -970,7 +970,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-imageResize",
               "Handler": "services/post/handler.imageResize",
@@ -1006,14 +1006,14 @@
               "ImageResizeLogGroup"
             ]
           },
-          "ImageResizeLambdaVersionTaE1rYd90tg9zECtEaGHJD9eJ1Ec9KRCmz7EkkkvVg": {
+          "ImageResizeLambdaVersionRo6p87D0saGxLjjGko6fUrjEmB3bDbH76TB8C0Ii0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ImageResizeLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "OnConnectLambdaFunction": {
@@ -1023,7 +1023,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-onConnect",
               "Handler": "services/chat-socket/handler.onConnect",
@@ -1059,14 +1059,14 @@
               "OnConnectLogGroup"
             ]
           },
-          "OnConnectLambdaVersiontpkz1KCkSotPdPRUafRggBAsTXa6WP344aOc3TEU0": {
+          "OnConnectLambdaVersionevmktR8jtFUzcZ8PfFVbVh44vxXtILOqnPYDWIHktTU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "OnConnectLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "OnConnect2LambdaFunction": {
@@ -1076,7 +1076,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-onConnect2",
               "Handler": "services/chat-socket/handler.onConnect2",
@@ -1112,14 +1112,14 @@
               "OnConnect2LogGroup"
             ]
           },
-          "OnConnect2LambdaVersion9JcDslIHcy5y0MmtZKecxJ7GitizIQ4g7LXDXNWM4": {
+          "OnConnect2LambdaVersionA3fGMQnQgri148FV2YOb8A2O18RNz1k3xVKlbb7p2E": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "OnConnect2LambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "OnDisconnectLambdaFunction": {
@@ -1129,7 +1129,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-onDisconnect",
               "Handler": "services/chat-socket/handler.onDisconnect",
@@ -1165,14 +1165,14 @@
               "OnDisconnectLogGroup"
             ]
           },
-          "OnDisconnectLambdaVersionXvnz8bzWqld5zaRitwPCAgVyx51IX2C2xlpThLYw": {
+          "OnDisconnectLambdaVersionTS18AB2CKge90TDfryrrl5Vb42Oj3o2NVdVJtx617A": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "OnDisconnectLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "OnDefaultLambdaFunction": {
@@ -1182,7 +1182,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-onDefault",
               "Handler": "services/chat-socket/handler.onDefault",
@@ -1218,14 +1218,14 @@
               "OnDefaultLogGroup"
             ]
           },
-          "OnDefaultLambdaVersionzNUf582bLuRcVyrhrlEWI1YOl7W5nccGOiJy9PSDbI": {
+          "OnDefaultLambdaVersionFiWcLFsukzVIIlwcE7GdXRKbCi7AdrdvY3UElMjB0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "OnDefaultLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "OnSendMessageLambdaFunction": {
@@ -1235,7 +1235,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-onSendMessage",
               "Handler": "services/chat-socket/handler.onSendMessage",
@@ -1271,14 +1271,14 @@
               "OnSendMessageLogGroup"
             ]
           },
-          "OnSendMessageLambdaVersionGDC1CVsGqU4fvNBBEYfnfwMoRH4P2DCtX3SzhZMHiw": {
+          "OnSendMessageLambdaVersionRC4EPD32LMF5JyF9Spvy2ApvPdv8Y6Y0tskDvW4xc": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "OnSendMessageLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetChatRoomListLambdaFunction": {
@@ -1288,7 +1288,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getChatRoomList",
               "Handler": "services/chat-socket/handler.getChatRoomList",
@@ -1324,14 +1324,14 @@
               "GetChatRoomListLogGroup"
             ]
           },
-          "GetChatRoomListLambdaVersionruOKx7DZM3MxsEMeF8WJV2mZPqR1oD3qqbJFIMO2Q": {
+          "GetChatRoomListLambdaVersionP6IqrLLE36DElZQigf9oiIVM2eymZtLVDDVtkXzA8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetChatRoomListLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "GetChatContentListLambdaFunction": {
@@ -1341,7 +1341,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z/goodneibors.zip"
+                "S3Key": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z/goodneibors.zip"
               },
               "FunctionName": "goodneibors-prod-getChatContentList",
               "Handler": "services/chat-socket/handler.getChatContentList",
@@ -1377,14 +1377,14 @@
               "GetChatContentListLogGroup"
             ]
           },
-          "GetChatContentListLambdaVersionOaP7apHiKPi3EhcC54PNyH0G7KcDCPg39sJ2L5AZU": {
+          "GetChatContentListLambdaVersionU8k1yXKxU7KHWwrUuD821nwvpsYGqDCSLmSKF74Jb4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetChatContentListLambdaFunction"
               },
-              "CodeSha256": "Y3s3rx3p3i6o7UGLyuFmuwgCe0lHWwpXwoLbv9nen6k="
+              "CodeSha256": "uBUhokeC4TAM+u1sC2vSaEfhNJz619pkO3KXPHT6dF8="
             }
           },
           "ApiGatewayRestApi": {
@@ -2899,7 +2899,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1609893874796": {
+          "ApiGatewayDeployment1609914650942": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -3854,121 +3854,121 @@
           "HelloLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloLambdaVersionAY92tGtDihDtvNqOtyzIETpSh9FCCunlbMaWUXwdWkg"
+              "Ref": "HelloLambdaVersionv2tHY51d4WHMNvU6aZCSSXLFdUDhjQB21D096QAX2w"
             }
           },
           "CreatePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreatePostLambdaVersionj8FJexKquzu1jqxO2ofD1tnOgYVLq66zsPRRrQojmf0"
+              "Ref": "CreatePostLambdaVersion5nyJ1FBTeE737x64PPXV2X4OUVQuYhOfz2IAWQaKzN0"
             }
           },
           "CreateBusinessLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateBusinessLambdaVersioncqmhAkhxYGCLVFxC1KbNHE3swgrkUjPA4YsjJkJ4"
+              "Ref": "CreateBusinessLambdaVersionOWU3M0nurFktSVFHCP2XYI99aNuRxqDr3qv9Nz2AA"
             }
           },
           "GetPostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetPostLambdaVersionl2iVkjgcYeQQFMPrQFYGKQvqXWguurviKlV0yLoWV4"
+              "Ref": "GetPostLambdaVersion8WisbKq0HIsusKzTRqH2KraHBSDyVUFlvaqYN6uWis"
             }
           },
           "GetBusinessLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetBusinessLambdaVersioncUM3yXA99UHhIfzzJV38RRj4AgVwI9NFznVFTveiMk"
+              "Ref": "GetBusinessLambdaVersionjIQ0qDjil8axKRF6GmCJaAlT5m4hU8uHUhUI6nA"
             }
           },
           "HidePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HidePostLambdaVersionvLhQJw2x3hK4kOvQLLSixpH7HmeL124d6zejwe1hU"
+              "Ref": "HidePostLambdaVersionAylRzHTfIeApUJixMSD40mKdKYCPviJuhL0GoJVgA"
             }
           },
           "BoostPostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "BoostPostLambdaVersionouuEebl9CG191QkdzgIrkoFvdj6K6Ukkp8EW5LJ5Go"
+              "Ref": "BoostPostLambdaVersion5iM3ALbl4CpIYe8VNBtBAoWlQOXFe4tuwXVrNKTIE"
             }
           },
           "DeletePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeletePostLambdaVersionRYNDkQpc5gGmJIGhmyQ03SANUAQ1ulADwtkEomCTj3o"
+              "Ref": "DeletePostLambdaVersionMMsmZzfUZn80oyMdDvTF9DMZIN61VW4ra2KP0sa8A"
             }
           },
           "GetFeedLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetFeedLambdaVersionZT5fN64vvo6r7xuoX5FRR5bcFe5FmdpawFg07uwCZo"
+              "Ref": "GetFeedLambdaVersionvpQGmF2lOOqXLGV8NI8FnUZ8RDAnyWkTrqw4jhrNSY"
             }
           },
           "GetCategoryFeedLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetCategoryFeedLambdaVersionZiVKliCMKwGvLTqxeGdXZSn15AMmBbi5QxL1Ood9UU"
+              "Ref": "GetCategoryFeedLambdaVersiondVOceTemBeiy5JVnrSjcgEQngSYwJqWV4Y56dTIIiUU"
             }
           },
           "GetSearchFeedLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetSearchFeedLambdaVersionchzHp7m24pfbLYBQQ5DeaSkpYfBS36PMd9C9c8sX4PU"
+              "Ref": "GetSearchFeedLambdaVersionpcB78DRPC94WvqTLBbIeH2R2chQGUOwOrVzaCaZY"
             }
           },
           "GetBusinessFeedLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetBusinessFeedLambdaVersionYKBap05LPrmdaZ9tY0EN120mxZGeqwFqT6uMg1ra0"
+              "Ref": "GetBusinessFeedLambdaVersion34DSiyJzBws2lacVl9phiyKZggHPwjEqd5nla9upyw"
             }
           },
           "ImageResizeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ImageResizeLambdaVersionTaE1rYd90tg9zECtEaGHJD9eJ1Ec9KRCmz7EkkkvVg"
+              "Ref": "ImageResizeLambdaVersionRo6p87D0saGxLjjGko6fUrjEmB3bDbH76TB8C0Ii0"
             }
           },
           "OnConnectLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "OnConnectLambdaVersiontpkz1KCkSotPdPRUafRggBAsTXa6WP344aOc3TEU0"
+              "Ref": "OnConnectLambdaVersionevmktR8jtFUzcZ8PfFVbVh44vxXtILOqnPYDWIHktTU"
             }
           },
           "OnConnect2LambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "OnConnect2LambdaVersion9JcDslIHcy5y0MmtZKecxJ7GitizIQ4g7LXDXNWM4"
+              "Ref": "OnConnect2LambdaVersionA3fGMQnQgri148FV2YOb8A2O18RNz1k3xVKlbb7p2E"
             }
           },
           "OnDisconnectLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "OnDisconnectLambdaVersionXvnz8bzWqld5zaRitwPCAgVyx51IX2C2xlpThLYw"
+              "Ref": "OnDisconnectLambdaVersionTS18AB2CKge90TDfryrrl5Vb42Oj3o2NVdVJtx617A"
             }
           },
           "OnDefaultLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "OnDefaultLambdaVersionzNUf582bLuRcVyrhrlEWI1YOl7W5nccGOiJy9PSDbI"
+              "Ref": "OnDefaultLambdaVersionFiWcLFsukzVIIlwcE7GdXRKbCi7AdrdvY3UElMjB0"
             }
           },
           "OnSendMessageLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "OnSendMessageLambdaVersionGDC1CVsGqU4fvNBBEYfnfwMoRH4P2DCtX3SzhZMHiw"
+              "Ref": "OnSendMessageLambdaVersionRC4EPD32LMF5JyF9Spvy2ApvPdv8Y6Y0tskDvW4xc"
             }
           },
           "GetChatRoomListLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetChatRoomListLambdaVersionruOKx7DZM3MxsEMeF8WJV2mZPqR1oD3qqbJFIMO2Q"
+              "Ref": "GetChatRoomListLambdaVersionP6IqrLLE36DElZQigf9oiIVM2eymZtLVDDVtkXzA8"
             }
           },
           "GetChatContentListLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetChatContentListLambdaVersionOaP7apHiKPi3EhcC54PNyH0G7KcDCPg39sJ2L5AZU"
+              "Ref": "GetChatContentListLambdaVersionU8k1yXKxU7KHWwrUuD821nwvpsYGqDCSLmSKF74Jb4"
             }
           },
           "ServiceEndpoint": {
@@ -4144,7 +4144,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HelloLambdaVersionAY92tGtDihDtvNqOtyzIETpSh9FCCunlbMaWUXwdWkg"
+        "versionLogicalId": "HelloLambdaVersionv2tHY51d4WHMNvU6aZCSSXLFdUDhjQB21D096QAX2w"
       },
       "createPost": {
         "handler": "services/post/handler.createPost",
@@ -4184,7 +4184,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreatePostLambdaVersionj8FJexKquzu1jqxO2ofD1tnOgYVLq66zsPRRrQojmf0"
+        "versionLogicalId": "CreatePostLambdaVersion5nyJ1FBTeE737x64PPXV2X4OUVQuYhOfz2IAWQaKzN0"
       },
       "createBusiness": {
         "handler": "services/business/handler.createBusiness",
@@ -4224,7 +4224,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreateBusinessLambdaVersioncqmhAkhxYGCLVFxC1KbNHE3swgrkUjPA4YsjJkJ4"
+        "versionLogicalId": "CreateBusinessLambdaVersionOWU3M0nurFktSVFHCP2XYI99aNuRxqDr3qv9Nz2AA"
       },
       "getPost": {
         "handler": "services/post/handler.getPost",
@@ -4264,7 +4264,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetPostLambdaVersionl2iVkjgcYeQQFMPrQFYGKQvqXWguurviKlV0yLoWV4"
+        "versionLogicalId": "GetPostLambdaVersion8WisbKq0HIsusKzTRqH2KraHBSDyVUFlvaqYN6uWis"
       },
       "getBusiness": {
         "handler": "services/business/handler.getBusiness",
@@ -4309,7 +4309,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetBusinessLambdaVersioncUM3yXA99UHhIfzzJV38RRj4AgVwI9NFznVFTveiMk"
+        "versionLogicalId": "GetBusinessLambdaVersionjIQ0qDjil8axKRF6GmCJaAlT5m4hU8uHUhUI6nA"
       },
       "hidePost": {
         "handler": "services/post/handler.hidePost",
@@ -4354,7 +4354,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "HidePostLambdaVersionvLhQJw2x3hK4kOvQLLSixpH7HmeL124d6zejwe1hU"
+        "versionLogicalId": "HidePostLambdaVersionAylRzHTfIeApUJixMSD40mKdKYCPviJuhL0GoJVgA"
       },
       "boostPost": {
         "handler": "services/post/handler.boostPost",
@@ -4399,7 +4399,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "BoostPostLambdaVersionouuEebl9CG191QkdzgIrkoFvdj6K6Ukkp8EW5LJ5Go"
+        "versionLogicalId": "BoostPostLambdaVersion5iM3ALbl4CpIYe8VNBtBAoWlQOXFe4tuwXVrNKTIE"
       },
       "deletePost": {
         "handler": "services/post/handler.deletePost",
@@ -4444,7 +4444,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "DeletePostLambdaVersionRYNDkQpc5gGmJIGhmyQ03SANUAQ1ulADwtkEomCTj3o"
+        "versionLogicalId": "DeletePostLambdaVersionMMsmZzfUZn80oyMdDvTF9DMZIN61VW4ra2KP0sa8A"
       },
       "getFeed": {
         "handler": "services/feed/handler.getFeed",
@@ -4492,7 +4492,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetFeedLambdaVersionZT5fN64vvo6r7xuoX5FRR5bcFe5FmdpawFg07uwCZo"
+        "versionLogicalId": "GetFeedLambdaVersionvpQGmF2lOOqXLGV8NI8FnUZ8RDAnyWkTrqw4jhrNSY"
       },
       "getCategoryFeed": {
         "handler": "services/feed/handler.getCategoryFeed",
@@ -4538,7 +4538,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetCategoryFeedLambdaVersionZiVKliCMKwGvLTqxeGdXZSn15AMmBbi5QxL1Ood9UU"
+        "versionLogicalId": "GetCategoryFeedLambdaVersiondVOceTemBeiy5JVnrSjcgEQngSYwJqWV4Y56dTIIiUU"
       },
       "getSearchFeed": {
         "handler": "services/feed/handler.getSearchFeed",
@@ -4584,7 +4584,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetSearchFeedLambdaVersionchzHp7m24pfbLYBQQ5DeaSkpYfBS36PMd9C9c8sX4PU"
+        "versionLogicalId": "GetSearchFeedLambdaVersionpcB78DRPC94WvqTLBbIeH2R2chQGUOwOrVzaCaZY"
       },
       "getBusinessFeed": {
         "handler": "services/feed/handler.getBusinessFeed",
@@ -4631,7 +4631,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetBusinessFeedLambdaVersionYKBap05LPrmdaZ9tY0EN120mxZGeqwFqT6uMg1ra0"
+        "versionLogicalId": "GetBusinessFeedLambdaVersion34DSiyJzBws2lacVl9phiyKZggHPwjEqd5nla9upyw"
       },
       "imageResize": {
         "handler": "services/post/handler.imageResize",
@@ -4644,7 +4644,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "ImageResizeLambdaVersionTaE1rYd90tg9zECtEaGHJD9eJ1Ec9KRCmz7EkkkvVg"
+        "versionLogicalId": "ImageResizeLambdaVersionRo6p87D0saGxLjjGko6fUrjEmB3bDbH76TB8C0Ii0"
       },
       "onConnect": {
         "handler": "services/chat-socket/handler.onConnect",
@@ -4663,7 +4663,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "OnConnectLambdaVersiontpkz1KCkSotPdPRUafRggBAsTXa6WP344aOc3TEU0"
+        "versionLogicalId": "OnConnectLambdaVersionevmktR8jtFUzcZ8PfFVbVh44vxXtILOqnPYDWIHktTU"
       },
       "onConnect2": {
         "handler": "services/chat-socket/handler.onConnect2",
@@ -4682,7 +4682,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "OnConnect2LambdaVersion9JcDslIHcy5y0MmtZKecxJ7GitizIQ4g7LXDXNWM4"
+        "versionLogicalId": "OnConnect2LambdaVersionA3fGMQnQgri148FV2YOb8A2O18RNz1k3xVKlbb7p2E"
       },
       "onDisconnect": {
         "handler": "services/chat-socket/handler.onDisconnect",
@@ -4701,7 +4701,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "OnDisconnectLambdaVersionXvnz8bzWqld5zaRitwPCAgVyx51IX2C2xlpThLYw"
+        "versionLogicalId": "OnDisconnectLambdaVersionTS18AB2CKge90TDfryrrl5Vb42Oj3o2NVdVJtx617A"
       },
       "onDefault": {
         "handler": "services/chat-socket/handler.onDefault",
@@ -4720,7 +4720,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "OnDefaultLambdaVersionzNUf582bLuRcVyrhrlEWI1YOl7W5nccGOiJy9PSDbI"
+        "versionLogicalId": "OnDefaultLambdaVersionFiWcLFsukzVIIlwcE7GdXRKbCi7AdrdvY3UElMjB0"
       },
       "onSendMessage": {
         "handler": "services/chat-socket/handler.onSendMessage",
@@ -4739,7 +4739,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "OnSendMessageLambdaVersionGDC1CVsGqU4fvNBBEYfnfwMoRH4P2DCtX3SzhZMHiw"
+        "versionLogicalId": "OnSendMessageLambdaVersionRC4EPD32LMF5JyF9Spvy2ApvPdv8Y6Y0tskDvW4xc"
       },
       "getChatRoomList": {
         "handler": "services/chat-socket/handler.getChatRoomList",
@@ -4779,7 +4779,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetChatRoomListLambdaVersionruOKx7DZM3MxsEMeF8WJV2mZPqR1oD3qqbJFIMO2Q"
+        "versionLogicalId": "GetChatRoomListLambdaVersionP6IqrLLE36DElZQigf9oiIVM2eymZtLVDDVtkXzA8"
       },
       "getChatContentList": {
         "handler": "services/chat-socket/handler.getChatContentList",
@@ -4826,7 +4826,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetChatContentListLambdaVersionOaP7apHiKPi3EhcC54PNyH0G7KcDCPg39sJ2L5AZU"
+        "versionLogicalId": "GetChatContentListLambdaVersionU8k1yXKxU7KHWwrUuD821nwvpsYGqDCSLmSKF74Jb4"
       }
     },
     "configValidationMode": "warn",
@@ -4853,7 +4853,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/goodneibors/prod/1609893895322-2021-01-06T00:44:55.322Z",
+    "artifactDirectoryName": "serverless/goodneibors/prod/1609914670377-2021-01-06T06:31:10.377Z",
     "artifact": ""
   }
 }
