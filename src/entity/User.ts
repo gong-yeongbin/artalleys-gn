@@ -4,7 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  OneToMany,
+  JoinColumn,
 } from "typeorm";
+import { UserImage, Location, Followers, Following, Post } from "./Entity";
 
 @Entity("user")
 export default class User {
@@ -14,29 +18,50 @@ export default class User {
   @Column({ name: "uid", type: "nvarchar" })
   uid: string;
 
+  @Column({ name: "nick_name", type: "nvarchar", length: 20, nullable: true })
+  nickName: string;
+
   @Column({ name: "phone_number", type: "nvarchar" })
   phoneNumber: string;
 
   @Column({ name: "email", type: "nvarchar", length: 45, nullable: true })
   email: string;
 
-  @Column({ name: "nick_name", type: "nvarchar", length: 45, nullable: true })
-  nickName: string;
-
-  @Column({
-    name: "profile_image",
-    type: "nvarchar",
-    length: 1024,
-    nullable: true,
-  })
-  profileImage: string;
-
-  @Column({ name: "connection_id", type: "nvarchar", nullable: true })
-  connectionId: string;
-
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToOne(() => Location, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "location_id" })
+  location: Location;
+
+  @OneToOne(() => UserImage, { nullable: true, onDelete: "CASCADE" })
+  @JoinColumn({ name: "image_id" })
+  image: UserImage;
+
+  @OneToOne(() => Followers, { nullable: true, onDelete: "CASCADE" })
+  @JoinColumn({ name: "followers_id" })
+  followers: Followers;
+
+  @OneToOne(() => Following, { nullable: true, onDelete: "CASCADE" })
+  @JoinColumn({ name: "following_id" })
+  following: Following;
+
+  @OneToMany(() => Post, (post) => post.id)
+  @JoinColumn({ name: "post_id" })
+  posts: Post[];
 }
+
+// @Column({
+//   name: "profile_image",
+//   type: "nvarchar",
+//   length: 1024,
+//   nullable: true,
+// })
+// profileImage: string;
+// @Column({ name: "connection_id", type: "nvarchar", nullable: true })
+//   connectionId: string;

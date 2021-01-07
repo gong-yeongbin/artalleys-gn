@@ -4,8 +4,11 @@ node_modules/
 build/
 tmp/
 temp/
-docs
+docs/
 src/migration
 
-.env.production
-.env.development
+**/.serverless
+**/.webpack
+**/ormconfig.*
+**/.env.*
+
