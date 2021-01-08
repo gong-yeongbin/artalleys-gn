@@ -8,7 +8,7 @@ import {
   OneToMany,
   JoinColumn,
 } from "typeorm";
-import { UserImage, Location, Followers, Following, Post } from "./Entity";
+import { Image, Location, Followers, Following, Post } from "./Entity";
 
 @Entity("user")
 export default class User {
@@ -39,9 +39,9 @@ export default class User {
   @JoinColumn({ name: "location_id" })
   location: Location;
 
-  @OneToOne(() => UserImage, { nullable: true, onDelete: "CASCADE" })
+  @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "image_id" })
-  image: UserImage;
+  image: Image;
 
   @OneToOne(() => Followers, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "followers_id" })

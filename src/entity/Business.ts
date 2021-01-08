@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 
-import { BusinessPost, Location, PostImage } from "../entity/Entity";
+import { BusinessPost, Location, Image } from "../entity/Entity";
 
 @Entity("business")
 export default class Business {
@@ -42,9 +42,9 @@ export default class Business {
   @JoinColumn({ name: "location_id" })
   location: Location;
 
-  @OneToOne(() => PostImage, { nullable: true, onDelete: "CASCADE" })
+  @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "image_id" })
-  image: PostImage;
+  image: Image;
 
   @OneToMany(() => BusinessPost, (businessPost) => businessPost.id)
   posts: BusinessPost[];

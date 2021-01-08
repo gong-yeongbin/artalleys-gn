@@ -14,7 +14,7 @@ import {
   Location,
   PostCategory,
   PostCondition,
-  PostImage,
+  Image,
   PostStatus,
   PostType,
 } from "../entity/Entity";
@@ -60,9 +60,9 @@ export default class Post {
   @JoinColumn({ name: "location_id" })
   location: Location;
 
-  @OneToOne(() => PostImage, { nullable: true, onDelete: "CASCADE" })
+  @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "image_id" })
-  image: PostImage;
+  image: Image;
 
   @OneToOne(() => PostStatus)
   @JoinColumn({ name: "status_id" })
@@ -86,34 +86,3 @@ export default class Post {
   @JoinColumn({ name: "business_id" })
   user: User;
 }
-// @Column({ name: "post_id", type: "nvarchar" })
-//   postId: string;
-
-// @OneToMany(() => Image, (image) => image.post, {
-//   cascade: ["insert", "update", "remove"],
-// })
-// postImage: Image[];
-
-// @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.post, {
-//   cascade: ["insert", "update", "remove"],
-//   nullable: true,
-// })
-// chatRoom: ChatRoom[];
-
-// @OneToOne(() => PostBusiness, (postBusiness) => postBusiness.post, {
-//   cascade: ["insert", "update", "remove"],
-// })
-// business: PostBusiness;q
-
-// @OneToOne(() => PostNormal, (postNormal) => postNormal.post, {
-//   cascade: ["insert", "update", "remove"],
-// })
-// normal: PostNormal;
-
-// @OneToOne(() => Location, (location) => location.post, {
-//   cascade: ["insert", "update", "remove"],
-// })
-// location: Location;
-
-// @Column({ name: "view", type: "integer", default: 0 })
-//   view: number;

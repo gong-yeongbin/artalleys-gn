@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity("post_image")
-export default class PostImage {
+@Entity("image_type")
+export default class ImageType {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
   @Column({ name: "url", type: "nvarchar" })
-  url: string;
+  type: string;
 }

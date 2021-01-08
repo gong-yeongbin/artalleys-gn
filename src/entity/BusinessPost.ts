@@ -9,7 +9,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from "typeorm";
-import { Business, Comment, PostStatus } from "../entity/Entity";
+import { Business, Comment, Image } from "../entity/Entity";
 
 @Entity("business_post")
 export default class BusinessPost {
@@ -41,6 +41,10 @@ export default class BusinessPost {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
+  @JoinColumn({ name: "image_id" })
+  image: Image;
 
   @ManyToOne(() => Business, (business) => business.posts, {
     onDelete: "CASCADE",

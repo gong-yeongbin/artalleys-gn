@@ -24,6 +24,7 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
       const token: string = handler.event.headers["Authorization"];
       let uid: string;
       let phoneNumber: string;
+
       await admin
         .auth()
         .verifyIdToken(token)
@@ -36,15 +37,19 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
           return new Error("token expiration");
         });
 
-      const userEntity: User = await userRepository.findOne({ uid: uid });
-      let user: User = new User();
-      if (userEntity == null) {
-        user.uid = uid;
-        user.phoneNumber = phoneNumber;
-        userRepository.save(user);
+      if (uid != undefined && uid != "" && uid != null) {
+        const userEntity: User = await userRepository.findOne({ uid: uid });
+        if (userEntity == null) {
+          let user: User = new User();
+          user.uid = uid;
+          user.phoneNumber = phoneNumber;
+          userRepository.save(user);
+          return;
+        }
         return;
+      } else {
+        return new Error("token wrong");
       }
-      return;
     },
   };
 };

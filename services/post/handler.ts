@@ -15,12 +15,13 @@
 //   deleteMessage,
 //   sendMessage,
 // } from "../util/aws";
-// import { Post, PostNormal, Image, Location } from "../../src/entity/Entity";
-// import { PostBuilder } from "../../src/dto/PostDto";
-// import { PostType } from "../../src/types/postType";
+// import { Post, Location, Image } from "../../src/entity/Entity";
+// // import { PostBuilder } from "../../src/dto/PostDto";
+// // import { PostType } from "../../src/types/postType";
 // import { getRepository, Connection, Repository } from "typeorm";
 // import { authorizeToken } from "../util/authorizer";
-// import * as middy from "middy";
+// import middy from "@middy/core";
+// import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
 
 // const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -68,75 +69,70 @@
 // ): Promise<ProxyResult> => {
 //   const connection: Connection = await getDatabaseConnection();
 //   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const postNormalRepository: Repository<PostNormal> = connection.getRepository(
-//     PostNormal
-//   );
 //   const imageRepository: Repository<Image> = connection.getRepository(Image);
 //   const locationRepository: Repository<Location> = connection.getRepository(
 //     Location
 //   );
 
-//   const postId: string = name(10);
 //   const data: any = JSON.parse(event.body);
 
 //   let post: Post = new Post();
-//   let postNormal: PostNormal = new PostNormal();
 //   let location: Location = new Location();
 
-//   let { title, number }: Post = data;
+//   let { title, price, number, negotiablePriceYn, details }: Post = data;
 
-//   let {
-//     type,
-//     category,
-//     price = 0,
-//     descriptions,
-//     condition,
-//     firmOnPrice = true,
-//   }: PostNormal = data;
+  // let {
+  //   type,
+  //   category,
+  //   price = 0,
+  //   descriptions,
+  //   condition,
+  //   firmOnPrice = true,
+  // }: Post = data;
 
-//   post.postId = postId;
-//   post.title = title;
-//   post.number = number;
-//   await postRepository.save(post);
+  // post.postId = postId;
+  // post.title = title;
+  // post.number = number;
+  // await postRepository.save(post);
 
-//   postNormal.type = type.toLowerCase();
-//   postNormal.category = category.toLowerCase();
-//   postNormal.price = price;
-//   postNormal.firmOnPrice = firmOnPrice;
-//   postNormal.descriptions = descriptions;
-//   postNormal.condition = condition.toLowerCase();
-//   postNormal.post = post;
-//   await postNormalRepository.save(postNormal);
+  // postNormal.type = type.toLowerCase();
+  // postNormal.category = category.toLowerCase();
+  // postNormal.price = price;
+  // postNormal.firmOnPrice = firmOnPrice;
+  // postNormal.descriptions = descriptions;
+  // postNormal.condition = condition.toLowerCase();
+  // postNormal.post = post;
+  // await postNormalRepository.save(postNormal);
 
-//   location.longitude = data.location.longitude;
-//   location.latitude = data.location.latitude;
-//   location.post = post;
-//   await locationRepository.save(location);
+  // location.longitude = data.location.longitude;
+  // location.latitude = data.location.latitude;
+  // location.post = post;
+  // await locationRepository.save(location);
 
-//   for (let index in data.image) {
-//     let imageName: string = name(8);
+  // for (let index in data.image) {
+  //   let imageName: string = name(8);
 
-//     await imageRepository
-//       .createQueryBuilder()
-//       .insert()
-//       .into(Image)
-//       .values({
-//         post: post,
-//         url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${postId}/origin/${imageName}.png`,
-//       })
-//       .execute();
+  //   await imageRepository
+  //     .createQueryBuilder()
+  //     .insert()
+  //     .into(Image)
+  //     .values({
+  //       post: post,
+  //       url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${postId}/origin/${imageName}.png`,
+  //     })
+  //     .execute();
 
-//     const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+  //   const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-//     await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
-//     await sendMessage(`post/${postId}/origin/${imageName}.png`);
-//   }
+  //   await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
+  //   await sendMessage(`post/${postId}/origin/${imageName}.png`);
+  // }
 
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 // /**
 //  * @api {get}  /post/:postId/getPost     Get Post
@@ -365,14 +361,16 @@
 // };
 
 // const wrappedGetPost = middy(getPost).use(authorizeToken());
-// const wrappedCreatePost = middy(createPost).use(authorizeToken());
+const wrappedCreatePost = middy(createPost)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 // const wrappedDeletePost = middy(deletePost).use(authorizeToken());
 // const wrappedHidePost = middy(hidePost).use(authorizeToken());
 // const wrappedBoostPost = middy(boostPost).use(authorizeToken());
-// export {
-//   wrappedGetPost as getPost,
-//   wrappedCreatePost as createPost,
-//   wrappedDeletePost as deletePost,
-//   wrappedHidePost as hidePost,
-//   wrappedBoostPost as boostPost,
-// };
+export {
+  // wrappedGetPost as getPost,
+  wrappedCreatePost as createPost,
+  // wrappedDeletePost as deletePost,
+  // wrappedHidePost as hidePost,
+  // wrappedBoostPost as boostPost,
+};

@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
 
 @Entity("post_category")
+@Unique(["category"])
 export default class PostCategory {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
