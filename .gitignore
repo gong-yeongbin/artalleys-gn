@@ -4,13 +4,20 @@ node_modules/
 build/
 tmp/
 temp/
+
 docs/
-src/migration/
+apidoc-define.ts
+apidoc.json
+src/migration
 
-**/.serverless
+.serverless
 
-**/.webpack
+.webpack
 
-**/ormconfig.*
+ormconfig.*
 
+.env
 **/.env.*
+
+# Optional eslint cache
+.eslintcache
