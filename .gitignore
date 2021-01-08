@@ -6,18 +6,11 @@ tmp/
 temp/
 
 docs/
-apidoc-define.ts
-apidoc.json
 src/migration
 
 .serverless
 
 .webpack
 
-ormconfig.*
-
 .env
 **/.env.*
-
-# Optional eslint cache
-.eslintcache
