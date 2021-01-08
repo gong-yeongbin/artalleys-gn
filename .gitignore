@@ -5,10 +5,12 @@ build/
 tmp/
 temp/
 docs/
-src/migration
+src/migration/
 
 **/.serverless
-**/.webpack
-**/ormconfig.*
-**/.env.*
 
+**/.webpack
+
+**/ormconfig.*
+
+**/.env.*

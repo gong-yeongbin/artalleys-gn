@@ -60,201 +60,201 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    createPost: {
-      handler: "services/post/handler.createPost",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "post/createPost",
-            cors: true,
-          },
-        },
-      ],
-    },
-    createBusiness: {
-      handler: "services/business/handler.createBusiness",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "post/createBusiness",
-            cors: true,
-          },
-        },
-      ],
-    },
-    getPost: {
-      handler: "services/post/handler.getPost",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "post/{postId}/getPost",
-            cors: true,
-          },
-        },
-      ],
-    },
-    getBusiness: {
-      handler: "services/business/handler.getBusiness",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "post/{postId}/getBusiness",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    hidePost: {
-      handler: "services/post/handler.hidePost",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "post/{postId}/hidePost",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    boostPost: {
-      handler: "services/post/handler.boostPost",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "post/{postId}/boostPost",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    deletePost: {
-      handler: "services/post/handler.deletePost",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "post/{postId}/deletePost",
-            cors: true,
-            request: {
-              parameters: {
-                paths: {
-                  postId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    getFeed: {
-      handler: "services/feed/handler.getFeed",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "feed/getFeed",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
-                  type: false,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
-    getCategoryFeed: {
-      handler: "services/feed/handler.getCategoryFeed",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "feed/getCategoryFeed",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
-    getSearchFeed: {
-      handler: "services/feed/handler.getSearchFeed",
-      events: [
-        {
-          http: {
-            method: "put",
-            path: "feed/getSearchFeed",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
-    getBusinessFeed: {
-      handler: "services/feed/handler.getBusinessFeed",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "feed/getBusinessFeed",
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
-                },
-              },
-            },
-            cors: true,
-          },
-        },
-      ],
-    },
+    // createPost: {
+    //   handler: "services/post/handler.createPost",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "post/createPost",
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // createBusiness: {
+    //   handler: "services/business/handler.createBusiness",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "post/createBusiness",
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // getPost: {
+    //   handler: "services/post/handler.getPost",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "post/{postId}/getPost",
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // getBusiness: {
+    //   handler: "services/business/handler.getBusiness",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "post/{postId}/getBusiness",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // hidePost: {
+    //   handler: "services/post/handler.hidePost",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "post/{postId}/hidePost",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // boostPost: {
+    //   handler: "services/post/handler.boostPost",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "post/{postId}/boostPost",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // deletePost: {
+    //   handler: "services/post/handler.deletePost",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "post/{postId}/deletePost",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    // getFeed: {
+    //   handler: "services/feed/handler.getFeed",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "feed/getFeed",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //               order: false,
+    //               type: false,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // getCategoryFeed: {
+    //   handler: "services/feed/handler.getCategoryFeed",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "feed/getCategoryFeed",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // getSearchFeed: {
+    //   handler: "services/feed/handler.getSearchFeed",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "put",
+    //         path: "feed/getSearchFeed",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // getBusinessFeed: {
+    //   handler: "services/feed/handler.getBusinessFeed",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "feed/getBusinessFeed",
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //               order: false,
+    //             },
+    //           },
+    //         },
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
     // addComment: {
     //   handler: "services/comment/handler.addComment",
     //   events: [
@@ -361,80 +361,80 @@ const serverlessConfiguration: Serverless = {
     //     },
     //   ],
     // },
-    imageResize: {
-      handler: "services/post/handler.imageResize",
-    },
-    onConnect: {
-      handler: "services/chat-socket/handler.onConnect",
-      events: [
-        {
-          websocket: { route: "$connect" },
-        },
-      ],
-    },
-    onConnect2: {
-      handler: "services/chat-socket/handler.onConnect2",
-      events: [
-        {
-          websocket: { route: "connect2" },
-        },
-      ],
-    },
-    onDisconnect: {
-      handler: "services/chat-socket/handler.onDisconnect",
-      events: [{ websocket: { route: "$disconnect" } }],
-    },
-    onDefault: {
-      handler: "services/chat-socket/handler.onDefault",
-      events: [
-        {
-          websocket: { route: "$default" },
-        },
-      ],
-    },
-    onSendMessage: {
-      handler: "services/chat-socket/handler.onSendMessage",
-      events: [
-        {
-          websocket: { route: "onSendMessage" },
-        },
-      ],
-    },
-    getChatRoomList: {
-      handler: "services/chat-socket/handler.getChatRoomList",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "chat/getChatRoomList",
-            cors: true,
-          },
-        },
-      ],
-    },
-    getChatContentList: {
-      handler: "services/chat-socket/handler.getChatContentList",
-      events: [
-        {
-          http: {
-            method: "get",
-            path: "chat/{receiveId}/getChatContentList",
-            cors: true,
-            request: {
-              parameters: {
-                querystrings: {
-                  offset: false,
-                  limit: false,
-                },
-                paths: {
-                  receiveId: true,
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
+    // imageResize: {
+    //   handler: "services/post/handler.imageResize",
+    // },
+    // onConnect: {
+    //   handler: "services/chat-socket/handler.onConnect",
+    //   events: [
+    //     {
+    //       websocket: { route: "$connect" },
+    //     },
+    //   ],
+    // },
+    // onConnect2: {
+    //   handler: "services/chat-socket/handler.onConnect2",
+    //   events: [
+    //     {
+    //       websocket: { route: "connect2" },
+    //     },
+    //   ],
+    // },
+    // onDisconnect: {
+    //   handler: "services/chat-socket/handler.onDisconnect",
+    //   events: [{ websocket: { route: "$disconnect" } }],
+    // },
+    // onDefault: {
+    //   handler: "services/chat-socket/handler.onDefault",
+    //   events: [
+    //     {
+    //       websocket: { route: "$default" },
+    //     },
+    //   ],
+    // },
+    // onSendMessage: {
+    //   handler: "services/chat-socket/handler.onSendMessage",
+    //   events: [
+    //     {
+    //       websocket: { route: "onSendMessage" },
+    //     },
+    //   ],
+    // },
+    // getChatRoomList: {
+    //   handler: "services/chat-socket/handler.getChatRoomList",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "chat/getChatRoomList",
+    //         cors: true,
+    //       },
+    //     },
+    //   ],
+    // },
+    // getChatContentList: {
+    //   handler: "services/chat-socket/handler.getChatContentList",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "chat/{receiveId}/getChatContentList",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             querystrings: {
+    //               offset: false,
+    //               limit: false,
+    //             },
+    //             paths: {
+    //               receiveId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
   },
 };
 
