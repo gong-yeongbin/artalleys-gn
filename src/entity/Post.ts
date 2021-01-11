@@ -8,6 +8,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  RelationId,
 } from "typeorm";
 import {
   User,
@@ -44,8 +45,8 @@ export default class Post {
   @Column({ name: "number", type: "integer", nullable: true })
   number: number;
 
-  @Column({ name: "negotiable_price_yn", type: "boolean", default: false })
-  negotiablePriceYn: boolean;
+  @Column({ name: "non_negotiable_price_yn", type: "boolean", default: false })
+  nonNegotiablePriceYn: boolean;
 
   @Column({ name: "view_count", type: "integer", default: 0 })
   viewCount: number;
@@ -56,33 +57,37 @@ export default class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => Location, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "location_id" })
+  @OneToOne(() => Location)
+  @JoinColumn({ name: "location" })
   location: Location;
 
-  @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
-  @JoinColumn({ name: "image_id" })
-  image: Image;
+  @OneToMany(() => Image, (image) => image.id)
+  @JoinColumn({ name: "image" })
+  image: Image[];
 
-  @OneToOne(() => PostStatus)
-  @JoinColumn({ name: "status_id" })
+  @ManyToOne(() => PostStatus, (postStatus) => postStatus.post, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "status" })
   status: PostStatus;
 
-  @OneToOne(() => PostCategory)
-  @JoinColumn({ name: "category_id" })
+  @ManyToOne(() => PostCategory, (postCategory) => postCategory.post, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "category" })
   category: PostCategory;
 
-  @OneToOne(() => PostCondition)
-  @JoinColumn({ name: "condition_id" })
+  @ManyToOne(() => PostCondition, (postCondition) => postCondition.id)
+  @JoinColumn({ name: "condition" })
   condition: PostCondition;
 
-  @OneToOne(() => PostType)
-  @JoinColumn({ name: "type_id" })
+  @ManyToOne(() => PostType, (postType) => postType.id)
+  @JoinColumn({ name: "type" })
   type: PostType;
 
   @ManyToOne(() => User, (user) => user.posts, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "business_id" })
+  @JoinColumn({ name: "business" })
   user: User;
 }

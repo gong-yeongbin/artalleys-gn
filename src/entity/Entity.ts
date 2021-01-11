@@ -16,4 +16,3 @@ export { default as Comment } from "./Comment";
 export { default as Like } from "./Like";
 export { default as LikeType } from "./LikeType";
 export { default as Image } from "./Image";
-export { default as ImageType } from "./ImageType";

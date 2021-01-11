@@ -14,13 +14,9 @@ export default class Location {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
 
-  @Column({ name: "longitude", type: "integer" })
+  @Column({ name: "longitude", type: "float" })
   longitude: number;
 
-  @Column({ name: "latitude", type: "integer" })
+  @Column({ name: "latitude", type: "float" })
   latitude: number;
 }
-
-// @OneToOne(() => Post, (post) => post.location)
-//   @JoinColumn({ name: "post" })
-//   post: Post;

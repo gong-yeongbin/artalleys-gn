@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
+import {
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Column,
+  JoinColumn,
+  Unique,
+} from "typeorm";
+import { Post } from "../entity/Entity";
 
 @Entity("post_type")
 @Unique(["type"])
@@ -8,4 +16,8 @@ export default class PostType {
 
   @Column({ name: "type", type: "nvarchar" })
   type: string;
+
+  @OneToMany(() => Post, (post) => post.id)
+  @JoinColumn({ name: "post" })
+  post: Post;
 }

@@ -1,132 +1,162 @@
-// import {
-//   APIGatewayEvent,
-//   Context,
-//   ProxyResult,
-//   SQSEvent,
-//   SQSRecord,
-// } from "aws-lambda";
-// import * as jimp from "jimp";
-// import { name } from "../util/util";
-// import { getDatabaseConnection } from "../../src/connection/Connection";
-// import {
-//   putObject,
-//   getObject,
-//   deleteObject,
-//   deleteMessage,
-//   sendMessage,
-// } from "../util/aws";
-// import { Post, Location, Image } from "../../src/entity/Entity";
-// // import { PostBuilder } from "../../src/dto/PostDto";
-// // import { PostType } from "../../src/types/postType";
-// import { getRepository, Connection, Repository } from "typeorm";
-// import { authorizeToken } from "../util/authorizer";
-// import middy from "@middy/core";
-// import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
+import {
+  APIGatewayEvent,
+  Context,
+  ProxyResult,
+  SQSEvent,
+  SQSRecord,
+} from "aws-lambda";
+import * as jimp from "jimp";
+import { name } from "../util/util";
+import { getDatabaseConnection } from "../../src/connection/Connection";
+import {
+  putObject,
+  getObject,
+  deleteObject,
+  deleteMessage,
+  sendMessage,
+} from "../util/aws";
+import {
+  Post,
+  Location,
+  Image,
+  PostType,
+  PostCategory,
+  PostCondition,
+  PostStatus,
+} from "../../src/entity/Entity";
+// import { PostBuilder } from "../../src/dto/PostDto";
+// import { PostType } from "../../src/types/postType";
+import { getRepository, Connection, Repository } from "typeorm";
+import { authorizeToken } from "../util/authorizer";
+import middy from "@middy/core";
+import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
+import { uuid } from "uuidv4";
 
-// const { CLOUDFRONT_IMAGE } = process.env;
+const { BUCKET_SERVICE_ENDPOINT_URL } = process.env;
 
-// /**
-//  * @api {put}  /post/createPost     Create Post
-//  * @apiName Create Post
-//  * @apiGroup Post
-//  *
-//  * @apiParam (Header)   {string}  AuthArization                             Bearer Token
-//  * @apiParam (Body)     {String{30}}  title                                 post title
-//  * @apiParam (Body)     {String="sell","buy","business"}  type              post type
-//  * @apiParam (Body)     {String} category                                   post category
-//  * @apiParam (Body)     {String} condition                                  post condition
-//  * @apiParam (Body)     {Object} [location]                                 post location(type: sell)
-//  * @apiParam (Body)     {Object} location.latitude                          post location latitude
-//  * @apiParam (Body)     {Object} location.longitude                        post location longitude
-//  * @apiParam (Body)     {number} [price]                                    post price
-//  * @apiParam (Body)     {boolean} firmOnPrice                               post firm on price
-//  * @apiParam (Body)     {number} [number]                                   post number(type: business)
-//  * @apiParam (Body)     {String{300}} descriptions                          post descriptions
-//  * @apiParam (Body)     {boolean} [hide]                                    post hide
-//  * @apiParam (Body)     {base64} image                                      post image
-//  *
-//  *
-//  * @apiParamExample {json} Request Body
-//  {
-//    "title": "hwajangpyoom",
-//    "type": "buy",
-//    "category":"hwajangpyoom category",
-//    "condition": "other",
-//    "location": {"latitude":"12.123","longitude":"13.123"},
-//    "price": 1000,
-//    "firmOnPrice": true,
-//    "number": 12312341234,
-//    "descriptions":"test hwajangpyoom e da",
-//    "hide": false,
-//    "image": ["testtesttesttest........"]
-//  }
-//  * @apiSuccess (200 OK) {String} NoContent                              Success
-//  **/
+/**
+ * @api {put}  /post/createPost     Create Post
+ * @apiName Create Post
+ * @apiGroup Post
+ *
+ * @apiParam (Header)   {string}  AuthArization                             Bearer Token
+ * @apiParam (Body)     {String{30}}  title                                 post title
+ * @apiParam (Body)     {String="sell","buy","business"}  type              post type
+ * @apiParam (Body)     {String} category                                   post category
+ * @apiParam (Body)     {String} condition                                  post condition
+ * @apiParam (Body)     {Object} [location]                                 post location(type: sell)
+ * @apiParam (Body)     {Object} location.latitude                          post location latitude
+ * @apiParam (Body)     {Object} location.longitude                        post location longitude
+ * @apiParam (Body)     {number} [price]                                    post price
+ * @apiParam (Body)     {boolean} firmOnPrice                               post firm on price
+ * @apiParam (Body)     {number} [number]                                   post number(type: business)
+ * @apiParam (Body)     {String{300}} descriptions                          post descriptions
+ * @apiParam (Body)     {boolean} [hide]                                    post hide
+ * @apiParam (Body)     {base64} image                                      post image
+ *
+ *
+ * @apiParamExample {json} Request Body
+ {
+   "title": "hwajangpyoom",
+   "type": "buy",
+   "category":"hwajangpyoom category",
+   "condition": "other",
+   "location": {"latitude":"12.123","longitude":"13.123"},
+   "price": 1000,
+   "firmOnPrice": true,
+   "number": 12312341234,
+   "descriptions":"test hwajangpyoom e da",
+   "hide": false,
+   "image": ["testtesttesttest........"]
+ }
+ * @apiSuccess (200 OK) {String} NoContent                              Success
+ **/
 
-// const createPost = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const connection: Connection = await getDatabaseConnection();
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const imageRepository: Repository<Image> = connection.getRepository(Image);
-//   const locationRepository: Repository<Location> = connection.getRepository(
-//     Location
-//   );
+const createPost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postStatusRepository: Repository<PostStatus> = connection.getRepository(
+    PostStatus
+  );
+  const postTypeRepository: Repository<PostType> = connection.getRepository(
+    PostType
+  );
+  const postCategoryRepository: Repository<PostCategory> = connection.getRepository(
+    PostCategory
+  );
+  const postConditionRepository: Repository<PostCondition> = connection.getRepository(
+    PostCondition
+  );
+  const locationRepository: Repository<Location> = connection.getRepository(
+    Location
+  );
+  const imageRepository: Repository<Image> = connection.getRepository(Image);
 
-//   const data: any = JSON.parse(event.body);
+  const data: any = JSON.parse(event.body);
+  let {
+    title,
+    details,
+    price = 0,
+    number = 0,
+    nonNegotiablePriceYn = false,
+  }: Post = data;
 
-//   let post: Post = new Post();
-//   let location: Location = new Location();
+  const postStatusEntity: PostStatus = await postStatusRepository.findOne({
+    id: 1,
+  });
+  const postTypeEntity: PostType = await postTypeRepository.findOne({
+    id: data.type,
+  });
+  const postCategoryEntity: PostCategory = await postCategoryRepository.findOne(
+    {
+      id: data.category,
+    }
+  );
+  const postConditionEntity: PostCondition = await postConditionRepository.findOne(
+    {
+      id: data.condition,
+    }
+  );
 
-//   let { title, price, number, negotiablePriceYn, details }: Post = data;
+  let location: Location = new Location();
+  location.latitude = data.location.latitude;
+  location.longitude = data.location.longitude;
+  await locationRepository.save(location);
 
-  // let {
-  //   type,
-  //   category,
-  //   price = 0,
-  //   descriptions,
-  //   condition,
-  //   firmOnPrice = true,
-  // }: Post = data;
+  let post: Post = new Post();
+  post.status = postStatusEntity;
+  post.type = postTypeEntity;
+  post.category = postCategoryEntity;
+  post.condition = postConditionEntity;
+  post.title = title;
+  post.details = details;
+  post.price = price;
+  post.number = number;
+  post.nonNegotiablePriceYn = nonNegotiablePriceYn;
+  post.location = location;
 
-  // post.postId = postId;
-  // post.title = title;
-  // post.number = number;
-  // await postRepository.save(post);
+  await postRepository.save(post);
 
-  // postNormal.type = type.toLowerCase();
-  // postNormal.category = category.toLowerCase();
-  // postNormal.price = price;
-  // postNormal.firmOnPrice = firmOnPrice;
-  // postNormal.descriptions = descriptions;
-  // postNormal.condition = condition.toLowerCase();
-  // postNormal.post = post;
-  // await postNormalRepository.save(postNormal);
+  for (let index in data.image) {
+    let fileName = uuid();
+    await imageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Image)
+      .values({
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${fileName}.png`,
+        post: post,
+      })
+      .execute();
 
-  // location.longitude = data.location.longitude;
-  // location.latitude = data.location.latitude;
-  // location.post = post;
-  // await locationRepository.save(location);
+    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-  // for (let index in data.image) {
-  //   let imageName: string = name(8);
-
-  //   await imageRepository
-  //     .createQueryBuilder()
-  //     .insert()
-  //     .into(Image)
-  //     .values({
-  //       post: post,
-  //       url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${postId}/origin/${imageName}.png`,
-  //     })
-  //     .execute();
-
-  //   const originalImage: Buffer = Buffer.from(data.image[index], "base64");
-
-  //   await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
-  //   await sendMessage(`post/${postId}/origin/${imageName}.png`);
-  // }
+    // await putObject(originalImage, `post/image/${fileName}.png`);
+    // await sendMessage(`post/image/${fileName}.png`);
+  }
 
   return {
     statusCode: 200,

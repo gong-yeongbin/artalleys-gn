@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
+import {
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  JoinColumn,
+} from "typeorm";
+import { Post } from "../entity/Entity";
 
 @Entity("post_category")
 @Unique(["category"])
@@ -8,4 +16,8 @@ export default class PostCategory {
 
   @Column({ name: "category", type: "nvarchar" })
   category: string;
+
+  @OneToMany(() => Post, (post) => post.id)
+  @JoinColumn({ name: "post" })
+  post: Post;
 }

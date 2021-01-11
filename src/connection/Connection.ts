@@ -18,7 +18,6 @@ import {
   BusinessPost,
   User,
   Image,
-  ImageType,
   Location,
   Comment,
   Followers,
@@ -51,7 +50,6 @@ const entity = [
   PostType,
   User,
   Image,
-  ImageType,
   Location,
   Comment,
   Followers,
@@ -68,6 +66,14 @@ const CONNECTION_OPTIONS: ConnectionOptions = {
   password: DB_PASSWORD,
   database: DB_DATABASE,
   synchronize: Boolean(DB_SYNCHRONIZE),
+  // type: "mysql",
+  // host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
+  // port: 3306,
+  // username: "root",
+  // password: "neibors1!",
+  // database: "gn",
+  // synchronize: true,
+
   entities: entity,
 };
 
