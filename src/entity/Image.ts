@@ -16,7 +16,7 @@ export default class Image {
   @Column({ name: "url", type: "nvarchar" })
   url: string;
 
-  @ManyToOne(() => Post, (post) => post.id, {
+  @ManyToOne(() => Post, (post) => post.image, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "post" })

@@ -19,4 +19,9 @@ export default class Location {
 
   @Column({ name: "latitude", type: "float" })
   latitude: number;
+
+  @OneToOne(()=> Post, (post) => post.location, {cascade: true, onDelete: "CASCADE"}) 
+  @JoinColumn()
+  post: Post;
+
 }

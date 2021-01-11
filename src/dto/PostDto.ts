@@ -1,30 +1,30 @@
 // import { Post } from "../entity/Entity";
-// import { PostType } from "../types/postType";
+// import { PostData } from "../types/dataType";
 // import { replaceHost } from "../../services/util/http";
 
 // export class PostBuilder {
-//   private _data: PostType;
+//   private _data: PostData;
 
 //   constructor(post: Post) {
 //     this._data = {
-//       postId: post.postId,
-//       type: post.normal.type,
-//       category: post.normal.category,
+//       id: post.id,
+//       type: post.type,
+//       category: post.category,
 //       title: post.title,
-//       descriptions: post.normal.descriptions,
-//       condition: post.normal.condition,
-//       view: post.view,
+//       details: post.details,
+//       condition: post.condition,
+//       view: post.viewCount,
 //       number: post.number,
-//       price: post.normal.price,
-//       active: post.normal.active,
+//       price: post.price,
+//       active: post.active,
 //       url: [],
 //       location: {
 //         latitude: post.location.latitude,
 //         longitude: post.location.longitude,
 //       },
 //     };
-//     post.postImage.map((value, index) => {
-//       this._data.url.push(post.postImage[index].url);
+//     post.image.map((value, index) => {
+//       this._data.url.push(post.image[index].url);
 //     });
 //   }
 

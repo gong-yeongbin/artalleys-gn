@@ -36,8 +36,8 @@ export default class Post {
   })
   details: string;
 
-  @Column({ name: "hide_yn", type: "boolean", default: false })
-  hideYn: boolean;
+  @Column({ name: "hide", type: "boolean", default: false })
+  hide: boolean;
 
   @Column({ name: "price", type: "integer", nullable: true })
   price: number;
@@ -57,11 +57,10 @@ export default class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => Location)
-  @JoinColumn({ name: "location" })
-  location: Location;
+  @OneToOne(() => Location, (location) => location.post)
+  location: Location; 
 
-  @OneToMany(() => Image, (image) => image.id)
+  @OneToMany(() => Image, (image) => image.post)
   @JoinColumn({ name: "image" })
   image: Image[];
 

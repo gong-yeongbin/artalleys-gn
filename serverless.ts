@@ -84,18 +84,18 @@ const serverlessConfiguration: Serverless = {
     //     },
     //   ],
     // },
-    // getPost: {
-    //   handler: "services/post/handler.getPost",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "post/{postId}/getPost",
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
+    getPost: {
+      handler: "services/post/handler.getPost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{postId}/getPost",
+            cors: true,
+          },
+        },
+      ],
+    },
     // getBusiness: {
     //   handler: "services/business/handler.getBusiness",
     //   events: [
@@ -115,63 +115,63 @@ const serverlessConfiguration: Serverless = {
     //     },
     //   ],
     // },
-    // hidePost: {
-    //   handler: "services/post/handler.hidePost",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "post/{postId}/hidePost",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // boostPost: {
-    //   handler: "services/post/handler.boostPost",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "post/{postId}/boostPost",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // deletePost: {
-    //   handler: "services/post/handler.deletePost",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "post/{postId}/deletePost",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
+    hidePost: {
+      handler: "services/post/handler.hidePost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{postId}/hidePost",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    boostPost: {
+      handler: "services/post/handler.boostPost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{postId}/boostPost",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    deletePost: {
+      handler: "services/post/handler.deletePost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{postId}/deletePost",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
     // getFeed: {
     //   handler: "services/feed/handler.getFeed",
     //   events: [

@@ -1,20 +1,27 @@
-interface LocationType {
+interface Location {
   longitude: number;
   latitude: number;
 }
 
-interface PostType {
-  postId: string;
+interface Image {
+  url: string;
+}
+
+interface PostData {
+  id: number;
+  type: string;
   title: string;
-  view: number;
-  url: string[];
-  descriptions?: string;
-  location: LocationType;
+  details?: string;
+  price:number;
+  number:number;
+  viewCount: number;
+  url: Image[];
+  location: Location;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface NormalType extends PostType {
+interface NormalType extends PostData {
   type: string;
   category: string;
   condition: string;
@@ -23,7 +30,7 @@ interface NormalType extends PostType {
   active: string;
 }
 
-interface BusinessType extends PostType {
+interface BusinessType extends PostData {
   detailTitle?: string;
   address?: string;
   startTime?: number;
@@ -32,4 +39,4 @@ interface BusinessType extends PostType {
   workingHoursDescriptions?: string;
 }
 
-export { LocationType, PostType, BusinessType, NormalType };
+export { Location, PostData, BusinessType, NormalType };

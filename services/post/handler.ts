@@ -24,8 +24,8 @@ import {
   PostCondition,
   PostStatus,
 } from "../../src/entity/Entity";
-// import { PostBuilder } from "../../src/dto/PostDto";
-// import { PostType } from "../../src/types/postType";
+import { PostBuilder } from "../../src/dto/PostDto";
+import { PostData } from "../../src/types/dataType";
 import { getRepository, Connection, Repository } from "typeorm";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
@@ -40,8 +40,8 @@ const { BUCKET_SERVICE_ENDPOINT_URL } = process.env;
  * @apiGroup Post
  *
  * @apiParam (Header)   {string}  AuthArization                             Bearer Token
- * @apiParam (Body)     {String{30}}  title                                 post title
  * @apiParam (Body)     {String="sell","buy","business"}  type              post type
+ * @apiParam (Body)     {String{30}}  title                                 post title
  * @apiParam (Body)     {String} category                                   post category
  * @apiParam (Body)     {String} condition                                  post condition
  * @apiParam (Body)     {Object} [location]                                 post location(type: sell)
@@ -121,10 +121,6 @@ const createPost = async (
     }
   );
 
-  let location: Location = new Location();
-  location.latitude = data.location.latitude;
-  location.longitude = data.location.longitude;
-  await locationRepository.save(location);
 
   let post: Post = new Post();
   post.status = postStatusEntity;
@@ -136,9 +132,14 @@ const createPost = async (
   post.price = price;
   post.number = number;
   post.nonNegotiablePriceYn = nonNegotiablePriceYn;
-  post.location = location;
 
   await postRepository.save(post);
+
+  let location: Location = new Location();
+  location.latitude = data.location.latitude;
+  location.longitude = data.location.longitude;
+  location.post = post;
+  await locationRepository.save(location);
 
   for (let index in data.image) {
     let fileName = uuid();
@@ -196,36 +197,36 @@ const createPost = async (
 //  * @apiSuccess  (200 OK) {String} NoContent           Success
 //  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
 //  **/
-// const getPost = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
-//   const connection: Connection = await getDatabaseConnection();
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const postEntity: Post = await postRepository
-//     .createQueryBuilder("post")
-//     .leftJoinAndSelect("post.normal", "normal")
-//     .leftJoinAndSelect("post.location", "location")
-//     .leftJoinAndSelect("post.postImage", "postImage")
-//     .where("post.postId = :postId", { postId: postId })
-//     .getOne();
+const getPost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
 
-//   if (postEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "null",
-//     };
-//   }
-//   const postDto: any = new PostBuilder(postEntity)
-//     .replaceHost(CLOUDFRONT_IMAGE)
-//     .build();
+  const postEntity: Post = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.location", "location")
+    .leftJoinAndSelect("post.image", "image")
+    .where("post.id = :id", { id: postId })
+    .getOne();
+  console.log(postEntity);
+  if (postEntity == null) {
+    return {
+      statusCode: 404,
+      body: "null",
+    };
+  }
+  // const postDto: any = new PostBuilder(postEntity)
+  //   .replaceHost(CLOUDFRONT_IMAGE)
+  //   .build();
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(postDto),
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: JSON.stringify("postDto"),
+  };
+};
 
 // /**
 //  * @api {get}  /post/:postId/boostPost     boost Post
@@ -239,25 +240,25 @@ const createPost = async (
 //  * @apiSuccess  (200 OK) {String} NoContent           Success
 //  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
 //  **/
-// const boostPost = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
+const boostPost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
 
-//   const connection: Connection = await getDatabaseConnection();
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const postEntity: Post = await postRepository.findOne({
-//     postId: postId,
-//   });
-//   postEntity.updatedAt = new Date();
-//   postRepository.save(postEntity);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post = await postRepository.findOne({
+    id: postId,
+  });
+  postEntity.updatedAt = new Date();
+  postRepository.save(postEntity);
 
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 // /**
 //  * @api {get}  /post/:postId/getPost     hide Post
@@ -271,26 +272,26 @@ const createPost = async (
 //  * @apiSuccess  (200 OK) {String} NoContent           Success
 //  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
 //  **/
-// const hidePost = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
+const hidePost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
 
-//   const connection: Connection = await getDatabaseConnection();
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const postEntity: Post = await postRepository.findOne({ postId: postId });
-//   postEntity.hide === true
-//     ? (postEntity.hide = false)
-//     : (postEntity.hide = true);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post = await postRepository.findOne({ id: postId });
+  postEntity.hide === true
+    ? (postEntity.hide = false)
+    : (postEntity.hide = true);
 
-//   postRepository.save(postEntity);
+  postRepository.save(postEntity);
 
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 // /**
 //  * @api {get}  /post/:postId/deletePost     delete Post
@@ -304,48 +305,48 @@ const createPost = async (
 //  * @apiSuccess  (200 OK) {String} NoContent           Success
 //  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
 //  **/
-// const deletePost = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
+const deletePost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
 
-//   const connection: Connection = await getDatabaseConnection();
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
 
-//   const postEntity: Post = await postRepository
-//     .createQueryBuilder("post")
-//     .leftJoinAndSelect("post.postImage", "postImage")
-//     .where("post.postId = :postId", { postId: postId })
-//     .getOne();
+  const postEntity: Post = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.image", "image")
+    .where("post.id = :id", { id: postId })
+    .getOne();
 
-//   if (postEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
+  if (postEntity == null) {
+    return {
+      statusCode: 404,
+      body: "",
+    };
+  }
 
-//   for (let index in postEntity.postImage) {
-//     let objecyKey: string = postEntity.postImage[index].url.replace(
+//   for (let index in postEntity.image) {
+//     let objecyKey: string = postEntity.image[index].url.replace(
 //       "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/",
 //       ""
 //     );
 //     await deleteObject(objecyKey);
 //   }
 
-//   await postRepository
-//     .createQueryBuilder()
-//     .delete()
-//     .from(Post)
-//     .where("postId = :postId", { postId: postId })
-//     .execute();
+  await postRepository.delete({id: postId});
+    // .createQueryBuilder()
+    // .delete()
+    // .from(Post)
+    // .where("id = :id", { id: postId })
+    // .execute();
 
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 // export const imageResize = async (
 //   event: SQSEvent,
@@ -390,17 +391,17 @@ const createPost = async (
 //   }
 // };
 
-// const wrappedGetPost = middy(getPost).use(authorizeToken());
+const wrappedGetPost = middy(getPost).use(authorizeToken()).use(doNotWaitForEmptyEventLoop());
 const wrappedCreatePost = middy(createPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-// const wrappedDeletePost = middy(deletePost).use(authorizeToken());
-// const wrappedHidePost = middy(hidePost).use(authorizeToken());
-// const wrappedBoostPost = middy(boostPost).use(authorizeToken());
+const wrappedDeletePost = middy(deletePost).use(authorizeToken());
+const wrappedHidePost = middy(hidePost).use(authorizeToken()).use(doNotWaitForEmptyEventLoop());;
+const wrappedBoostPost = middy(boostPost).use(authorizeToken()).use(doNotWaitForEmptyEventLoop());;
 export {
-  // wrappedGetPost as getPost,
+  wrappedGetPost as getPost,
   wrappedCreatePost as createPost,
-  // wrappedDeletePost as deletePost,
-  // wrappedHidePost as hidePost,
-  // wrappedBoostPost as boostPost,
+  wrappedDeletePost as deletePost,
+  wrappedHidePost as hidePost,
+  wrappedBoostPost as boostPost,
 };
