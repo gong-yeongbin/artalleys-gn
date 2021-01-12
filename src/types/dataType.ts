@@ -2,21 +2,19 @@ interface Location {
   longitude: number;
   latitude: number;
 }
-
-interface Image {
-  url: string;
-}
-
 interface PostData {
   id: number;
-  type: string;
   title: string;
-  details?: string;
-  price:number;
-  number:number;
+  details: string;
+  price: number;
+  number: number;
   viewCount: number;
-  url: Image[];
+  url: string[];
   location: Location;
+  type: string;
+  category: string;
+  condition?: string;
+  status: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

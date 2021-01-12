@@ -32,42 +32,43 @@ import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
 import { uuid } from "uuidv4";
 
-const { BUCKET_SERVICE_ENDPOINT_URL } = process.env;
+const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
 /**
  * @api {put}  /post/createPost     Create Post
  * @apiName Create Post
  * @apiGroup Post
  *
- * @apiParam (Header)   {string}  AuthArization                             Bearer Token
- * @apiParam (Body)     {String="sell","buy","business"}  type              post type
- * @apiParam (Body)     {String{30}}  title                                 post title
- * @apiParam (Body)     {String} category                                   post category
- * @apiParam (Body)     {String} condition                                  post condition
- * @apiParam (Body)     {Object} [location]                                 post location(type: sell)
- * @apiParam (Body)     {Object} location.latitude                          post location latitude
- * @apiParam (Body)     {Object} location.longitude                        post location longitude
- * @apiParam (Body)     {number} [price]                                    post price
- * @apiParam (Body)     {boolean} firmOnPrice                               post firm on price
- * @apiParam (Body)     {number} [number]                                   post number(type: business)
- * @apiParam (Body)     {String{300}} descriptions                          post descriptions
- * @apiParam (Body)     {boolean} [hide]                                    post hide
- * @apiParam (Body)     {base64} image                                      post image
+ * @apiParam (Header)   {string} AuthArization                                        Bearer Token
+ * @apiParam (Body)     {number=1(sell), 2(buy), 3(business), 4(business post)} type  type
+ * @apiParam (Body)     {number=CategoryCode} category                                category
+ * @apiParam (Body)     {number=ConditionCode} condition                              condition
+ * @apiParam (Body)     {String{30}} title                                            title
+ * @apiParam (Body)     {String{300}} detail                                          detail
+ * @apiParam (Body)     {Object} [location]                                           location
+ * @apiParam (Body)     {Object} location.latitude                                    latitude
+ * @apiParam (Body)     {Object} location.longitude                                   longitude
+ * @apiParam (Body)     {number} [price]                                              price
+ * @apiParam (Body)     {number} [number]                                             number
+ * @apiParam (Body)     {boolean} nonNegotiablePriceYn                                Non-Negotiable Price
+ * @apiParam (Body)     {boolean} [hide]                                              hide
+ * @apiParam (Body)     {base64} image                                                image
  *
  *
  * @apiParamExample {json} Request Body
  {
-   "title": "hwajangpyoom",
-   "type": "buy",
-   "category":"hwajangpyoom category",
-   "condition": "other",
-   "location": {"latitude":"12.123","longitude":"13.123"},
-   "price": 1000,
-   "firmOnPrice": true,
-   "number": 12312341234,
-   "descriptions":"test hwajangpyoom e da",
+   "type": 1,
+   "category":1,
+   "condition": 1,
+	 "title": "test title",
+	 "details":"test details",
+   "location": {"latitude": 12.123,"longitude": 13.123},
+   "price": 100000,
+	 "number": 1047484856,
+   "nonNegotiablePriceYn": true,
    "hide": false,
-   "image": ["testtesttesttest........"]
+   "image":
+   "image": ["test image ........"]
  }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
@@ -121,7 +122,6 @@ const createPost = async (
     }
   );
 
-
   let post: Post = new Post();
   post.status = postStatusEntity;
   post.type = postTypeEntity;
@@ -156,7 +156,6 @@ const createPost = async (
     const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
     // await putObject(originalImage, `post/image/${fileName}.png`);
-    // await sendMessage(`post/image/${fileName}.png`);
   }
 
   return {
@@ -165,38 +164,40 @@ const createPost = async (
   };
 };
 
-// /**
-//  * @api {get}  /post/:postId/getPost     Get Post
-//  * @apiName Get Post
-//  * @apiGroup Post
-//  *
-//  * @apiParam (Header)     {string}  Authorization                         Bearer Token
-//  * @apiParam (PathParam)  {String}  postId                                postId
-//  *
-//  *
-//  * @apiParamExample {json} Response
-//  {
-//   "data": {
-//     "postId": "9d6e2f86817916714223",
-//     "type": "buy",
-//     "category": "hwajangpyoom category",
-//     "title": "hwajangpyoom",
-//     "descriptions": "test hwajangpyoom e da",
-//     "condition": "other",
-//     "view": 0,
-//     "number": null,
-//     "price": 1000,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/9d6e2f86817916714223/origin/0fb98393c62f216e.png",
-//     "location": {
-//       "latitude": 12,
-//       "longitude": 13
-//     }
-//   }
-// }
-//  * @apiSuccess  (200 OK) {String} NoContent           Success
-//  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
-//  **/
+/**
+ * @api {get}  /post/:postId/getPost     Get Post
+ * @apiName Get Post
+ * @apiGroup Post
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiParamExample {json} Response
+{
+  "data": {
+    "id": "19",
+    "title": "test title",
+    "details": "test detail",
+    "viewCount": 0,
+    "number": 0,
+    "price": 100000,
+    "url": [
+      "d19j7dhfxgaxy7.cloudfront.net/image/0eb30f28-1223-4482-9873-17ce2f382777.png"
+    ],
+    "location": {
+      "latitude": 12.123,
+      "longitude": 13.123
+    },
+    "type": "sell",
+    "category": "Antiques & Collectibles",
+    "condition": "",
+    "status": "active"
+  }
+}
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
 const getPost = async (
   event: APIGatewayEvent,
   context: Context
@@ -209,37 +210,41 @@ const getPost = async (
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.location", "location")
     .leftJoinAndSelect("post.image", "image")
+    .leftJoinAndSelect("post.type", "type")
+    .leftJoinAndSelect("post.category", "category")
+    .leftJoinAndSelect("post.status", "status")
+    .leftJoinAndSelect("post.condition", "condition")
     .where("post.id = :id", { id: postId })
     .getOne();
-  console.log(postEntity);
+
   if (postEntity == null) {
     return {
       statusCode: 404,
       body: "null",
     };
   }
-  // const postDto: any = new PostBuilder(postEntity)
-  //   .replaceHost(CLOUDFRONT_IMAGE)
-  //   .build();
+  const postDto: any = new PostBuilder(postEntity)
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
 
   return {
     statusCode: 200,
-    body: JSON.stringify("postDto"),
+    body: JSON.stringify(postDto),
   };
 };
 
-// /**
-//  * @api {get}  /post/:postId/boostPost     boost Post
-//  * @apiName Boost Post
-//  * @apiGroup Post
-//  *
-//  * @apiParam (Header)     {string}  Authorization                         Bearer Token
-//  * @apiParam (PathParam)  {String}  postId                                postId
-//  *
-//  *
-//  * @apiSuccess  (200 OK) {String} NoContent           Success
-//  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
-//  **/
+/**
+ * @api {get}  /post/:postId/boostPost     boost Post
+ * @apiName Boost Post
+ * @apiGroup Post
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
 const boostPost = async (
   event: APIGatewayEvent,
   context: Context
@@ -260,18 +265,18 @@ const boostPost = async (
   };
 };
 
-// /**
-//  * @api {get}  /post/:postId/getPost     hide Post
-//  * @apiName Hide Post
-//  * @apiGroup Post
-//  *
-//  * @apiParam (Header)     {string}  Authorization                         Bearer Token
-//  * @apiParam (PathParam)  {String}  postId                                postId
-//  *
-//  *
-//  * @apiSuccess  (200 OK) {String} NoContent           Success
-//  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
-//  **/
+/**
+ * @api {get}  /post/:postId/getPost     hide Post
+ * @apiName Hide Post
+ * @apiGroup Post
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
 const hidePost = async (
   event: APIGatewayEvent,
   context: Context
@@ -293,18 +298,18 @@ const hidePost = async (
   };
 };
 
-// /**
-//  * @api {get}  /post/:postId/deletePost     delete Post
-//  * @apiName Delete Post
-//  * @apiGroup Post
-//  *
-//  * @apiParam (Header)     {string}  Authorization                         Bearer Token
-//  * @apiParam (PathParam)  {String}  postId                                postId
-//  *
-//  *
-//  * @apiSuccess  (200 OK) {String} NoContent           Success
-//  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
-//  **/
+/**
+ * @api {get}  /post/:postId/deletePost     delete Post
+ * @apiName Delete Post
+ * @apiGroup Post
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
 const deletePost = async (
   event: APIGatewayEvent,
   context: Context
@@ -327,20 +332,15 @@ const deletePost = async (
     };
   }
 
-//   for (let index in postEntity.image) {
-//     let objecyKey: string = postEntity.image[index].url.replace(
-//       "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/",
-//       ""
-//     );
-//     await deleteObject(objecyKey);
-//   }
+  for (let index in postEntity.image) {
+    let objecyKey: string = postEntity.image[index].url.replace(
+      "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/",
+      ""
+    );
+    await deleteObject(objecyKey);
+  }
 
-  await postRepository.delete({id: postId});
-    // .createQueryBuilder()
-    // .delete()
-    // .from(Post)
-    // .where("id = :id", { id: postId })
-    // .execute();
+  await postRepository.delete({ id: postId });
 
   return {
     statusCode: 200,
@@ -348,56 +348,19 @@ const deletePost = async (
   };
 };
 
-// export const imageResize = async (
-//   event: SQSEvent,
-//   context: Context
-// ): Promise<void> => {
-//   for (let record of event.Records) {
-//     const receiveData: string = record.body;
-//     const type: string = receiveData.split("/")[1];
-//     const id: string = receiveData.split("/")[2];
-
-//     const connection = await getDatabaseConnection();
-//     const postRepository = connection.getRepository(Post);
-//     const imageRepository = connection.getRepository(Image);
-
-//     const imageObject: any = await getObject(receiveData as string);
-//     const imageBuffer: Buffer = imageObject.Body as Buffer;
-
-//     let image: Image = new Image();
-//     image.url = `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/${receiveData.replace(
-//       "origin",
-//       "resize"
-//     )}`;
-
-//     const postEntity: Post = await postRepository.findOne({ postId: id });
-//     image.post = postEntity;
-
-//     await imageRepository.save(image);
-
-//     const resizeImageData: jimp = await (await jimp.read(imageBuffer)).resize(
-//       jimp.AUTO,
-//       360
-//     );
-
-//     resizeImageData.getBuffer(jimp.MIME_PNG, async (err, resizeImage) => {
-//       await putObject(
-//         resizeImage,
-//         `${receiveData.replace("origin", "resize")}`
-//       );
-//     });
-
-//     await deleteMessage(record.receiptHandle);
-//   }
-// };
-
-const wrappedGetPost = middy(getPost).use(authorizeToken()).use(doNotWaitForEmptyEventLoop());
+const wrappedGetPost = middy(getPost)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 const wrappedCreatePost = middy(createPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
 const wrappedDeletePost = middy(deletePost).use(authorizeToken());
-const wrappedHidePost = middy(hidePost).use(authorizeToken()).use(doNotWaitForEmptyEventLoop());;
-const wrappedBoostPost = middy(boostPost).use(authorizeToken()).use(doNotWaitForEmptyEventLoop());;
+const wrappedHidePost = middy(hidePost)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedBoostPost = middy(boostPost)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedGetPost as getPost,
   wrappedCreatePost as createPost,

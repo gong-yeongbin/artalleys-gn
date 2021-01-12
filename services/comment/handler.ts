@@ -5,32 +5,32 @@
 // import { name } from "../util/util";
 // import { CommentBuilder, CommentData } from "../../src/dto/CommentDto";
 // import { ReplyBuilder, ReplyData } from "../../src/dto/ReplyDto";
-// /**
-//  * @api {put} /comment/:postId/addComment     add comment
-//  * @apiName Add Comment
-//  * @apiGroup Comment
-//  *
-//  * @apiParam (PathParam) {String}postId                           post id
-//  * @apiParam (Body) {Number}[replyId]                             reply id
-//  * @apiParam (Body) {String}message                               message
-//  *
-//  * @apiParamExample {json} Request Body(comment)
-// {
-// 	"message": "테스트 댓글"
-// }
-// * @apiParamExample {json} Request Body(reply)
-// {
-// 	"replyId": 4,
-// 	"message": "테스트 대댓글"
-// }
-//  * @apiSuccess (204 No Content) {String}    NoContent  Success
-//  * @apiSuccessExample {text}    Success
-//  *      HTTP/1.1    204 No Content
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {put} /comment/:postId/addComment     add comment
+ * @apiName Add Comment
+ * @apiGroup Comment
+ *
+ * @apiParam (PathParam) {String}postId                           post id
+ * @apiParam (Body) {Number}[replyId]                             reply id
+ * @apiParam (Body) {String}message                               message
+ *
+ * @apiParamExample {json} Request Body(comment)
+{
+	"message": "테스트 댓글"
+}
+* @apiParamExample {json} Request Body(reply)
+{
+	"replyId": 4,
+	"message": "테스트 대댓글"
+}
+ * @apiSuccess (204 No Content) {String}    NoContent  Success
+ * @apiSuccessExample {text}    Success
+ *      HTTP/1.1    204 No Content
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 
 // export const addComment = async (
 //   event: APIGatewayEvent,
@@ -66,22 +66,22 @@
 //   };
 // };
 
-// /**
-//  * @api {put} /comment/:commentId/modifyComment     modify comment
-//  * @apiName Modify Comment
-//  * @apiGroup Comment
-//  *
-//  * @apiParam (PathParam) {String}commentId                        comment id
-//  * @apiParam (Body) {String}message                               message
-//  *
-//  * @apiSuccess (204 No Content) {String}    NoContent  Success
-//  * @apiSuccessExample {text}    Success
-//  *      HTTP/1.1    204 No Content
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {put} /comment/:commentId/modifyComment     modify comment
+ * @apiName Modify Comment
+ * @apiGroup Comment
+ *
+ * @apiParam (PathParam) {String}commentId                        comment id
+ * @apiParam (Body) {String}message                               message
+ *
+ * @apiSuccess (204 No Content) {String}    NoContent  Success
+ * @apiSuccessExample {text}    Success
+ *      HTTP/1.1    204 No Content
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 
 // export const modifyComment = async (
 //   event: APIGatewayEvent,
@@ -114,36 +114,36 @@
 //   };
 // };
 
-// /**
-//  * @api {get} /comment/:postId/getComment     get comment
-//  * @apiName Get Comment
-//  * @apiGroup Comment
-//  *
-//  * @apiParam (PathParam) {String}postId                           comment id
-//  * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
-//  * @apiParam (QueryStringParam) {String}[order=desc]  order       order
-//  *
-//  * @apiParamExample Response
-//  [
-//   {
-//     "commentId": "29abc2f27c",
-//     "message": "sadfasdgadhfsfg",
-//     "createdAt": "2020-11-17T21:03:32.289Z",
-//     "updatedAt": "2020-11-17T21:03:32.289Z"
-//   },
-//   {
-//     "commentId": "cb931142d5",
-//     "message": "testtesttest",
-//     "createdAt": "2020-11-17T20:10:03.335Z",
-//     "updatedAt": "2020-11-17T21:42:29.000Z"
-//   }
-// ]
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {get} /comment/:postId/getComment     get comment
+ * @apiName Get Comment
+ * @apiGroup Comment
+ *
+ * @apiParam (PathParam) {String}postId                           comment id
+ * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
+ * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
+ * @apiParam (QueryStringParam) {String}[order=desc]  order       order
+ *
+ * @apiParamExample Response
+ [
+  {
+    "commentId": "29abc2f27c",
+    "message": "sadfasdgadhfsfg",
+    "createdAt": "2020-11-17T21:03:32.289Z",
+    "updatedAt": "2020-11-17T21:03:32.289Z"
+  },
+  {
+    "commentId": "cb931142d5",
+    "message": "testtesttest",
+    "createdAt": "2020-11-17T20:10:03.335Z",
+    "updatedAt": "2020-11-17T21:42:29.000Z"
+  }
+]
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 // export const getComment = async (
 //   event: APIGatewayEvent,
 //   context: Context
@@ -185,37 +185,37 @@
 //   };
 // };
 
-// /**
-//  * @api {get} /comment/:postId/:commentId/getReply     get reply
-//  * @apiName Get Reply
-//  * @apiGroup Comment
-//  *
-//  * @apiParam (PathParam) {String}postId                           post id
-//  * @apiParam (PathParam) {String}commentId                        comment id
-//  * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
-//  * @apiParam (QueryStringParam) {String}[order=asc]  order       order
-//  *
-//  * @apiParamExample Response
-// [
-//   {
-//     "commentId": "29abc2f27c",
-//     "message": "sadfasdgadhfsfg",
-//     "createdAt": "2020-11-17T21:03:32.289Z",
-//     "updateAt": "2020-11-17T21:03:32.289Z"
-//   },
-//   {
-//     "commentId": "29abc2f27c",
-//     "message": "sadfasdgadhfsfg",
-//     "createdAt": "2020-11-17T21:03:32.289Z",
-//     "updateAt": "2020-11-17T21:03:32.289Z"
-//   }
-// ]
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {get} /comment/:postId/:commentId/getReply     get reply
+ * @apiName Get Reply
+ * @apiGroup Comment
+ *
+ * @apiParam (PathParam) {String}postId                           post id
+ * @apiParam (PathParam) {String}commentId                        comment id
+ * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
+ * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
+ * @apiParam (QueryStringParam) {String}[order=asc]  order       order
+ *
+ * @apiParamExample Response
+[
+  {
+    "commentId": "29abc2f27c",
+    "message": "sadfasdgadhfsfg",
+    "createdAt": "2020-11-17T21:03:32.289Z",
+    "updateAt": "2020-11-17T21:03:32.289Z"
+  },
+  {
+    "commentId": "29abc2f27c",
+    "message": "sadfasdgadhfsfg",
+    "createdAt": "2020-11-17T21:03:32.289Z",
+    "updateAt": "2020-11-17T21:03:32.289Z"
+  }
+]
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 
 // export const getReply = async (
 //   event: APIGatewayEvent,
@@ -257,21 +257,21 @@
 //   };
 // };
 
-// /**
-//  * @api {get} /comment/:commentId/deleteComment     delete comment
-//  * @apiName Delete Comment
-//  * @apiGroup Comment
-//  *
-//  * @apiParam (PathParam) {String}commentId                        comment id
-//  *
-//  * @apiSuccess (204 No Content) {String}    NoContent  Success
-//  * @apiSuccessExample {text}    Success
-//  *      HTTP/1.1    204 No Content
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {get} /comment/:commentId/deleteComment     delete comment
+ * @apiName Delete Comment
+ * @apiGroup Comment
+ *
+ * @apiParam (PathParam) {String}commentId                        comment id
+ *
+ * @apiSuccess (204 No Content) {String}    NoContent  Success
+ * @apiSuccessExample {text}    Success
+ *      HTTP/1.1    204 No Content
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 
 // export const deleteComment = async (
 //   event: APIGatewayEvent,

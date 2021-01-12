@@ -58,7 +58,7 @@ export default class Post {
   updatedAt: Date;
 
   @OneToOne(() => Location, (location) => location.post)
-  location: Location; 
+  location: Location;
 
   @OneToMany(() => Image, (image) => image.post)
   @JoinColumn({ name: "image" })

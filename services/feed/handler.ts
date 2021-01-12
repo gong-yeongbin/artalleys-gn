@@ -9,49 +9,49 @@
 
 // const { CLOUDFRONT_IMAGE } = process.env;
 
-// /**
-//  * @api {get}  /feed/getFeed     get Feed
-//  * @apiName Get Feed
-//  * @apiGroup Feed
-//  *
-//  * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
-//  * @apiParam (QueryStringParam) {String=sell,buy} type                                 type
-//  *
-//  * @apiParam (body) {Array} [setCategory]       setCategory                            category
-//  * @apiParam (body) {Array} [setFilter=newest]  setfilter                              filter
-//  * @apiParam (body) {Array} [setPrice] setPrice                                        price
-//  * @apiParam (body) {Array} [setPrice] setPrice.min                                    min price
-//  * @apiParam (body) {Array} [setPrice] setPrice.max                                    max price
-//  * @apiParam (body) {boolean} [hide] hide                                              hide
-//  *
-//  * @apiParamExample request
-// {
-// 	"setCategory": ["pants","t-shirt"],
-// 	"setFilter": "newest",
-// 	"setPrice":	{
-// 									"min":0,
-// 									"max":1001
-// 						 	}
-// }
-//  * @apiParamExample response
-//  [
-//   {
-//     "postId": "d59704d14321b9c785d350ea596d98",
-//     "title": "hwajangpyoom",
-//     "price": 1000,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/test1/d59704d14321b9c785d350ea596d98/origin.png"
-//   },
-//   {
-//     "postId": "cf5e31252c127cc003cf4d621fb289",
-//     "title": "hwajangpyoom",
-//     "price": 1000,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/test1/cf5e31252c127cc003cf4d621fb289/origin.png"
-//   },
-// ]
-//  **/
+/**
+ * @api {get}  /feed/getFeed     get Feed
+ * @apiName Get Feed
+ * @apiGroup Feed
+ *
+ * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
+ * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
+ * @apiParam (QueryStringParam) {String=sell,buy} type                                 type
+ *
+ * @apiParam (body) {Array} [setCategory]       setCategory                            category
+ * @apiParam (body) {Array} [setFilter=newest]  setfilter                              filter
+ * @apiParam (body) {Array} [setPrice] setPrice                                        price
+ * @apiParam (body) {Array} [setPrice] setPrice.min                                    min price
+ * @apiParam (body) {Array} [setPrice] setPrice.max                                    max price
+ * @apiParam (body) {boolean} [hide] hide                                              hide
+ *
+ * @apiParamExample request
+{
+	"setCategory": ["pants","t-shirt"],
+	"setFilter": "newest",
+	"setPrice":	{
+									"min":0,
+									"max":1001
+						 	}
+}
+ * @apiParamExample response
+ [
+  {
+    "postId": "d59704d14321b9c785d350ea596d98",
+    "title": "hwajangpyoom",
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/test1/d59704d14321b9c785d350ea596d98/origin.png"
+  },
+  {
+    "postId": "cf5e31252c127cc003cf4d621fb289",
+    "title": "hwajangpyoom",
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/test1/cf5e31252c127cc003cf4d621fb289/origin.png"
+  },
+]
+ **/
 
 // export const getFeed = async (
 //   event: APIGatewayEvent,
@@ -111,35 +111,35 @@
 //   };
 // };
 
-// /**
-//  * @api {get}  /feed/getBusinessFeed     get Business Feed
-//  * @apiName Get Business Feed
-//  * @apiGroup Feed
-//  *
-//  * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
-//  * @apiParam (QueryStringParam) {String=DESC,ASC} order                                order
-//  *
-//  *
-//  * @apiParamExample response
-//  [
-//   {
-//     "postId": "4f62a7cb423ac3ff3faf",
-//     "title": "business title",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
-//   },
-//   {
-//     "postId": "b96ff8643d495ce9777a",
-//     "title": "hwajangpyoom",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
-//   },
-//   {
-//     "postId": "e085b6dc01c7cce649f9",
-//     "title": "hwajangpyoom",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
-//   }
-// ]
-//  **/
+/**
+ * @api {get}  /feed/getBusinessFeed     get Business Feed
+ * @apiName Get Business Feed
+ * @apiGroup Feed
+ *
+ * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
+ * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
+ * @apiParam (QueryStringParam) {String=DESC,ASC} order                                order
+ *
+ *
+ * @apiParamExample response
+ [
+  {
+    "postId": "4f62a7cb423ac3ff3faf",
+    "title": "business title",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
+  },
+  {
+    "postId": "b96ff8643d495ce9777a",
+    "title": "hwajangpyoom",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
+  },
+  {
+    "postId": "e085b6dc01c7cce649f9",
+    "title": "hwajangpyoom",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
+  }
+]
+ **/
 // export const getBusinessFeed = async (
 //   event: APIGatewayEvent,
 //   context: Context
@@ -178,50 +178,50 @@
 //   };
 // };
 
-// /**
-//  * @api {get}  /feed/getSearchFeed     get Search Feed
-//  * @apiName Get Search Feed
-//  * @apiGroup Feed
-//  *
-//  * @apiParam (QueryStringParam) {Number}[offset=0] offset                               offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10] limit                                limit
-//  * @apiParam (Body) {String=buy,sell} type                                              type
-//  * @apiParam (Body) {String} search                                                     search
-//  * @apiParam (Body) {String=newest,closest,price}[setFilter="newest"]                   setFilter
-//  * @apiParam (Body) {String=DESC,ASC}[order="DESC"]                                     order
-//  * @apiParam (Body) {Boolean}[hide="false"]                                             hide
-//   * @apiParamExample request
-// {
-//   "type": "buy"
-// 	"search":"hwajangpyoom",
-// 	"setFilter": "newest",
-// 	"setPrice":	{
-// 									"min":0,
-// 									"max":1001
-//                },
-//   "order": "DESC",
-// 	"hide": false
-// }
-//  * @apiParamExample response
-// [
-//   {
-//     "postId": "e085b6dc01c7cce649f9",
-//     "title": "hwajangpyoom",
-//     "view": 0,
-//     "price": 1001,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
-//   },
-//   {
-//     "postId": "b96ff8643d495ce9777a",
-//     "title": "hwajangpyoom",
-//     "view": 0,
-//     "price": 1000,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
-//   }
-// ]
-//  **/
+/**
+ * @api {get}  /feed/getSearchFeed     get Search Feed
+ * @apiName Get Search Feed
+ * @apiGroup Feed
+ *
+ * @apiParam (QueryStringParam) {Number}[offset=0] offset                               offset
+ * @apiParam (QueryStringParam) {Number}[limit=10] limit                                limit
+ * @apiParam (Body) {String=buy,sell} type                                              type
+ * @apiParam (Body) {String} search                                                     search
+ * @apiParam (Body) {String=newest,closest,price}[setFilter="newest"]                   setFilter
+ * @apiParam (Body) {String=DESC,ASC}[order="DESC"]                                     order
+ * @apiParam (Body) {Boolean}[hide="false"]                                             hide
+  * @apiParamExample request
+{
+  "type": "buy"
+	"search":"hwajangpyoom",
+	"setFilter": "newest",
+	"setPrice":	{
+									"min":0,
+									"max":1001
+               },
+  "order": "DESC",
+	"hide": false
+}
+ * @apiParamExample response
+[
+  {
+    "postId": "e085b6dc01c7cce649f9",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1001,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
+  },
+  {
+    "postId": "b96ff8643d495ce9777a",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
+  }
+]
+ **/
 // export const getSearchFeed = async (
 //   event: APIGatewayEvent,
 //   context: Context
@@ -289,50 +289,50 @@
 //   };
 // };
 
-// /**
-//  * @api {get}  /feed/getCategoryFeed     get Category Feed
-//  * @apiName Get Category Feed
-//  * @apiGroup Feed
-//  *
-//  * @apiParam (QueryStringParam) {Number}[offset=0] offset                               offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10] limit                                limit
-//  * @apiParam (Body) {String=buy,sell} type                                              type
-//  * @apiParam (Body) {String} category                                                   category
-//  * @apiParam (Body) {String=newest,closest,price}[setFilter="newest"]                   setFilter
-//  * @apiParam (Body) {String=DESC,ASC}[order="DESC"]                                     order
-//  * @apiParam (Body) {Boolean}[hide="false"]                                             hide
-//   * @apiParamExample request
-// {
-//   "type": "buy"
-// 	"category":"hwajangpyoom category",
-// 	"setFilter": "newest",
-// 	"setPrice":	{
-// 									"min":0,
-// 									"max":1001
-//                },
-//   "order": "DESC",
-// 	"hide": false
-// }
-//  * @apiParamExample response
-// [
-//   {
-//     "postId": "e085b6dc01c7cce649f9",
-//     "title": "hwajangpyoom",
-//     "view": 0,
-//     "price": 1000,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
-//   },
-//   {
-//     "postId": "b96ff8643d495ce9777a",
-//     "title": "hwajangpyoom",
-//     "view": 0,
-//     "price": 1000,
-//     "active": "active",
-//     "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
-//   }
-// ]
-//  **/
+/**
+ * @api {get}  /feed/getCategoryFeed     get Category Feed
+ * @apiName Get Category Feed
+ * @apiGroup Feed
+ *
+ * @apiParam (QueryStringParam) {Number}[offset=0] offset                               offset
+ * @apiParam (QueryStringParam) {Number}[limit=10] limit                                limit
+ * @apiParam (Body) {String=buy,sell} type                                              type
+ * @apiParam (Body) {String} category                                                   category
+ * @apiParam (Body) {String=newest,closest,price}[setFilter="newest"]                   setFilter
+ * @apiParam (Body) {String=DESC,ASC}[order="DESC"]                                     order
+ * @apiParam (Body) {Boolean}[hide="false"]                                             hide
+  * @apiParamExample request
+{
+  "type": "buy"
+	"category":"hwajangpyoom category",
+	"setFilter": "newest",
+	"setPrice":	{
+									"min":0,
+									"max":1001
+               },
+  "order": "DESC",
+	"hide": false
+}
+ * @apiParamExample response
+[
+  {
+    "postId": "e085b6dc01c7cce649f9",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
+  },
+  {
+    "postId": "b96ff8643d495ce9777a",
+    "title": "hwajangpyoom",
+    "view": 0,
+    "price": 1000,
+    "active": "active",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
+  }
+]
+ **/
 
 // export const getCategoryFeed = async (
 //   event: APIGatewayEvent,

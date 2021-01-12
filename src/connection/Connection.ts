@@ -59,20 +59,13 @@ const entity = [
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: "mysql",
-  host: "localhost",
-  port: 3306,
-  username: "root",
-  password: "1111",
-  database: "gn",
-  synchronize: true,
-  // type: DB_TYPE as "mysql",
-  // host: DB_HOST,
-  // port: Number(DB_PORT),
-  // username: DB_USERNAME,
-  // password: DB_PASSWORD,
-  // database: DB_DATABASE,
-  // synchronize: Boolean(DB_SYNCHRONIZE),
+  type: DB_TYPE as "mysql",
+  host: DB_HOST,
+  port: Number(DB_PORT),
+  username: DB_USERNAME,
+  password: DB_PASSWORD,
+  database: DB_DATABASE,
+  synchronize: Boolean(DB_SYNCHRONIZE),
 
   // type: "mysql",
   // host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",

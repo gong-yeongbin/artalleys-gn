@@ -63,8 +63,8 @@
 //   };
 // };
 
-// // {"action":"connect2","id":"testid"}
-// // {"action":"connect2","id":"testid2"}
+// {"action":"connect2","id":"testid"}
+// {"action":"connect2","id":"testid2"}
 // export const onConnect2 = async (
 //   event: APIGatewayEvent,
 //   context: Context
@@ -105,8 +105,8 @@
 //   };
 // };
 
-// // {"action":"onSendMessage", "uid":"testid","message":"test msg","postId":"aa74538fddecbafb3674","receiveId":"testid2"}
-// // {"action":"onSendMessage", "uid":"testid2","message":"test msg","postId":"aa74538fddecbafb3674","receiveId":"testid"}
+// {"action":"onSendMessage", "uid":"testid","message":"test msg","postId":"aa74538fddecbafb3674","receiveId":"testid2"}
+// {"action":"onSendMessage", "uid":"testid2","message":"test msg","postId":"aa74538fddecbafb3674","receiveId":"testid"}
 // export const onSendMessage = async (
 //   event: APIGatewayEvent,
 //   context: Context
@@ -170,28 +170,28 @@
 //   };
 // };
 
-// /**
-//  * @api {get} /chat/getCHatRoomList     get chat room list
-//  * @apiName Get Chat Room List
-//  * @apiGroup Chat
-//  *
-//  *
-//  * @apiParamExample Response
-//  [
-//   {
-//     "id": "31",
-//     "sendId": "testid2",
-//     "receiveId": "testid",
-//     "message": "you too",
-//     "createdAt": "2020-12-02T03:46:12.263Z",
-//     "updatedAt": "2020-12-02T03:46:12.263Z"
-//   }
-// ]
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {get} /chat/getCHatRoomList     get chat room list
+ * @apiName Get Chat Room List
+ * @apiGroup Chat
+ *
+ *
+ * @apiParamExample Response
+ [
+  {
+    "id": "31",
+    "sendId": "testid2",
+    "receiveId": "testid",
+    "message": "you too",
+    "createdAt": "2020-12-02T03:46:12.263Z",
+    "updatedAt": "2020-12-02T03:46:12.263Z"
+  }
+]
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 
 // export const getChatRoomList = async (
 //   event: APIGatewayEvent,
@@ -220,47 +220,47 @@
 //   };
 // };
 
-// /**
-//  * @api {get} /chat/:receiveId/getChatContentList     get chat content list
-//  * @apiName Get Chat Content List
-//  * @apiGroup Chat
-//  *
-//  * @apiParam (PathParam) {String}receiveId                           receive Id
-//  * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
-//  * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
-//  *
-//  * @apiParamExample Response
-//  [
-//   {
-//     "id": "31",
-//     "sendId": "testid2",
-//     "receiveId": "testid",
-//     "message": "you too",
-//     "createdAt": "2020-12-02T03:46:12.263Z",
-//     "updatedAt": "2020-12-02T03:46:12.263Z"
-//   },
-//   {
-//     "id": "30",
-//     "sendId": "testid",
-//     "receiveId": "testid2",
-//     "message": "omg",
-//     "createdAt": "2020-12-02T03:46:01.336Z",
-//     "updatedAt": "2020-12-02T03:46:01.336Z"
-//   },
-//   {
-//     "id": "29",
-//     "sendId": "testid2",
-//     "receiveId": "testid",
-//     "message": "wow good",
-//     "createdAt": "2020-12-02T03:45:51.943Z",
-//     "updatedAt": "2020-12-02T03:45:51.943Z"
-//   },
-// ]
-//  *
-//  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
-//  * @apiErrorExample {json}  ResourceNotFound
-//  *      HTTP/1.1    404    Not Found
-//  **/
+/**
+ * @api {get} /chat/:receiveId/getChatContentList     get chat content list
+ * @apiName Get Chat Content List
+ * @apiGroup Chat
+ *
+ * @apiParam (PathParam) {String}receiveId                           receive Id
+ * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
+ * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
+ *
+ * @apiParamExample Response
+ [
+  {
+    "id": "31",
+    "sendId": "testid2",
+    "receiveId": "testid",
+    "message": "you too",
+    "createdAt": "2020-12-02T03:46:12.263Z",
+    "updatedAt": "2020-12-02T03:46:12.263Z"
+  },
+  {
+    "id": "30",
+    "sendId": "testid",
+    "receiveId": "testid2",
+    "message": "omg",
+    "createdAt": "2020-12-02T03:46:01.336Z",
+    "updatedAt": "2020-12-02T03:46:01.336Z"
+  },
+  {
+    "id": "29",
+    "sendId": "testid2",
+    "receiveId": "testid",
+    "message": "wow good",
+    "createdAt": "2020-12-02T03:45:51.943Z",
+    "updatedAt": "2020-12-02T03:45:51.943Z"
+  },
+]
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
 
 // export const getChatContentList = async (
 //   event: APIGatewayEvent,
