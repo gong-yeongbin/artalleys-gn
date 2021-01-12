@@ -1,13 +1,4 @@
-import {
-  APIGatewayEvent,
-  Context,
-  ProxyResult,
-  SQSEvent,
-  SQSRecord,
-} from "aws-lambda";
-import * as jimp from "jimp";
-import { name } from "../util/util";
-import { getDatabaseConnection } from "../../src/connection/Connection";
+import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import {
   putObject,
   getObject,
@@ -24,9 +15,9 @@ import {
   PostCondition,
   PostStatus,
 } from "../../src/entity/Entity";
+import { Connection, Repository } from "typeorm";
+import { getDatabaseConnection } from "../../src/connection/Connection";
 import { PostBuilder } from "../../src/dto/PostDto";
-import { PostData } from "../../src/types/dataType";
-import { getRepository, Connection, Repository } from "typeorm";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
@@ -155,7 +146,7 @@ const createPost = async (
 
     const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    // await putObject(originalImage, `post/image/${fileName}.png`);
+    await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {

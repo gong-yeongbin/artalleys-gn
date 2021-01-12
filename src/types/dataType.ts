@@ -19,13 +19,13 @@ interface PostData {
   updatedAt?: Date;
 }
 
-interface NormalType extends PostData {
-  type: string;
+interface FeedData {
+  id: number;
+  title: string;
+  status: string;
   category: string;
-  condition: string;
-  number: number;
   price: number;
-  active: string;
+  url: string;
 }
 
 interface BusinessType extends PostData {
@@ -37,4 +37,4 @@ interface BusinessType extends PostData {
   workingHoursDescriptions?: string;
 }
 
-export { Location, PostData, BusinessType, NormalType };
+export { Location, PostData, BusinessType, FeedData };

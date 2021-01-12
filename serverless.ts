@@ -72,18 +72,6 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // createBusiness: {
-    //   handler: "services/business/handler.createBusiness",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "post/createBusiness",
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
     getPost: {
       handler: "services/post/handler.getPost",
       events: [
@@ -96,25 +84,6 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // getBusiness: {
-    //   handler: "services/business/handler.getBusiness",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "post/{postId}/getBusiness",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
     hidePost: {
       handler: "services/post/handler.hidePost",
       events: [
@@ -172,28 +141,59 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // getFeed: {
-    //   handler: "services/feed/handler.getFeed",
+    // createBusiness: {
+    //   handler: "services/business/handler.createBusiness",
     //   events: [
     //     {
     //       http: {
     //         method: "put",
-    //         path: "feed/getFeed",
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //               order: false,
-    //               type: false,
-    //             },
-    //           },
-    //         },
+    //         path: "post/createBusiness",
     //         cors: true,
     //       },
     //     },
     //   ],
     // },
+    // getBusiness: {
+    //   handler: "services/business/handler.getBusiness",
+    //   events: [
+    //     {
+    //       http: {
+    //         method: "get",
+    //         path: "post/{postId}/getBusiness",
+    //         cors: true,
+    //         request: {
+    //           parameters: {
+    //             paths: {
+    //               postId: true,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+    getFeed: {
+      handler: "services/feed/handler.getFeed",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "feed/getFeed",
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                  type: false,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
     // getCategoryFeed: {
     //   handler: "services/feed/handler.getCategoryFeed",
     //   events: [

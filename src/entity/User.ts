@@ -8,7 +8,14 @@ import {
   OneToMany,
   JoinColumn,
 } from "typeorm";
-import { Image, Location, Followers, Following, Post } from "./Entity";
+import {
+  Image,
+  Location,
+  Followers,
+  Following,
+  Post,
+  PostCategory,
+} from "./Entity";
 
 @Entity("user")
 export default class User {
@@ -55,13 +62,3 @@ export default class User {
   @JoinColumn({ name: "post_id" })
   posts: Post[];
 }
-
-// @Column({
-//   name: "profile_image",
-//   type: "nvarchar",
-//   length: 1024,
-//   nullable: true,
-// })
-// profileImage: string;
-// @Column({ name: "connection_id", type: "nvarchar", nullable: true })
-//   connectionId: string;
