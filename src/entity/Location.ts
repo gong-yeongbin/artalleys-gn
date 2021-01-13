@@ -24,13 +24,11 @@ export default class Location {
     cascade: true,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
   post: Post;
 
   @OneToOne(() => Business, (business) => business.location, {
     cascade: true,
     onDelete: "CASCADE",
   })
-  @JoinColumn()
   business: Business;
 }

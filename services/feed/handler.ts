@@ -10,7 +10,7 @@ import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop"
 const { CLOUDFRONT_IMAGE } = process.env;
 
 /**
- * @api {get}  /feed/getFeed     get Feed
+ * @api {put}  /feed/getFeed     get Feed
  * @apiName Get Feed
  * @apiGroup Feed
  * 

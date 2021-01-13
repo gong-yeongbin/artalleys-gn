@@ -184,25 +184,25 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // getBusiness: {
-    //   handler: "services/business/handler.getBusiness",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "post/{postId}/getBusiness",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
+    getBusiness: {
+      handler: "services/business/handler.getBusiness",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "business/{businessId}/getBusiness",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  businessId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
     getFeed: {
       handler: "services/feed/handler.getFeed",
       events: [

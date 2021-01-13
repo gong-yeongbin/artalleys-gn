@@ -40,13 +40,20 @@ interface FeedData {
   url: string;
 }
 
-interface BusinessType extends PostData {
-  detailTitle?: string;
-  address?: string;
-  startTime?: number;
-  endTime?: number;
-  homePage?: string;
-  workingHoursDescriptions?: string;
+interface BusinessType {
+  id: number;
+  title: string;
+  detailTitle: string;
+  address: string;
+  number: number;
+  startWorkingHours: number;
+  endWorkingHours: number;
+  businessHoursInfo: string;
+  homepage: string;
+  details: string;
+  url: string;
+  category: string;
+  location: Location;
 }
 
 export { Location, PostData, BusinessType, FeedData, UserData, PostOtherData };

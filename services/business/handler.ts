@@ -16,12 +16,13 @@ import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop"
 import { getUid } from "../util/util";
 import { UserData } from "../../src/types/dataType";
 import { uuid } from "uuidv4";
+import { BusinessBuilder } from "../../src/dto/BusinessDto";
 
-const { BUCKET_SERVICE_ENDPOINT_URL } = process.env;
+const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
 /**
- * @api {put}  /business/createPost     Create Business Post
- * @apiName Create Business Post
+ * @api {put}  /business/createBusiness     Create Business
+ * @apiName Create Business
  * @apiGroup Business
  *
  * @apiParam (Header) {string}  Authorization                             Bearer Token
@@ -129,9 +130,9 @@ const createBusiness = async (
       })
       .execute();
 
-    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    await putObject(originalImage, `image/${fileName}.png`);
+    // await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {
@@ -141,81 +142,76 @@ const createBusiness = async (
 };
 
 /**
- * @api {get}  /post/:postId/getBusiness     Get Business Post
- * @apiName Get Business Post
- * @apiGroup Post
+ * @api {get}  /post/:businessId/getBusiness     Get Business 
+ * @apiName Get Business
+ * @apiGroup Business
  *
  * @apiParam (Header)   {string}  Authorization                         Bearer Token
- * @apiParam (PathParam) {String} postId                                postId
+ * @apiParam (PathParam) {String} businessId                            business id
  *
  *
  * @apiParamExample {json} Response
 {
-  "postId": "4f62a7cb423ac3ff3faf",
-  "title": "business title",
-  "view": 0,
-  "detailTitle": "organic food",
-  "address": "seoul",
-  "startTime": 1000,
-  "endTime": 2200,
-  "homePage": "www.asdf.com",
-  "workingHoursDescriptions": "testestsetestts",
-  "descriptions": "hahahahahahah",
-  "url": [
-    "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
-  ],
-  "location": {
-    "longitude": 12,
-    "latitude": 13
-  },
-  "createdAt": "2020-11-16T22:50:32.965Z",
-  "updatedAt": "2020-11-16T22:50:32.965Z"
+  "data": {
+    "id": "18",
+    "title": "test title",
+    "detailTitle": "organic food",
+    "address": "seoul jongro",
+    "number": 1047484856,
+    "startWorkingHours": 0,
+    "endWorkingHours": 0,
+    "businessHoursInfo": "test businessHoursInfo",
+    "homepage": "www.testhomepage.com",
+    "details": "organic food test test test",
+    "url": "d19j7dhfxgaxy7.cloudfront.net/image/ce4b4d7b-4384-4b65-99f7-23b765fba669.png",
+    "category": "Beauty & Spas",
+    "location": {
+      "longitude": 12.123,
+      "latitude": 13.123
+    }
+  }
 }
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
-// const getBusiness = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
+const getBusiness = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const businessId: string = event.pathParameters["businessId"];
+  const connection = await getDatabaseConnection();
+  const businessRepository = connection.getRepository(Business);
 
-//   const connection = await getDatabaseConnection();
-//   const postRepository = connection.getRepository(Post);
-//   const postEntity = await postRepository
-//     .createQueryBuilder("post")
-//     .leftJoinAndSelect("post.business", "business")
-//     .leftJoinAndSelect("post.location", "location")
-//     .leftJoinAndSelect("post.postImage", "postImage")
-//     .where("post.postId = :postId", { postId: postId })
-//     .getOne();
+  const businessEntity: Business = await businessRepository
+    .createQueryBuilder("business")
+    .leftJoinAndSelect("business.location", "location")
+    .leftJoinAndSelect("business.image", "image")
+    .leftJoinAndSelect("business.category", "category")
+    .where("business.id =:businessId", { businessId: businessId })
+    .getOne();
 
-//   if (postEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "null",
-//     };
-//   }
+  if (businessEntity == null) {
+    return {
+      statusCode: 404,
+      body: "null",
+    };
+  }
 
-//   const businessDto: BusinessData = new BusinessBuilder(postEntity)
-//     .replaceHost(CLOUDFRONT_IMAGE)
-//     .build();
+  const businessDto: any = new BusinessBuilder(businessEntity)
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(businessDto),
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: JSON.stringify(businessDto),
+  };
+};
 
-// const wrappedGetBusiness = middy(getBusiness).use(authorizeToken());
-// const wrappedCreateBusiness = middy(createBusiness).use(authorizeToken());
-
-// export {
-//   wrappedGetBusiness as getBusiness,
-//   wrappedCreateBusiness as createBusiness,
-// };
-
+const wrappedGetBusiness = middy(getBusiness)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 const wrappedCreateBusiness = middy(createBusiness)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+export { wrappedGetBusiness as getBusiness };
 export { wrappedCreateBusiness as createBusiness };

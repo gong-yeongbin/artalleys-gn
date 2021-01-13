@@ -33,11 +33,11 @@ export default class Business {
   @Column({ name: "number", type: "integer" })
   number: number;
 
-  @Column({ name: "start_working_hours", type: "nvarchar" })
-  startWorkingHours: string;
+  @Column({ name: "start_working_hours", type: "integer" })
+  startWorkingHours: number;
 
-  @Column({ name: "end_working_hours", type: "nvarchar" })
-  endWorkingHours: string;
+  @Column({ name: "end_working_hours", type: "integer" })
+  endWorkingHours: number;
 
   @Column({ name: "business_hours_info", type: "nvarchar" })
   businessHoursInfo: string;
@@ -53,7 +53,8 @@ export default class Business {
   })
   details: string;
 
-  @OneToOne(() => Location, (location) => location.id)
+  @OneToOne(() => Location, (location) => location.business)
+  @JoinColumn({ name: "location" })
   location: Location;
 
   @OneToMany(() => Image, (image) => image.business)

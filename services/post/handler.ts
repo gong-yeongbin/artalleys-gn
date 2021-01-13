@@ -130,7 +130,6 @@ const createPost = async (
   post.number = number;
   post.nonNegotiablePriceYn = nonNegotiablePriceYn;
   post.user = userEntity;
-
   await postRepository.save(post);
 
   let location: Location = new Location();
@@ -151,9 +150,9 @@ const createPost = async (
       })
       .execute();
 
-    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    await putObject(originalImage, `image/${fileName}.png`);
+    // await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {
