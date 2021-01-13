@@ -24,6 +24,13 @@ interface PostData {
   updatedAt?: Date;
 }
 
+interface PostOtherData {
+  id: number;
+  title: string;
+  details: string;
+  url: string;
+}
+
 interface FeedData {
   id: number;
   title: string;
@@ -42,4 +49,4 @@ interface BusinessType extends PostData {
   workingHoursDescriptions?: string;
 }
 
-export { Location, PostData, BusinessType, FeedData, UserData };
+export { Location, PostData, BusinessType, FeedData, UserData, PostOtherData };

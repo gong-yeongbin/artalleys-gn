@@ -159,7 +159,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: "get",
-            path: "post/getOtherPost",
+            path: "post/{postId}/getOtherPost",
             cors: true,
             request: {
               parameters: {

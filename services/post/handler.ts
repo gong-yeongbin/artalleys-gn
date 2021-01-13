@@ -19,6 +19,7 @@ import {
 import { Connection, getConnection, Repository } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { PostBuilder } from "../../src/dto/PostDto";
+import { PostOtherBuilder } from "../../src/dto/PostOther";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
@@ -345,22 +346,103 @@ const deletePost = async (
   };
 };
 
-// const getOtherPost = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const connection: Connection = await getDatabaseConnection();
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const postEntity: Post = await postRepository
-//     .createQueryBuilder("post")
-//     .leftJoinAndSelect("post.user", "user")
-//     .getOne();
-//   console.log(postEntity);
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+/**
+ * @api {get}  /post/:postId/getOtherPost     get other post
+ * @apiName Get Other Post
+ * @apiGroup Post
+ * 
+ * @apiParam (Header)     {string}  Authorization                                Bearer Token
+ * @apiParam (QueryStringParam) {Number}[offset=0]                               offset
+ * @apiParam (QueryStringParam) {Number}[limit=6]                               limit
+ * @apiParam (QueryStringParam) {String=desc,asc} order                          order
+ *
+ * @apiParamExample response
+{
+  "data": [
+    {
+      "id": "27",
+      "title": "test title",
+      "details": "test details",
+      "url": "d19j7dhfxgaxy7.cloudfront.net/image/341e2ce3-f415-456e-8f9c-b267779f170b.png"
+    },
+    {
+      "id": "26",
+      "title": "test title",
+      "details": "test details",
+      "url": "d19j7dhfxgaxy7.cloudfront.net/image/e386ca0b-e183-4d44-9327-938f184c19c2.png"
+    },
+    {
+      "id": "25",
+      "title": "test title",
+      "details": "test details",
+      "url": "d19j7dhfxgaxy7.cloudfront.net/image/c727f3da-d423-4746-87a4-f64229cd703b.png"
+    }
+  ],
+  "_meta": {
+    "offset": 1,
+    "limit": 3,
+    "order": "DESC",
+    "totalCount": 6
+  }
+}
+ **/
+
+const getOtherPost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  if (userInfo == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("token error"),
+    };
+  }
+  const uid: string = userInfo.uid;
+  const postId: string = event.pathParameters["postId"];
+
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const { offset = 0, limit = 6, order = "DESC" } = event.queryStringParameters;
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "ASC" | "DESC" =
+    order.toLocaleLowerCase() == "asc" ? "ASC" : "DESC";
+
+  const postEntity: Post[] = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.user", "user")
+    .leftJoinAndSelect("post.image", "image")
+    .where("user.uid =:uid", { uid: uid })
+    .andWhere("post.id !=:id", { id: postId })
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .orderBy("post.createdAt", queryOrder)
+    .getMany();
+
+  const totalCount: number = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.user", "user")
+    .where("user.uid =:uid", { uid: uid })
+    .andWhere("post.id !=:id", { id: postId })
+    .getCount();
+
+  const postDto: any = new PostOtherBuilder(
+    postEntity,
+    queryOffset,
+    queryLimit,
+    queryOrder,
+    totalCount
+  )
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(postDto),
+  };
+};
 
 const wrappedGetPost = middy(getPost)
   .use(authorizeToken())
@@ -375,14 +457,14 @@ const wrappedHidePost = middy(hidePost)
 const wrappedBoostPost = middy(boostPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-// const wrappedGetOtherPost = middy(getOtherPost)
-//   .use(authorizeToken())
-//   .use(doNotWaitForEmptyEventLoop());
+const wrappedGetOtherPost = middy(getOtherPost)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedGetPost as getPost,
   wrappedCreatePost as createPost,
   wrappedDeletePost as deletePost,
   wrappedHidePost as hidePost,
   wrappedBoostPost as boostPost,
-  // wrappedGetOtherPost as getOtherPost,
+  wrappedGetOtherPost as getOtherPost,
 };
