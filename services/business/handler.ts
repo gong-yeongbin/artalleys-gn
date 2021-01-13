@@ -129,9 +129,9 @@ const createBusiness = async (
       })
       .execute();
 
-    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    // await putObject(originalImage, `image/${fileName}.png`);
+    await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {
