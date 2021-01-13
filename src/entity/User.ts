@@ -14,7 +14,7 @@ import {
   Followers,
   Following,
   Post,
-  PostCategory,
+  Business,
 } from "./Entity";
 
 @Entity("user")
@@ -61,4 +61,8 @@ export default class User {
   @OneToMany(() => Post, (post) => post.user)
   @JoinColumn({ name: "post" })
   post: Post[];
+
+  @OneToMany(() => Business, (business) => business.user)
+  @JoinColumn({ name: "business" })
+  business: Business[];
 }

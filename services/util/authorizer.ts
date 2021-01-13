@@ -13,11 +13,17 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
           databaseURL: "",
         });
       }
+
+      let resource: string = handler.event.resource;
+      if (resource.indexOf("getFeed") != -1) {
+        return;
+      }
+
       if (!handler.event || !handler.event.headers["Authorization"]) {
         return new Error("token missing");
       }
-      const token: string = handler.event.headers["Authorization"];
 
+      const token: string = handler.event.headers["Authorization"];
       await admin
         .auth()
         .verifyIdToken(token)

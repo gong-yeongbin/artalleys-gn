@@ -140,7 +140,7 @@ const createPost = async (
   await locationRepository.save(location);
 
   for (let index in data.image) {
-    let fileName = uuid();
+    let fileName: string = uuid();
     await imageRepository
       .createQueryBuilder()
       .insert()
@@ -151,9 +151,9 @@ const createPost = async (
       })
       .execute();
 
-    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    await putObject(originalImage, `image/${fileName}.png`);
+    // await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {

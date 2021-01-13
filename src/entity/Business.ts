@@ -1,13 +1,20 @@
 import {
-  Column,
   Entity,
   PrimaryGeneratedColumn,
-  OneToOne,
+  Column,
   JoinColumn,
+  OneToOne,
   OneToMany,
+  ManyToOne,
 } from "typeorm";
 
-import { BusinessPost, Location, Image } from "../entity/Entity";
+import {
+  BusinessPost,
+  Location,
+  Image,
+  User,
+  BusinessCategory,
+} from "../entity/Entity";
 
 @Entity("business")
 export default class Business {
@@ -38,14 +45,37 @@ export default class Business {
   @Column({ name: "homepage", type: "nvarchar" })
   homepage: string;
 
-  @OneToOne(() => Location, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "location_id" })
+  @Column({
+    name: "details",
+    type: "nvarchar",
+    length: 300,
+    nullable: true,
+  })
+  details: string;
+
+  @OneToOne(() => Location, (location) => location.id)
   location: Location;
 
-  @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
-  @JoinColumn({ name: "image_id" })
-  image: Image;
+  @OneToMany(() => Image, (image) => image.business)
+  @JoinColumn({ name: "image" })
+  image: Image[];
 
   @OneToMany(() => BusinessPost, (businessPost) => businessPost.id)
-  posts: BusinessPost[];
+  post: BusinessPost[];
+
+  @ManyToOne(() => User, (user) => user.post, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "user" })
+  user: User;
+
+  @ManyToOne(
+    () => BusinessCategory,
+    (BusinessCategory) => BusinessCategory.business,
+    {
+      onDelete: "CASCADE",
+    }
+  )
+  @JoinColumn({ name: "category" })
+  category: BusinessCategory;
 }

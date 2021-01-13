@@ -1,127 +1,144 @@
-// import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
-// import { getDatabaseConnection } from "../../src/connection/Connection";
-// import { putObject, sendMessage } from "../util/aws";
-// import { Post, Image, Location, PostBusiness } from "../../src/entity/Entity";
-// import { name } from "../util/util";
-// import { BusinessBuilder, BusinessData } from "../../src/dto/BusinessDto";
-// import { authorizeToken } from "../util/authorizer";
-// import { Connection, Repository } from "typeorm";
-// import * as middy from "middy";
+import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
+import { getDatabaseConnection } from "../../src/connection/Connection";
+import { putObject, sendMessage } from "../util/aws";
+import {
+  Post,
+  Image,
+  Location,
+  Business,
+  BusinessCategory,
+  User,
+} from "../../src/entity/Entity";
+import { Connection, Repository } from "typeorm";
+import middy from "@middy/core";
+import { authorizeToken } from "../util/authorizer";
+import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
+import { getUid } from "../util/util";
+import { UserData } from "../../src/types/dataType";
+import { uuid } from "uuidv4";
 
-// const { CLOUDFRONT_IMAGE } = process.env;
+const { BUCKET_SERVICE_ENDPOINT_URL } = process.env;
 
 /**
- * @api {put}  /post/createPost     Create Business Post
+ * @api {put}  /business/createPost     Create Business Post
  * @apiName Create Business Post
- * @apiGroup Post
+ * @apiGroup Business
  *
  * @apiParam (Header) {string}  Authorization                             Bearer Token
+ * @apiParam (Body)   {number}  business category code                    business category code
  * @apiParam (Body)   {String{30}}  title                                 title
- * @apiParam (Body)   {String }  detailTitle                               detailTitle
- * @apiParam (Body)   {Object} location                                   location
- * @apiParam (Body)   {Object} location.latitude                          location latitude
- * @apiParam (Body)   {Object} location.longitude                        location longitude
+ * @apiParam (Body)   {String}  detailTitle                               detail title
  * @apiParam (Body)   {String} address                                    address
  * @apiParam (Body)   {Number} number                                     number
- * @apiParam (Body)   {Object} workingHours                               workingHours
- * @apiParam (Body)   {Object} workingHours.start                         workingHours start
- * @apiParam (Body)   {Object} workingHours.end                           workingHours end
- * @apiParam (Body)   {String} workingHoursDescriptions                   workingHoursDescriptions
- * @apiParam (Body)   {String} homepage                                   homepage
- * @apiParam (Body)   {String{300}} descriptions                          post descriptions
+ * @apiParam (Body)   {number} startWorkingHours                          start working hours
+ * @apiParam (Body)   {number} endWorkingHours                            end working hours
+ * @apiParam (Body)   {Object} location                                   location
+ * @apiParam (Body)   {Object} location.latitude                          latitude
+ * @apiParam (Body)   {Object} location.longitude                         longitude
+ * @apiParam (Body)   {String} businessHoursInfo                          business hours info
+ * @apiParam (Body)   {String} homepage                                   homepage url
+ * @apiParam (Body)   {String{300}} details                               details
  * @apiParam (Body)   {base64} image                                      post image
  *
  *
  * @apiParamExample {json} Request Body
 {
+	"category": 5,
 	"title": "business title",
 	"detailTitle": "organic food",
+	"address": "seoul jongro",
+	"number": 1047484856,
+	"startWorkingHours": 1130,
+	"endWorkingHours": 2200,
+	"businessHoursInfo":"test businessHoursInfo",
+	"homepage":"www.testhomepage.com",
 	"location": {
 							"longitude": 12.123,
 							"latitude": 13.123
 						 },
-	"address": "seoul",
-	"number": 2112341234,
-  "workingHours": {
-										"start": 1000,
-										"end": 2200
-									},
-	"workingHoursDescriptions":"testestsetestts",
-	"homepage":"www.asdf.com",
-	"descriptions":"hahahahahahah",
+	"details":"organic food test test test",
 	"image": ["testtesttesttest........"]
  }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
-// const createBusiness = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const connection = await getDatabaseConnection();
-//   const postRepository = connection.getRepository(Post);
-//   const postBusinessRepository = connection.getRepository(PostBusiness);
-//   const imageRepository = connection.getRepository(Image);
+const createBusiness = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const userInfo: UserData = await getUid(event.headers["Authorization"]);
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const businessRepository: Repository<Business> = connection.getRepository(
+    Business
+  );
+  const businessCategoryRepository: Repository<BusinessCategory> = connection.getRepository(
+    BusinessCategory
+  );
+  const locationRepository: Repository<Location> = connection.getRepository(
+    Location
+  );
+  const imageRepository: Repository<Image> = connection.getRepository(Image);
 
-//   const postId = name(10);
-//   const data: any = JSON.parse(event.body);
+  const data: any = JSON.parse(event.body);
 
-//   let post: Post = new Post();
-//   let postBusiness: PostBusiness = new PostBusiness();
-//   let location: Location = new Location();
+  let {
+    title,
+    detailTitle,
+    address,
+    number,
+    startWorkingHours,
+    endWorkingHours,
+    businessHoursInfo,
+    homepage,
+    details,
+  }: Business = data;
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+  const businessCategory: BusinessCategory = await businessCategoryRepository.findOne(
+    { id: data.category }
+  );
 
-//   let { title, number }: Post = data;
+  let business: Business = new Business();
+  business.title = title;
+  business.detailTitle = detailTitle;
+  business.address = address;
+  business.number = number;
+  business.startWorkingHours = startWorkingHours;
+  business.endWorkingHours = endWorkingHours;
+  business.businessHoursInfo = businessHoursInfo;
+  business.homepage = homepage;
+  business.details = details;
+  business.user = userEntity;
+  business.category = businessCategory;
+  await businessRepository.save(business);
 
-//   let {
-//     detailTitle,
-//     address,
-//     descriptions,
-//     workingHoursDescriptions,
-//     homepage,
-//   }: PostBusiness = data;
+  let location: Location = new Location();
+  location.latitude = data.location.latitude;
+  location.longitude = data.location.longitude;
+  location.business = business;
+  await locationRepository.save(location);
 
-//   location.longitude = data.location.longitude;
-//   location.latitude = data.location.latitude;
+  for (let index in data.image) {
+    let fileName: string = uuid();
+    await imageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Image)
+      .values({
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${fileName}.png`,
+        business: business,
+      })
+      .execute();
 
-//   post.postId = postId;
-//   post.title = title;
-//   post.number = number;
-//   post.location = location;
-//   await postRepository.save(post);
+    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-//   postBusiness.detailTitle = detailTitle;
-//   postBusiness.address = address;
-//   postBusiness.startTime = data.workingHours.start;
-//   postBusiness.endTime = data.workingHours.end;
-//   postBusiness.descriptions = descriptions;
-//   postBusiness.workingHoursDescriptions = workingHoursDescriptions;
-//   postBusiness.homepage = homepage;
-//   // postBusiness.post = post;
-//   postBusinessRepository.save(postBusiness);
+    // await putObject(originalImage, `image/${fileName}.png`);
+  }
 
-//   for (let index in data.image) {
-//     let imageName = name(8);
-
-//     await imageRepository
-//       .createQueryBuilder()
-//       .insert()
-//       .into(Image)
-//       .values({
-//         post: post,
-//         url: `https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/post/${postId}/origin/${imageName}.png`,
-//       })
-//       .execute();
-
-//     const originalImage = Buffer.from(data.image[index], "base64");
-
-//     await putObject(originalImage, `post/${postId}/origin/${imageName}.png`);
-//     await sendMessage(`post/${postId}/origin/${imageName}.png`);
-//   }
-
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 /**
  * @api {get}  /post/:postId/getBusiness     Get Business Post
@@ -197,3 +214,8 @@
 //   wrappedGetBusiness as getBusiness,
 //   wrappedCreateBusiness as createBusiness,
 // };
+
+const wrappedCreateBusiness = middy(createBusiness)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+export { wrappedCreateBusiness as createBusiness };

@@ -14,17 +14,16 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiName Get Feed
  * @apiGroup Feed
  * 
- * @apiParam (Header)     {string}  Authorization                                Bearer Token
  * @apiParam (QueryStringParam) {Number}[offset=0]                               offset
  * @apiParam (QueryStringParam) {Number}[limit=10]                               limit
  * @apiParam (QueryStringParam) {String=sell,buy} type                           type
  *
- * @apiParam (body) {Array} [category]                                           category
- * @apiParam (body) {Array} [filter=newest]                                      filter
- * @apiParam (body) {Array} [price]                                              price
- * @apiParam (body) {Array} [price] min                                          min
- * @apiParam (body) {Array} [price] max                                          max
- * @apiParam (body) {boolean} [hide]                                             hide
+ * @apiParam (body) {Array} category                                           category
+ * @apiParam (body) {Array} filter=newest                                      filter
+ * @apiParam (body) {Array} price                                              price
+ * @apiParam (body) {Array} price min                                          min
+ * @apiParam (body) {Array} price max                                          max
+ * @apiParam (body) {boolean} hide                                             hide
  * @apiParam (body) {String} search                                              search
  *
  * @apiParamExample request

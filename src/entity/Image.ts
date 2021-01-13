@@ -2,11 +2,10 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  OneToOne,
   JoinColumn,
   ManyToOne,
 } from "typeorm";
-import { Post } from "./Entity";
+import { Business, Post } from "./Entity";
 
 @Entity("image")
 export default class Image {
@@ -21,4 +20,10 @@ export default class Image {
   })
   @JoinColumn({ name: "post" })
   post: Post;
+
+  @ManyToOne(() => Business, (business) => business.image, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "business" })
+  business: Business;
 }

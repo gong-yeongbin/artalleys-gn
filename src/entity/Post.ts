@@ -57,7 +57,7 @@ export default class Post {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => Location, (location) => location.post)
+  @OneToOne(() => Location, (location) => location.id)
   location: Location;
 
   @OneToMany(() => Image, (image) => image.post)

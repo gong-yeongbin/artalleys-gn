@@ -46,7 +46,7 @@ export default class BusinessPost {
   @JoinColumn({ name: "image_id" })
   image: Image;
 
-  @ManyToOne(() => Business, (business) => business.posts, {
+  @ManyToOne(() => Business, (business) => business.post, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "business_id" })

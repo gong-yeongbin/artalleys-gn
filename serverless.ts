@@ -172,18 +172,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // createBusiness: {
-    //   handler: "services/business/handler.createBusiness",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "post/createBusiness",
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
+    createBusiness: {
+      handler: "services/business/handler.createBusiness",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "business/createBusiness",
+            cors: true,
+          },
+        },
+      ],
+    },
     // getBusiness: {
     //   handler: "services/business/handler.getBusiness",
     //   events: [

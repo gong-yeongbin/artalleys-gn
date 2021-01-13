@@ -7,7 +7,7 @@ import {
   OneToOne,
   JoinColumn,
 } from "typeorm";
-import { Post } from "../entity/Entity";
+import { Business, Post } from "../entity/Entity";
 
 @Entity("location")
 export default class Location {
@@ -20,8 +20,17 @@ export default class Location {
   @Column({ name: "latitude", type: "float" })
   latitude: number;
 
-  @OneToOne(()=> Post, (post) => post.location, {cascade: true, onDelete: "CASCADE"}) 
+  @OneToOne(() => Post, (post) => post.location, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   post: Post;
 
+  @OneToOne(() => Business, (business) => business.location, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @JoinColumn()
+  business: Business;
 }
