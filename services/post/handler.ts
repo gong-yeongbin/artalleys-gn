@@ -7,6 +7,7 @@ import {
   sendMessage,
 } from "../util/aws";
 import {
+  User,
   Post,
   Location,
   Image,
@@ -15,13 +16,15 @@ import {
   PostCondition,
   PostStatus,
 } from "../../src/entity/Entity";
-import { Connection, Repository } from "typeorm";
+import { Connection, getConnection, Repository } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { PostBuilder } from "../../src/dto/PostDto";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
 import { uuid } from "uuidv4";
+import { getUid } from "../util/util";
+import { UserData } from "../../src/types/dataType";
 
 const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
@@ -68,7 +71,9 @@ const createPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
+  const userInfo: UserData = await getUid(event.headers["Authorization"]);
   const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
   const postRepository: Repository<Post> = connection.getRepository(Post);
   const postStatusRepository: Repository<PostStatus> = connection.getRepository(
     PostStatus
@@ -95,7 +100,7 @@ const createPost = async (
     number = 0,
     nonNegotiablePriceYn = false,
   }: Post = data;
-
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
   const postStatusEntity: PostStatus = await postStatusRepository.findOne({
     id: 1,
   });
@@ -123,6 +128,7 @@ const createPost = async (
   post.price = price;
   post.number = number;
   post.nonNegotiablePriceYn = nonNegotiablePriceYn;
+  post.user = userEntity;
 
   await postRepository.save(post);
 
@@ -339,6 +345,23 @@ const deletePost = async (
   };
 };
 
+// const getOtherPost = async (
+//   event: APIGatewayEvent,
+//   context: Context
+// ): Promise<ProxyResult> => {
+//   const connection: Connection = await getDatabaseConnection();
+//   const postRepository: Repository<Post> = connection.getRepository(Post);
+//   const postEntity: Post = await postRepository
+//     .createQueryBuilder("post")
+//     .leftJoinAndSelect("post.user", "user")
+//     .getOne();
+//   console.log(postEntity);
+//   return {
+//     statusCode: 200,
+//     body: "",
+//   };
+// };
+
 const wrappedGetPost = middy(getPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -352,10 +375,14 @@ const wrappedHidePost = middy(hidePost)
 const wrappedBoostPost = middy(boostPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+// const wrappedGetOtherPost = middy(getOtherPost)
+//   .use(authorizeToken())
+//   .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedGetPost as getPost,
   wrappedCreatePost as createPost,
   wrappedDeletePost as deletePost,
   wrappedHidePost as hidePost,
   wrappedBoostPost as boostPost,
+  // wrappedGetOtherPost as getOtherPost,
 };

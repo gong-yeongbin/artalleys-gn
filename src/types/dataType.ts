@@ -1,3 +1,8 @@
+interface UserData {
+  uid: string;
+  phoneNumber: string;
+  email?: string;
+}
 interface Location {
   longitude: number;
   latitude: number;
@@ -37,4 +42,4 @@ interface BusinessType extends PostData {
   workingHoursDescriptions?: string;
 }
 
-export { Location, PostData, BusinessType, FeedData };
+export { Location, PostData, BusinessType, FeedData, UserData };

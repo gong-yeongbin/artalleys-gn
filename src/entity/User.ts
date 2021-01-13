@@ -58,7 +58,7 @@ export default class User {
   @JoinColumn({ name: "following_id" })
   following: Following;
 
-  @OneToMany(() => Post, (post) => post.id)
-  @JoinColumn({ name: "post_id" })
-  posts: Post[];
+  @OneToMany(() => Post, (post) => post.user)
+  @JoinColumn({ name: "post" })
+  post: Post[];
 }

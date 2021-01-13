@@ -84,9 +84,9 @@ export default class Post {
   @JoinColumn({ name: "type" })
   type: PostType;
 
-  @ManyToOne(() => User, (user) => user.posts, {
+  @ManyToOne(() => User, (user) => user.post, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "business" })
+  @JoinColumn({ name: "user" })
   user: User;
 }

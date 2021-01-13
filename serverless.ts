@@ -72,6 +72,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    joinUser: {
+      handler: "services/user/handler.joinUser",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "user/joinUser",
+            cors: true,
+          },
+        },
+      ],
+    },
     getPost: {
       handler: "services/post/handler.getPost",
       events: [
@@ -129,6 +141,25 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "post/{postId}/deletePost",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    getOtherPost: {
+      handler: "services/post/handler.getOtherPost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/getOtherPost",
             cors: true,
             request: {
               parameters: {
