@@ -391,30 +391,28 @@ const getOtherPost = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const token: string = event.headers["Authorization"];
-  const userInfo: UserData = await getUid(token);
-  if (userInfo == null) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify("token error"),
-    };
-  }
-  const uid: string = userInfo.uid;
   const postId: string = event.pathParameters["postId"];
 
   const connection: Connection = await getDatabaseConnection();
   const postRepository: Repository<Post> = connection.getRepository(Post);
+  const userRepository: Repository<User> = connection.getRepository(User);
   const { offset = 0, limit = 6, order = "DESC" } = event.queryStringParameters;
   const queryOffset: number = Number(offset);
   const queryLimit: number = Number(limit);
   const queryOrder: "ASC" | "DESC" =
     order.toLocaleLowerCase() == "asc" ? "ASC" : "DESC";
 
+  const userEntity: User = await userRepository
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.post", "post")
+    .where("post.id =:id", { id: postId })
+    .getOne();
+
   const postEntity: Post[] = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.user", "user")
     .leftJoinAndSelect("post.image", "image")
-    .where("user.uid =:uid", { uid: uid })
+    .where("user.uid =:uid", { uid: userEntity.uid })
     .andWhere("post.id !=:id", { id: postId })
     .offset(queryOffset)
     .limit(queryLimit)
@@ -424,7 +422,7 @@ const getOtherPost = async (
   const totalCount: number = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.user", "user")
-    .where("user.uid =:uid", { uid: uid })
+    .where("user.uid =:uid", { uid: userEntity.uid })
     .andWhere("post.id !=:id", { id: postId })
     .getCount();
 
