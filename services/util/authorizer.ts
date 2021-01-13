@@ -6,8 +6,6 @@ import * as admin from "firebase-admin";
 const authorizeToken = (): middy.MiddlewareObject<any, any> => {
   return {
     before: async (handler: middy.HandlerLambda, next: middy.NextFunction) => {
-      const connection = await getDatabaseConnection();
-      const userRepository = connection.getRepository(User);
       const serviceAccount = require("../util/artalleys-gn-78385-firebase-adminsdk-9jh66-d8a4bb8e92.json");
       if (!admin.apps.length) {
         admin.initializeApp({

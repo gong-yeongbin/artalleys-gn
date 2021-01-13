@@ -59,21 +59,21 @@ const entity = [
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
-  type: DB_TYPE as "mysql",
-  host: DB_HOST,
-  port: Number(DB_PORT),
-  username: DB_USERNAME,
-  password: DB_PASSWORD,
-  database: DB_DATABASE,
-  synchronize: Boolean(DB_SYNCHRONIZE),
+  // type: DB_TYPE as "mysql",
+  // host: DB_HOST,
+  // port: Number(DB_PORT),
+  // username: DB_USERNAME,
+  // password: DB_PASSWORD,
+  // database: DB_DATABASE,
+  // synchronize: Boolean(DB_SYNCHRONIZE),
 
-  // type: "mysql",
-  // host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
-  // port: 3306,
-  // username: "root",
-  // password: "neibors1!",
-  // database: "gn",
-  // synchronize: true,
+  type: "mysql",
+  host: "artalleys-gn.c1ysglv9xt3u.us-east-2.rds.amazonaws.com",
+  port: 3306,
+  username: "root",
+  password: "neibors1!",
+  database: "gn",
+  synchronize: true,
 
   entities: entity,
 };

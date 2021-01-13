@@ -33,11 +33,10 @@ const joinUser = async (
   });
 
   let user: User = new User();
-
-  if (userEntity == null) {
+  if (userEntity == null || userEntity == undefined) {
     user.uid = userInfo.uid;
     user.phoneNumber = userInfo.phoneNumber;
-    userRepository.save(user);
+    await userRepository.save(user);
   } else {
     return {
       statusCode: 500,
