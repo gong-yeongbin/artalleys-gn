@@ -22,8 +22,8 @@ import {
   Comment,
   Followers,
   Following,
-  Like,
-  LikeType,
+  PostLike,
+  BusinessLike,
 } from "../entity/Entity";
 
 import { RelationLoader } from "typeorm/query-builder/RelationLoader";
@@ -54,8 +54,8 @@ const entity = [
   Comment,
   Followers,
   Following,
-  Like,
-  LikeType,
+  PostLike,
+  BusinessLike,
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {

@@ -15,6 +15,7 @@ import {
   PostCategory,
   PostCondition,
   PostStatus,
+  PostLike,
 } from "../../src/entity/Entity";
 import { Connection, getConnection, Repository } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
@@ -173,14 +174,15 @@ const createPost = async (
  * @apiParamExample {json} Response
 {
   "data": {
-    "id": "19",
-    "title": "test title",
-    "details": "test detail",
-    "viewCount": 0,
-    "number": 0,
-    "price": 100000,
+    "id": "52",
+    "title": "apple watch1",
+    "details": "It's new product.",
+    "price": 1000666,
+    "number": 1047484856,
+    "viewCount": 6,
+    "likeCount": 1,
     "url": [
-      "d19j7dhfxgaxy7.cloudfront.net/image/0eb30f28-1223-4482-9873-17ce2f382777.png"
+      "d19j7dhfxgaxy7.cloudfront.net/image/a33578dd-3927-4e23-a658-9ed41b3e6f37.png"
     ],
     "location": {
       "latitude": 12.123,
@@ -188,7 +190,7 @@ const createPost = async (
     },
     "type": "sell",
     "category": "Antiques & Collectibles",
-    "condition": "",
+    "condition": "Other (see descriptions)",
     "status": "active"
   }
 }
@@ -213,6 +215,9 @@ const getPost = async (
     .leftJoinAndSelect("post.condition", "condition")
     .where("post.id = :id", { id: postId })
     .getOne();
+
+  postEntity.viewCount = postEntity.viewCount + 1;
+  await postRepository.save(postEntity);
 
   if (postEntity == null) {
     return {
@@ -441,6 +446,69 @@ const getOtherPost = async (
   };
 };
 
+/**
+ * @api {get}  /post/:postId/likePost     Like post
+ * @apiName Like Post
+ * @apiGroup Post
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
+const likePost = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const uid: string = userInfo.uid;
+  const postId: number = Number(event.pathParameters["postId"]);
+
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postLikeRepository: Repository<PostLike> = connection.getRepository(
+    PostLike
+  );
+  const userEntity: User = await userRepository.findOne({ uid: uid });
+
+  const postEntity: Post = await postRepository.findOne({
+    id: postId,
+  });
+
+  const postLikeEntity: PostLike = await postLikeRepository.findOne({
+    user: userEntity,
+    post: postEntity,
+  });
+
+  let postLike: PostLike = new PostLike();
+  postLike.post = postEntity;
+  postLike.user = userEntity;
+
+  if (postLikeEntity == null) {
+    await postLikeRepository.save(postLike);
+
+    postEntity.likeCount = postEntity.likeCount + 1;
+    await postRepository.save(postEntity);
+  } else {
+    await postLikeRepository.delete(postLike);
+
+    postEntity.likeCount = postEntity.likeCount - 1;
+    await postRepository.save(postEntity);
+  }
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+const wrappedLikePost = middy(likePost)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 const wrappedGetPost = middy(getPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -464,4 +532,5 @@ export {
   wrappedHidePost as hidePost,
   wrappedBoostPost as boostPost,
   wrappedGetOtherPost as getOtherPost,
+  wrappedLikePost as likePost,
 };

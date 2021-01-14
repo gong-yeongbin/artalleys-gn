@@ -172,6 +172,25 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    likePost: {
+      handler: "services/post/handler.likePost",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/{postId}/likePost",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
     createBusiness: {
       handler: "services/business/handler.createBusiness",
       events: [
@@ -196,6 +215,25 @@ const serverlessConfiguration: Serverless = {
               parameters: {
                 paths: {
                   businessId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    likeBusiness: {
+      handler: "services/business/handler.likeBusiness",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "business/{postId}/likeBusiness",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
                 },
               },
             },

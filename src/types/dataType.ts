@@ -14,6 +14,7 @@ interface PostData {
   price: number;
   number: number;
   viewCount: number;
+  likeCount: number;
   url: string[];
   location: Location;
   type: string;

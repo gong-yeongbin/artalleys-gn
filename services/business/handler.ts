@@ -8,6 +8,7 @@ import {
   Business,
   BusinessCategory,
   User,
+  BusinessLike,
 } from "../../src/entity/Entity";
 import { Connection, Repository } from "typeorm";
 import middy from "@middy/core";
@@ -207,11 +208,88 @@ const getBusiness = async (
   };
 };
 
+/**
+ * @api {get}  /business/:postId/likeBusiness     Like Business
+ * @apiName Like Business
+ * @apiGroup Business
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
+
+const likeBusiness = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const uid: string = userInfo.uid;
+  const postId: number = Number(event.pathParameters["postId"]);
+
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const businessRepository: Repository<Business> = connection.getRepository(
+    Business
+  );
+  const businessLikeRepository: Repository<BusinessLike> = connection.getRepository(
+    BusinessLike
+  );
+  const userEntity: User = await userRepository.findOne({ uid: uid });
+
+  const businessEntity: Business = await businessRepository.findOne({
+    id: postId,
+  });
+
+  if (businessEntity == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("business null"),
+    };
+  }
+
+  const postLikeEntity: BusinessLike = await businessLikeRepository.findOne({
+    user: userEntity,
+    business: businessEntity,
+  });
+
+  let businessLike: BusinessLike = new BusinessLike();
+  businessLike.business = businessEntity;
+  businessLike.user = userEntity;
+
+  if (postLikeEntity == null) {
+    console.log(businessLike);
+    await businessLikeRepository.save(businessLike);
+
+    // businessEntity.likeCount = businessEntity.likeCount + 1;
+    // await businessLikeRepository.save(businessEntity);
+  } else {
+    await businessLikeRepository.delete(businessLike);
+
+    // businessEntity.likeCount = businessEntity.likeCount - 1;
+    // await businessLikeRepository.save(businessEntity);
+  }
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
 const wrappedGetBusiness = middy(getBusiness)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
 const wrappedCreateBusiness = middy(createBusiness)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-export { wrappedGetBusiness as getBusiness };
-export { wrappedCreateBusiness as createBusiness };
+const wrappedLikeBusiness = middy(likeBusiness)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+export {
+  wrappedGetBusiness as getBusiness,
+  wrappedCreateBusiness as createBusiness,
+  wrappedLikeBusiness as likeBusiness,
+};

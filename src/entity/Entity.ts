@@ -13,6 +13,6 @@ export { default as User } from "./User";
 export { default as Business } from "./Business";
 export { default as BusinessCategory } from "./BusinessCategory";
 export { default as Comment } from "./Comment";
-export { default as Like } from "./Like";
-export { default as LikeType } from "./LikeType";
+export { default as PostLike } from "./PostLike";
+export { default as BusinessLike } from "./BusinessLike";
 export { default as Image } from "./Image";

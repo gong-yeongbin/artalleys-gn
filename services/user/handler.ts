@@ -49,6 +49,7 @@ const joinUser = async (
     body: "",
   };
 };
+
 const wrappedJoinUser = middy(joinUser)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());

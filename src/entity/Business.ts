@@ -14,6 +14,7 @@ import {
   Image,
   User,
   BusinessCategory,
+  BusinessLike,
 } from "../entity/Entity";
 
 @Entity("business")
@@ -64,7 +65,7 @@ export default class Business {
   @OneToMany(() => BusinessPost, (businessPost) => businessPost.id)
   post: BusinessPost[];
 
-  @ManyToOne(() => User, (user) => user.post, {
+  @ManyToOne(() => User, (user) => user.business, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "user" })
@@ -79,4 +80,8 @@ export default class Business {
   )
   @JoinColumn({ name: "category" })
   category: BusinessCategory;
+
+  @OneToMany(() => BusinessLike, (businessLike) => businessLike.business)
+  @JoinColumn({ name: "post_like" })
+  businessLike: BusinessLike;
 }

@@ -13,6 +13,7 @@ export class PostBuilder {
       price: post.price,
       number: post.number,
       viewCount: post.viewCount,
+      likeCount: post.likeCount,
       url: [],
       location: {
         latitude: post.location.latitude,

@@ -18,6 +18,7 @@ import {
   Image,
   PostStatus,
   PostType,
+  PostLike,
 } from "../entity/Entity";
 
 @Entity("post")
@@ -47,6 +48,9 @@ export default class Post {
 
   @Column({ name: "non_negotiable_price_yn", type: "boolean", default: false })
   nonNegotiablePriceYn: boolean;
+
+  @Column({ name: "like_count", type: "integer", default: 0 })
+  likeCount: number;
 
   @Column({ name: "view_count", type: "integer", default: 0 })
   viewCount: number;
@@ -90,4 +94,8 @@ export default class Post {
   })
   @JoinColumn({ name: "user" })
   user: User;
+
+  @OneToMany(() => PostLike, (postLike) => postLike.post)
+  @JoinColumn({ name: "post_like" })
+  postLike: PostLike;
 }
