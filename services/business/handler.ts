@@ -131,9 +131,9 @@ const createBusiness = async (
       })
       .execute();
 
-    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    // await putObject(originalImage, `image/${fileName}.png`);
+    await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {
@@ -143,7 +143,7 @@ const createBusiness = async (
 };
 
 /**
- * @api {get}  /post/:businessId/getBusiness     Get Business 
+ * @api {get}  /business/:postId/getBusiness     Get Business 
  * @apiName Get Business
  * @apiGroup Business
  *
@@ -179,7 +179,7 @@ const getBusiness = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const businessId: string = event.pathParameters["businessId"];
+  const postId: string = event.pathParameters["postId"];
   const connection = await getDatabaseConnection();
   const businessRepository = connection.getRepository(Business);
 
@@ -188,7 +188,7 @@ const getBusiness = async (
     .leftJoinAndSelect("business.location", "location")
     .leftJoinAndSelect("business.image", "image")
     .leftJoinAndSelect("business.category", "category")
-    .where("business.id =:businessId", { businessId: businessId })
+    .where("business.id =:businessId", { businessId: postId })
     .getOne();
 
   if (businessEntity == null) {

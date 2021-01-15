@@ -1,7 +1,10 @@
 interface UserData {
+  id: number;
   uid: string;
-  phoneNumber: string;
+  nickName?: string;
+  phoneNumber?: string;
   email?: string;
+  url?: string;
 }
 interface Location {
   longitude: number;
@@ -58,4 +61,23 @@ interface BusinessType {
   location: Location;
 }
 
-export { Location, PostData, BusinessType, FeedData, UserData, PostOtherData };
+interface CommentData {
+  id: number;
+  message: string;
+  createdAt: Date;
+  updatedAt: Date;
+  commentId: CommentData[];
+  // userId: number;
+  // nickName: string;
+  // url: string;
+}
+
+export {
+  Location,
+  PostData,
+  BusinessType,
+  FeedData,
+  UserData,
+  PostOtherData,
+  CommentData,
+};

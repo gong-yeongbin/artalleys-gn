@@ -29,7 +29,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  *
  * @apiParamExample request
 {	
-	"category": ["Antiques & Collectibles"],
+	"category": [1,2,3],
 	"filter": "newest",
 	"price":	{		
 									"min":0,
@@ -85,7 +85,7 @@ const getFeed = async (
   const queryLimit: number = Number(limit);
   const queryType: string = type;
 
-  const querySetCategory: string[] = category;
+  const querySetCategory: number[] = category;
 
   // desc - newest, price_hl
   // asc - closest, price_lh
@@ -121,7 +121,7 @@ const getFeed = async (
     .leftJoinAndSelect("post.status", "status")
     .where("type.type = :type", { type: queryType })
     .andWhere("post.hide = :hide", { hide: hide })
-    .andWhere("category.category IN (:category)", {
+    .andWhere("category.id IN (:category)", {
       category: querySetCategory,
     })
     .andWhere("post.title like :title", { title: `%${querySearch}%` })

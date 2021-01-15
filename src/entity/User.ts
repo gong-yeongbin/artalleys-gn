@@ -15,6 +15,7 @@ import {
   Following,
   Post,
   Business,
+  Comment,
 } from "./Entity";
 
 @Entity("user")
@@ -43,11 +44,11 @@ export default class User {
   @OneToOne(() => Location, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "location_id" })
+  @JoinColumn({ name: "location" })
   location: Location;
 
   @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
-  @JoinColumn({ name: "image_id" })
+  @JoinColumn({ name: "image" })
   image: Image;
 
   @OneToOne(() => Followers, { nullable: true, onDelete: "CASCADE" })
@@ -65,4 +66,8 @@ export default class User {
   @OneToMany(() => Business, (business) => business.user)
   @JoinColumn({ name: "business" })
   business: Business[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  @JoinColumn({ name: "comment" })
+  comment: Comment[];
 }

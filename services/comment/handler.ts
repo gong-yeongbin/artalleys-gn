@@ -1,10 +1,15 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import { Repository } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { Business, Comment } from "../../src/entity/Entity";
+import { User, Business, Comment, BusinessPost } from "../../src/entity/Entity";
 import { name } from "../util/util";
-// import { CommentBuilder, CommentData } from "../../src/dto/CommentDto";
-// import { ReplyBuilder, ReplyData } from "../../src/dto/ReplyDto";
+import { CommentBuilder } from "../../src/dto/CommentDto";
+import { UserData } from "../../src/types/dataType";
+import middy from "@middy/core";
+import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
+import { authorizeToken } from "../util/authorizer";
+import { getUid } from "../util/util";
+const { CLOUDFRONT_IMAGE } = process.env;
 /**
  * @api {put} /comment/:postId/addComment     add comment
  * @apiName Add Comment
@@ -32,29 +37,34 @@ import { name } from "../util/util";
  *      HTTP/1.1    404    Not Found
  **/
 
-export const addComment = async (
+const addComment = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
   const postId: number = Number(event.pathParameters["postId"]);
+  const type: string = event.queryStringParameters["type"];
+
   const { commentId = null, message = "" } = JSON.parse(event.body);
 
   const connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
   const commentRepository: Repository<Comment> = connection.getRepository(
     Comment
   );
-  const businessRepository: Repository<Business> = connection.getRepository(
-    Business
-  );
+  const genericRepository: Repository<
+    Business | BusinessPost
+  > = connection.getRepository(type);
 
-  const businessEntity: Business = await businessRepository.findOne({
-    id: postId,
+  const userEntity: User = await userRepository.findOne({
+    uid: userInfo.uid,
   });
-  const commentEntity: Comment = await commentRepository.findOne({
-    id: commentId,
-  });
+  const genericEntity:
+    | Business
+    | BusinessPost = await genericRepository.findOne({ id: postId });
 
-  if (businessEntity == null || commentEntity == null) {
+  if (genericEntity == null) {
     return {
       statusCode: 500,
       body: JSON.stringify("id(commentId, postId) null"),
@@ -62,10 +72,12 @@ export const addComment = async (
   }
 
   const comment: Comment = new Comment();
-  comment.business = businessEntity;
+  type == "Business"
+    ? (comment.business = genericEntity as Business)
+    : (comment.businessPost = genericEntity as BusinessPost);
   commentId !== null ? (comment.commentId = commentId) : null;
   comment.message = message;
-
+  comment.user = userEntity;
   commentRepository.save(comment);
   return {
     statusCode: 200,
@@ -89,47 +101,47 @@ export const addComment = async (
  * @apiErrorExample {json}  ResourceNotFound
  *      HTTP/1.1    404    Not Found
  **/
+const modifyComment = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const commentId: number = Number(event.pathParameters["commentId"]);
+  const { message = "" } = JSON.parse(event.body);
 
-// export const modifyComment = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const commentId: string = event.pathParameters["commentId"];
-//   const { message = "" } = JSON.parse(event.body);
+  const connection = await getDatabaseConnection();
+  const commentRepository: Repository<Comment> = connection.getRepository(
+    Comment
+  );
+  const commentEntity: Comment = await commentRepository.findOne({
+    id: commentId,
+  });
 
-//   const connection = await getDatabaseConnection();
-//   const commentRepository: Repository<Comment> = connection.getRepository(
-//     Comment
-//   );
-//   // const commentEntity: Comment = await commentRepository.findOne({
-//   //   commentId: commentId,
-//   // });
+  if (commentEntity == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("comment id null"),
+    };
+  }
 
-//   if (commentEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
+  commentEntity.message = message;
+  commentRepository.save(commentEntity);
 
-//   commentEntity.message = message;
-//   commentRepository.save(commentEntity);
-
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 /**
  * @api {get} /comment/:postId/getComment     get comment
  * @apiName Get Comment
  * @apiGroup Comment
  *
- * @apiParam (PathParam) {String}postId                           comment id
- * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
- * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
- * @apiParam (QueryStringParam) {String}[order=desc]  order       order
+ * @apiParam (PathParam) {String}postId                                         comment id
+ * @apiParam (QueryStringParam) {Number}[offset=0]    offset                    offset
+ * @apiParam (QueryStringParam) {Number}[limit=10]    limit                     limit
+ * @apiParam (QueryStringParam) {String}[order=desc]  order                     order
+ * @apiParam (QueryStringParam) {String type=busienss,businessPost}   type      comment type
  *
  * @apiParamExample Response
  [
@@ -151,118 +163,86 @@ export const addComment = async (
  * @apiErrorExample {json}  ResourceNotFound
  *      HTTP/1.1    404    Not Found
  **/
-// export const getComment = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
-//   const {
-//     offset = 0,
-//     limit = 10,
-//     order = "desc",
-//   } = event.queryStringParameters;
-//   const queryOffset: number = Number(offset);
-//   const queryLimit: number = Number(limit);
-//   const queryOrder: "ASC" | "DESC" =
-//     order.toUpperCase() == "ASC" ? "ASC" : "DESC";
+const getComment = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
+  const {
+    offset = 0,
+    limit = 10,
+    order = "desc",
+    type,
+  } = event.queryStringParameters;
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "ASC" | "DESC" =
+    order.toUpperCase() == "ASC" ? "ASC" : "DESC";
 
-//   const connection = await getDatabaseConnection();
-//   const commentRepository: Repository<Comment> = await connection.getRepository(
-//     Comment
-//   );
+  const connection = await getDatabaseConnection();
 
-//   const commentEntity: Comment[] = await commentRepository
-//     .createQueryBuilder("comment")
-//     .leftJoin("comment.post", "post")
-//     .leftJoin("comment.reply", "reply")
-//     .where("post.postId = :postId", {
-//       postId: postId,
-//     })
-//     .andWhere("comment.reply is null")
-//     .orderBy("comment.createdAt", queryOrder)
-//     .offset(queryOffset)
-//     .limit(queryLimit)
-//     .getMany();
+  const genericRepository: Repository<
+    Business | BusinessPost
+  > = connection.getRepository(type);
 
-//   const commentDto: CommentData[] = new CommentBuilder(commentEntity).build();
+  const genericEntity:
+    | Business
+    | BusinessPost = await genericRepository.findOne({ id: postId });
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(commentDto),
-//   };
-// };
-
-/**
- * @api {get} /comment/:postId/:commentId/getReply     get reply
- * @apiName Get Reply
- * @apiGroup Comment
- *
- * @apiParam (PathParam) {String}postId                           post id
- * @apiParam (PathParam) {String}commentId                        comment id
- * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
- * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
- * @apiParam (QueryStringParam) {String}[order=asc]  order       order
- *
- * @apiParamExample Response
-[
-  {
-    "commentId": "29abc2f27c",
-    "message": "sadfasdgadhfsfg",
-    "createdAt": "2020-11-17T21:03:32.289Z",
-    "updateAt": "2020-11-17T21:03:32.289Z"
-  },
-  {
-    "commentId": "29abc2f27c",
-    "message": "sadfasdgadhfsfg",
-    "createdAt": "2020-11-17T21:03:32.289Z",
-    "updateAt": "2020-11-17T21:03:32.289Z"
+  if (genericEntity == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("post Id null"),
+    };
   }
-]
- *
- * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
- * @apiErrorExample {json}  ResourceNotFound
- *      HTTP/1.1    404    Not Found
- **/
+  const commentRepository: Repository<Comment> = await connection.getRepository(
+    Comment
+  );
 
-// export const getReply = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
-//   const commentId: string = event.pathParameters["commentId"];
+  let query = commentRepository
+    .createQueryBuilder("comment")
+    .leftJoinAndSelect("comment.commentId", "commentId")
+    .leftJoinAndSelect("comment.user", "user")
+    .leftJoinAndSelect("user.image", "image")
+    .orderBy("comment.createdAt", queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit);
 
-//   const { offset = 0, limit = 10, order = "asc" } = event.queryStringParameters;
-//   const queryOffset: number = Number(offset);
-//   const queryLimit: number = Number(limit);
-//   const queryOrder: "ASC" | "DESC" =
-//     order.toUpperCase() == "ASC" ? "ASC" : "DESC";
+  if (type == "Business") {
+    query = query
+      .leftJoinAndSelect("comment.business", "business")
+      .where("business.id = :id and comment.commentId is null", {
+        id: postId,
+      });
+  } else if (type == "BusienssPost") {
+    query = query
+      .leftJoinAndSelect(
+        "comment.businessPost and comment.commentId is null",
+        "businessPost"
+      )
+      .where("businessPost.id = :id", {
+        id: postId,
+      });
+  }
 
-//   const connection = await getDatabaseConnection();
-//   const commentRepository: Repository<Comment> = await connection.getRepository(
-//     Comment
-//   );
+  const commentEntity: Comment[] = await query.getMany();
+  const totalCount: number = await query.getCount();
 
-//   const commentEntity: Comment[] = await commentRepository
-//     .createQueryBuilder("comment")
-//     .leftJoin("comment.post", "post")
-//     .leftJoinAndSelect("comment.reply", "reply")
-//     .where("post.postId = :postId", {
-//       postId: postId,
-//     })
-//     .andWhere("reply.commentId = :commentId", { commentId: commentId })
-//     .andWhere("comment.reply is not null")
-//     .orderBy("comment.createdAt", queryOrder)
-//     .offset(queryOffset)
-//     .limit(queryLimit)
-//     .getMany();
+  const commentDto: any = new CommentBuilder(
+    commentEntity,
+    queryOffset,
+    queryLimit,
+    queryOrder,
+    totalCount
+  )
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
 
-//   const replyDto: ReplyData[] = new ReplyBuilder(commentEntity).build();
-
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(replyDto),
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: JSON.stringify(commentDto),
+  };
+};
 
 /**
  * @api {get} /comment/:commentId/deleteComment     delete comment
@@ -279,28 +259,53 @@ export const addComment = async (
  * @apiErrorExample {json}  ResourceNotFound
  *      HTTP/1.1    404    Not Found
  **/
+const deleteComment = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const commentId: number = Number(event.pathParameters["commentId"]);
 
-// export const deleteComment = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const commentId: string = event.pathParameters["commentId"];
+  const connection = await getDatabaseConnection();
+  const commentRepository: Repository<Comment> = connection.getRepository(
+    Comment
+  );
 
-//   const connection = await getDatabaseConnection();
-//   const commentRepository: Repository<Comment> = connection.getRepository(
-//     Comment
-//   );
+  const commentEntity: Comment = await commentRepository.findOne({
+    id: commentId,
+  });
 
-//   const commentEntity: Comment = await commentRepository.findOne({
-//     commentId: commentId,
-//   });
+  if (commentEntity == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("comment id null"),
+    };
+  }
 
-//   commentEntity.deleted = true;
+  commentEntity.deleted = true;
+  commentRepository.save(commentEntity);
 
-//   commentRepository.save(commentEntity);
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+const wrappedAddComment = middy(addComment)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedGetComment = middy(getComment)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedModifyComment = middy(modifyComment)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedDeleteComment = middy(deleteComment)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+
+export {
+  wrappedAddComment as addComment,
+  wrappedGetComment as getComment,
+  wrappedModifyComment as modifyComment,
+  wrappedDeleteComment as deleteComment,
+};

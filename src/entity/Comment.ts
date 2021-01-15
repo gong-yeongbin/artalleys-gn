@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { Business } from "../entity/Entity";
+import { User, Business, BusinessPost } from "../entity/Entity";
 
 @Entity("comment")
 export default class Comment {
@@ -36,4 +36,16 @@ export default class Comment {
   })
   @JoinColumn({ name: "business" })
   business: Business;
+
+  @ManyToOne(() => BusinessPost, (businessPost) => businessPost.comments, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "business_post" })
+  businessPost: BusinessPost;
+
+  @ManyToOne(() => User, (user) => user.comment, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "user" })
+  user: User;
 }
