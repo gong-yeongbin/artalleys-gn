@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { BusinessPost } from "../entity/Entity";
+import { Business } from "../entity/Entity";
 
 @Entity("comment")
 export default class Comment {
@@ -27,16 +27,13 @@ export default class Comment {
   @Column({ name: "deleted", type: "boolean", default: false })
   deleted: boolean;
 
-  @Column({ name: "comment_id", type: "nvarchar" })
-  commentId: string;
-
   @ManyToOne(() => Comment, { onDelete: "SET NULL" })
-  @JoinColumn({ name: "reply_id" })
-  reply: Comment[];
+  @JoinColumn({ name: "comment_id" })
+  commentId: Comment[];
 
-  @ManyToOne(() => BusinessPost, (businessPost) => businessPost.comments, {
+  @ManyToOne(() => Business, (business) => business.comments, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "business_post_id" })
-  businessPostId: BusinessPost;
+  @JoinColumn({ name: "business" })
+  business: Business;
 }

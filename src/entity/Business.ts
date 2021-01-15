@@ -15,6 +15,7 @@ import {
   User,
   BusinessCategory,
   BusinessLike,
+  Comment,
 } from "../entity/Entity";
 
 @Entity("business")
@@ -84,4 +85,7 @@ export default class Business {
   @OneToMany(() => BusinessLike, (businessLike) => businessLike.business)
   @JoinColumn({ name: "post_like" })
   businessLike: BusinessLike;
+
+  @OneToMany(() => Comment, (comment) => comment.id)
+  comments: Comment[];
 }

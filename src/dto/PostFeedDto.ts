@@ -27,6 +27,7 @@ export class PostFeedBuilder {
         category: value.category.category,
         price: value.price,
         url: value.image[0].url,
+        likeCount: value.likeCount,
       };
     });
   }

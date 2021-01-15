@@ -6,6 +6,7 @@ import { Post } from "../../src/entity/Entity";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
+import { PlainObjectToNewEntityTransformer } from "typeorm/query-builder/transformer/PlainObjectToNewEntityTransformer";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -19,7 +20,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (QueryStringParam) {String=sell,buy} type                           type
  *
  * @apiParam (body) {Array} category                                           category
- * @apiParam (body) {Array} filter=newest                                      filter
+ * @apiParam (body) {Array=newest,price_lh,price_hl} filter=newest                   filter
  * @apiParam (body) {Array} price                                              price
  * @apiParam (body) {Array} price min                                          min
  * @apiParam (body) {Array} price max                                          max
@@ -69,7 +70,7 @@ const getFeed = async (
   context: Context
 ): Promise<ProxyResult> => {
   const { offset = 0, limit = 10, type = "sell" } = event.queryStringParameters;
-  const {
+  let {
     category,
     filter = "newest",
     price,
@@ -83,14 +84,24 @@ const getFeed = async (
   const queryOffset: number = Number(offset);
   const queryLimit: number = Number(limit);
   const queryType: string = type;
+
   const querySetCategory: string[] = category;
+
+  // desc - newest, price_hl
+  // asc - closest, price_lh
+  filter = filter.toLowerCase();
   const queryOrder: "DESC" | "ASC" =
-    filter.toLowerCase() == "newest" ? "DESC" : "ASC";
-  const queryOrderType: string =
-    filter.toLowerCase() == "newest" ? "post.updated_at" : "";
-  const queryPriceMin: number = price != null ? price.min : null;
-  const queryPriceMax: number = price != null ? price.max : null;
+    filter == "newest" || filter == "price_hl" ? "DESC" : "ASC";
+
+  let queryOrderType: string = "";
+  if (filter == "newest") {
+    queryOrderType = "post.updated_at";
+  } else if (filter == "price_hl" || "price_lh") {
+    queryOrderType = "post.price";
+  }
+
   const querySearch: string = search;
+
   const totalCount: number = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.type", "type")
@@ -118,10 +129,10 @@ const getFeed = async (
     .offset(queryOffset)
     .limit(queryLimit);
 
-  if (price != null) {
+  if (price != null && price.max != 0) {
     query = query.andWhere("post.price between :min and :max", {
-      min: queryPriceMin,
-      max: queryPriceMax,
+      min: price.min,
+      max: price.max,
     });
   }
 

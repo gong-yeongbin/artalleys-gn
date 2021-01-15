@@ -39,6 +39,7 @@ interface FeedData {
   category: string;
   price: number;
   url: string;
+  likeCount: number;
 }
 
 interface BusinessType {

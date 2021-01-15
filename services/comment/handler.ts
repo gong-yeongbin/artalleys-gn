@@ -1,8 +1,8 @@
-// import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
-// import { Repository } from "typeorm";
-// import { getDatabaseConnection } from "../../src/connection/Connection";
-// import { Post, Comment } from "../../src/entity/Entity";
-// import { name } from "../util/util";
+import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
+import { Repository } from "typeorm";
+import { getDatabaseConnection } from "../../src/connection/Connection";
+import { Business, Comment } from "../../src/entity/Entity";
+import { name } from "../util/util";
 // import { CommentBuilder, CommentData } from "../../src/dto/CommentDto";
 // import { ReplyBuilder, ReplyData } from "../../src/dto/ReplyDto";
 /**
@@ -11,7 +11,7 @@
  * @apiGroup Comment
  *
  * @apiParam (PathParam) {String}postId                           post id
- * @apiParam (Body) {Number}[replyId]                             reply id
+ * @apiParam (Body) {Number}[commentId]                           reply id
  * @apiParam (Body) {String}message                               message
  *
  * @apiParamExample {json} Request Body(comment)
@@ -20,7 +20,7 @@
 }
 * @apiParamExample {json} Request Body(reply)
 {
-	"replyId": 4,
+	"commentId": 4,
 	"message": "테스트 대댓글"
 }
  * @apiSuccess (204 No Content) {String}    NoContent  Success
@@ -32,39 +32,46 @@
  *      HTTP/1.1    404    Not Found
  **/
 
-// export const addComment = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const postId: string = event.pathParameters["postId"];
-//   const { replyId = null, message } = JSON.parse(event.body);
+export const addComment = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
+  const { commentId = null, message = "" } = JSON.parse(event.body);
 
-//   const connection = await getDatabaseConnection();
-//   const commentRepository: Repository<Comment> = connection.getRepository(
-//     Comment
-//   );
-//   const postRepository: Repository<Post> = connection.getRepository(Post);
-//   const postEntity: Post = await postRepository.findOne({ postId: postId });
+  const connection = await getDatabaseConnection();
+  const commentRepository: Repository<Comment> = connection.getRepository(
+    Comment
+  );
+  const businessRepository: Repository<Business> = connection.getRepository(
+    Business
+  );
 
-//   if (postEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
+  const businessEntity: Business = await businessRepository.findOne({
+    id: postId,
+  });
+  const commentEntity: Comment = await commentRepository.findOne({
+    id: commentId,
+  });
 
-//   const comment: Comment = new Comment();
-//   comment.post = postEntity;
-//   comment.commentId = name(5);
-//   replyId !== null ? (comment.reply = replyId) : null;
-//   comment.message = message;
+  if (businessEntity == null || commentEntity == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("id(commentId, postId) null"),
+    };
+  }
 
-//   commentRepository.save(comment);
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  const comment: Comment = new Comment();
+  comment.business = businessEntity;
+  commentId !== null ? (comment.commentId = commentId) : null;
+  comment.message = message;
+
+  commentRepository.save(comment);
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
 /**
  * @api {put} /comment/:commentId/modifyComment     modify comment
@@ -94,9 +101,9 @@
 //   const commentRepository: Repository<Comment> = connection.getRepository(
 //     Comment
 //   );
-//   const commentEntity: Comment = await commentRepository.findOne({
-//     commentId: commentId,
-//   });
+//   // const commentEntity: Comment = await commentRepository.findOne({
+//   //   commentId: commentId,
+//   // });
 
 //   if (commentEntity == null) {
 //     return {

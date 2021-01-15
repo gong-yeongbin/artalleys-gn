@@ -263,46 +263,6 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // getCategoryFeed: {
-    //   handler: "services/feed/handler.getCategoryFeed",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "feed/getCategoryFeed",
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //             },
-    //           },
-    //         },
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
-    // getSearchFeed: {
-    //   handler: "services/feed/handler.getSearchFeed",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "feed/getSearchFeed",
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //             },
-    //           },
-    //         },
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
     // getBusinessFeed: {
     //   handler: "services/feed/handler.getBusinessFeed",
     //   events: [
@@ -324,25 +284,25 @@ const serverlessConfiguration: Serverless = {
     //     },
     //   ],
     // },
-    // addComment: {
-    //   handler: "services/comment/handler.addComment",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "comment/{postId}/addComment",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
+    addComment: {
+      handler: "services/comment/handler.addComment",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "comment/{postId}/addComment",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
     // getComment: {
     //   handler: "services/comment/handler.getComment",
     //   events: [
