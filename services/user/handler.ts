@@ -50,7 +50,51 @@ const joinUser = async (
   };
 };
 
+import * as googleMaps from "@google/maps";
+
+const getLocation = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  var googleMapsClient = googleMaps.createClient({
+    key: "AIzaSyC9bONXxtEBd8UOI8-QhoI8APPMsbV43ik",
+  });
+  // googleMapsClient.geocode(
+  //   {
+  //     components: {
+  //       postal_code: "95014",
+  //     },
+  //   },
+  //   function (err, response) {
+  //     if (!err) {
+  //       console.log(response.json.results[0].geometry.location);
+  //     }
+  //   }
+  // );
+  // googleMapsClient.reverseGeocode(
+  //   {
+  //     latlng: [37.33497, -122.00909],
+  //   },
+  //   function (err, response) {
+  //     if (!err) {
+  //       console.log(response.json.results[0].formatted_address.split(",")[1]);
+  //       console.log(response.json.results[0].formatted_address.split(",")[2]);
+  //       console.log(response.json.results[0].formatted_address.split(",")[3]);
+  //       console.log(response.json.results[0].formatted_address);
+  //     }
+  //   }
+  // );
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
 const wrappedJoinUser = middy(joinUser)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedGetLocation = middy(getLocation)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export { wrappedJoinUser as joinUser };
+export { wrappedGetLocation as getLocation };
