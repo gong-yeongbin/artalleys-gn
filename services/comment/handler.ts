@@ -137,27 +137,45 @@ const modifyComment = async (
  * @apiName Get Comment
  * @apiGroup Comment
  *
- * @apiParam (PathParam) {String}postId                                         comment id
+ * @apiParam (PathParam) {String}postId                                         post id
  * @apiParam (QueryStringParam) {Number}[offset=0]    offset                    offset
  * @apiParam (QueryStringParam) {Number}[limit=10]    limit                     limit
  * @apiParam (QueryStringParam) {String}[order=desc]  order                     order
- * @apiParam (QueryStringParam) {String type=busienss,businessPost}   type      comment type
+ * @apiParam (QueryStringParam) {String=busienss,businessPost}   type      comment type
  *
  * @apiParamExample Response
- [
-  {
-    "commentId": "29abc2f27c",
-    "message": "sadfasdgadhfsfg",
-    "createdAt": "2020-11-17T21:03:32.289Z",
-    "updatedAt": "2020-11-17T21:03:32.289Z"
-  },
-  {
-    "commentId": "cb931142d5",
-    "message": "testtesttest",
-    "createdAt": "2020-11-17T20:10:03.335Z",
-    "updatedAt": "2020-11-17T21:42:29.000Z"
+{
+  "data": [
+    {
+      "id": "13",
+      "message": "test reply message",
+      "createdAt": "2021-01-15T01:40:43.296Z",
+      "updatedAt": "2021-01-15T01:40:43.296Z",
+      "user": {
+        "userId": "12",
+        "nickName": null,
+        "url": "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/image/1f4f9f09-df24-4be5-a8eb-883b5a58ba04.png"
+      }
+    },
+    {
+      "id": "12",
+      "message": "test reply message",
+      "createdAt": "2021-01-15T01:40:29.495Z",
+      "updatedAt": "2021-01-15T01:40:29.495Z",
+      "user": {
+        "userId": "12",
+        "nickName": null,
+        "url": "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/image/1f4f9f09-df24-4be5-a8eb-883b5a58ba04.png"
+      }
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 3,
+    "order": "DESC",
+    "totalCount": 2
   }
-]
+}
  *
  * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
  * @apiErrorExample {json}  ResourceNotFound
@@ -245,6 +263,136 @@ const getComment = async (
 };
 
 /**
+ * @api {get} /comment/:postId/getReply     get reply
+ * @apiName Get reply
+ * @apiGroup Comment
+ *
+ * @apiParam (PathParam) {String}postId                                         post id
+ * @apiParam (QueryStringParam) {Number}[offset=0]    offset                    offset
+ * @apiParam (QueryStringParam) {Number}[limit=10]    limit                     limit
+ * @apiParam (QueryStringParam) {String}[order=desc]  order                     order
+ * @apiParam (QueryStringParam) {String=busienss,businessPost}   type      comment type
+ *
+ * @apiParamExample Response
+{
+  "data": [
+    {
+      "id": "13",
+      "message": "test reply message",
+      "createdAt": "2021-01-15T01:40:43.296Z",
+      "updatedAt": "2021-01-15T01:40:43.296Z",
+      "user": {
+        "userId": "12",
+        "nickName": null,
+        "url": "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/image/1f4f9f09-df24-4be5-a8eb-883b5a58ba04.png"
+      }
+    },
+    {
+      "id": "12",
+      "message": "test reply message",
+      "createdAt": "2021-01-15T01:40:29.495Z",
+      "updatedAt": "2021-01-15T01:40:29.495Z",
+      "user": {
+        "userId": "12",
+        "nickName": null,
+        "url": "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/image/1f4f9f09-df24-4be5-a8eb-883b5a58ba04.png"
+      }
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 3,
+    "order": "DESC",
+    "totalCount": 2
+  }
+}
+ *
+ * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
+ * @apiErrorExample {json}  ResourceNotFound
+ *      HTTP/1.1    404    Not Found
+ **/
+const getReply = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const postId: number = Number(event.pathParameters["postId"]);
+  const {
+    offset = 0,
+    limit = 10,
+    order = "desc",
+    type,
+  } = event.queryStringParameters;
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "ASC" | "DESC" =
+    order.toUpperCase() == "ASC" ? "ASC" : "DESC";
+
+  const connection = await getDatabaseConnection();
+
+  const genericRepository: Repository<
+    Business | BusinessPost
+  > = connection.getRepository(type);
+
+  const genericEntity:
+    | Business
+    | BusinessPost = await genericRepository.findOne({ id: postId });
+
+  if (genericEntity == null) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify("post Id null"),
+    };
+  }
+  const commentRepository: Repository<Comment> = await connection.getRepository(
+    Comment
+  );
+
+  let query = commentRepository
+    .createQueryBuilder("comment")
+    .leftJoinAndSelect("comment.commentId", "commentId")
+    .leftJoinAndSelect("comment.user", "user")
+    .leftJoinAndSelect("user.image", "image")
+    .orderBy("comment.createdAt", queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit);
+
+  if (type == "Business") {
+    query = query
+      .leftJoinAndSelect("comment.business", "business")
+      .where("business.id = :id and comment.commentId is not null", {
+        id: postId,
+      });
+  } else if (type == "BusienssPost") {
+    query = query
+      .leftJoinAndSelect(
+        "comment.businessPost and comment.commentId is not null",
+        "businessPost"
+      )
+      .where("businessPost.id = :id", {
+        id: postId,
+      });
+  }
+
+  const commentEntity: Comment[] = await query.getMany();
+  const totalCount: number = await query.getCount();
+
+  const commentDto: any = new CommentBuilder(
+    commentEntity,
+    queryOffset,
+    queryLimit,
+    queryOrder,
+    totalCount
+  )
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(commentDto),
+  };
+};
+
+/**
  * @api {get} /comment/:commentId/deleteComment     delete comment
  * @apiName Delete Comment
  * @apiGroup Comment
@@ -296,6 +444,9 @@ const wrappedAddComment = middy(addComment)
 const wrappedGetComment = middy(getComment)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedGetReply = middy(getReply)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 const wrappedModifyComment = middy(modifyComment)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -306,6 +457,7 @@ const wrappedDeleteComment = middy(deleteComment)
 export {
   wrappedAddComment as addComment,
   wrappedGetComment as getComment,
+  wrappedGetReply as getReply,
   wrappedModifyComment as modifyComment,
   wrappedDeleteComment as deleteComment,
 };

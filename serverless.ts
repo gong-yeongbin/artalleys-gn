@@ -343,6 +343,27 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getReply: {
+      handler: "services/comment/handler.getReply",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{postId}/getReply",
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
     deleteComment: {
       handler: "services/comment/handler.deleteComment",
       events: [

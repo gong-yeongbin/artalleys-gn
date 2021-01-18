@@ -1,6 +1,6 @@
 interface UserData {
   id: number;
-  uid: string;
+  uid?: string;
   nickName?: string;
   phoneNumber?: string;
   email?: string;
@@ -66,7 +66,12 @@ interface CommentData {
   message: string;
   createdAt: Date;
   updatedAt: Date;
-  commentId: CommentData[];
+  commentId?: CommentData;
+  user: {
+    userId: number;
+    nickName: string;
+    url: string;
+  };
   // userId: number;
   // nickName: string;
   // url: string;

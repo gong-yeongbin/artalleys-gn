@@ -13,18 +13,19 @@ export class CommentBuilder {
     totalCount: number
   ) {
     this._data = comment.map((value, index) => {
-      console.log(value);
       return {
         id: value.id,
         message: value.message,
         createdAt: value.createdAt,
         updatedAt: value.updatedAt,
-        commentId: value.commentId,
-        userId: value.user.id,
-        nickName: value.user.nickName,
-        url: value.user.image.url,
+        user: {
+          userId: value.user.id,
+          nickName: value.user.nickName,
+          url: value.user.image == null ? "" : value.user.image.url,
+        },
       };
     });
+
     this._meta = {
       offset: offset,
       limit: limit,
@@ -36,7 +37,10 @@ export class CommentBuilder {
   public replaceHost(newHost: string): CommentBuilder {
     console.log(this._data);
     this._data.map((value, index) => {
-      // this._data[index].url = replaceHost(this._data[index].url, newHost);
+      this._data[index].user.url = replaceHost(
+        this._data[index].user.url,
+        newHost
+      );
     });
     return this;
   }
