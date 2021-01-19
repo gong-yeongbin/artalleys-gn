@@ -33,15 +33,11 @@ const joinUser = async (
   });
 
   let user: User = new User();
+
   if (userEntity == null || userEntity == undefined) {
     user.uid = userInfo.uid;
     user.phoneNumber = userInfo.phoneNumber;
     await userRepository.save(user);
-  } else {
-    return {
-      statusCode: 500,
-      body: JSON.stringify("be already joined"),
-    };
   }
 
   return {
@@ -84,6 +80,25 @@ const getLocation = async (
   //     }
   //   }
   // );
+
+  // ex)
+  // const user = await getConnection()
+  //     .createQueryBuilder()
+  //     .select("user")
+  //     .from(User, "user")
+  //     .where("user.id = :id", { id: 1 })
+  //     .getOne();
+
+  //   SELECT *,
+  // 	(6371*acos(cos(radians(37.4685225))*cos(radians(latitude))*cos(radians(longitude)-radians(126.8943311))+sin(radians(37.4685225))*sin(radians(latitude))))
+  // 	AS distance
+  // FROM gn.location
+  // HAVING distance <= 100
+  // ORDER BY distance
+
+  // 마일
+  // 1km == 0.621371
+
   return {
     statusCode: 200,
     body: "",
