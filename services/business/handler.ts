@@ -9,6 +9,7 @@ import {
   BusinessCategory,
   User,
   BusinessLike,
+  BusinessPost,
 } from "../../src/entity/Entity";
 import { Connection, Repository } from "typeorm";
 import middy from "@middy/core";
@@ -279,6 +280,54 @@ const likeBusiness = async (
     body: "",
   };
 };
+
+// const createBusinessPost = async (
+//   event: APIGatewayEvent,
+//   context: Context
+// ): Promise<ProxyResult> => {
+//   const userInfo: UserData = await getUid(event.headers["Authorization"]);
+//   const connection: Connection = await getDatabaseConnection();
+//   const userRepository: Repository<User> = connection.getRepository(User);
+//   const businessPostRepository: Repository<BusinessPost> = connection.getRepository(
+//     BusinessPost
+//   );
+//   const locationRepository: Repository<Location> = connection.getRepository(
+//     Location
+//   );
+//   const imageRepository: Repository<Image> = connection.getRepository(Image);
+
+//   const data: any = JSON.parse(event.body);
+
+//   let { title = "", price = 0, number = 0, details }: BusinessPost = data;
+
+//   const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+
+//   let location: Location = new Location();
+//   location.latitude = data.location.latitude;
+//   location.longitude = data.location.longitude;
+//   await locationRepository.save(location);
+
+//   for (let index in data.image) {
+//     await imageRepository
+//       .createQueryBuilder()
+//       .insert()
+//       .into(Image)
+//       .values({
+//         url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${data.image[index]}`,
+//         business: business,
+//       })
+//       .execute();
+
+//     // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+
+//     // await putObject(originalImage, `image/${fileName}.png`);
+//   }
+
+//   return {
+//     statusCode: 200,
+//     body: "",
+//   };
+// };
 
 const wrappedGetBusiness = middy(getBusiness)
   .use(authorizeToken())

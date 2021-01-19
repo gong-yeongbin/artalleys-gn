@@ -401,6 +401,18 @@ const serverlessConfiguration: Serverless = {
     //     },
     //   ],
     // },
+    getPostCategory: {
+      handler: "services/common/handler.getPostCategory",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "common/getPostCategory",
+            cors: true,
+          },
+        },
+      ],
+    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [
