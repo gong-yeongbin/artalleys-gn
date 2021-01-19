@@ -413,6 +413,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getBusinessCategory: {
+      handler: "services/common/handler.getBusinessCategory",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "common/getBusinessCategory",
+            cors: true,
+          },
+        },
+      ],
+    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [
