@@ -35,6 +35,7 @@ export class PostFeedBuilder {
   public replaceHost(newHost: string): PostFeedBuilder {
     this._data.map((value, index) => {
       this._data[index].url = replaceHost(this._data[index].url, newHost);
+      console.log(this._data[index].url);
     });
     return this;
   }

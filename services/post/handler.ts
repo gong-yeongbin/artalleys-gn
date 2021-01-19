@@ -48,7 +48,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)     {number} [number]                                             number
  * @apiParam (Body)     {boolean} nonNegotiablePriceYn                                Non-Negotiable Price
  * @apiParam (Body)     {boolean} [hide]                                              hide
- * @apiParam (Body)     {base64} image                                                image
+ * @apiParam (Body)     {Array} [imageFileName]                                        image file name
  *
  *
  * @apiParamExample {json} Request Body
@@ -63,8 +63,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 	 "number": 1047484856,
    "nonNegotiablePriceYn": true,
    "hide": false,
-   "image":
-   "image": ["test image ........"]
+   "image": ["sample1.jpg","sample2.jpg"]
  }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
@@ -102,6 +101,7 @@ const createPost = async (
     number = 0,
     nonNegotiablePriceYn = false,
   }: Post = data;
+
   const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
   const postStatusEntity: PostStatus = await postStatusRepository.findOne({
     id: 1,
@@ -140,20 +140,19 @@ const createPost = async (
   await locationRepository.save(location);
 
   for (let index in data.image) {
-    let fileName: string = uuid();
     await imageRepository
       .createQueryBuilder()
       .insert()
       .into(Image)
       .values({
-        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${fileName}.png`,
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${data.image[index]}`,
         post: post,
       })
       .execute();
 
-    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    await putObject(originalImage, `image/${fileName}.png`);
+    // await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {

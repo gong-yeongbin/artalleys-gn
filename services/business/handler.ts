@@ -40,7 +40,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)   {String} businessHoursInfo                          business hours info
  * @apiParam (Body)   {String} homepage                                   homepage url
  * @apiParam (Body)   {String{300}} details                               details
- * @apiParam (Body)   {base64} image                                      post image
+ * @apiParam (Body)     {Array} [imageFileName]                                        image file name
  *
  *
  * @apiParamExample {json} Request Body
@@ -59,7 +59,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 							"latitude": 13.123
 						 },
 	"details":"organic food test test test",
-	"image": ["testtesttesttest........"]
+	"image": ["test.jpg","test2.png"]
  }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
@@ -94,6 +94,7 @@ const createBusiness = async (
     homepage,
     details,
   }: Business = data;
+
   const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
   const businessCategory: BusinessCategory = await businessCategoryRepository.findOne(
     { id: data.category }
@@ -126,14 +127,14 @@ const createBusiness = async (
       .insert()
       .into(Image)
       .values({
-        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${fileName}.png`,
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${data.image[index]}`,
         business: business,
       })
       .execute();
 
-    const originalImage: Buffer = Buffer.from(data.image[index], "base64");
+    // const originalImage: Buffer = Buffer.from(data.image[index], "base64");
 
-    await putObject(originalImage, `image/${fileName}.png`);
+    // await putObject(originalImage, `image/${fileName}.png`);
   }
 
   return {
