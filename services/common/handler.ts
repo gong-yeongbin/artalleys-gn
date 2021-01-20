@@ -1,4 +1,4 @@
-import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
+import { APIGatewayEvent, Context, ProxyResult, S3Event } from "aws-lambda";
 import { Repository } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import middy from "@middy/core";
@@ -8,8 +8,14 @@ import { getUid, filepath } from "../util/util";
 import { BusinessCategory, PostCategory } from "../../src/entity/Entity";
 import { getSignedUrl } from "../../services/util/aws";
 import { SignedUrlData } from "../../src/types/dataType";
+import { Image } from "../../src/entity/Entity";
 
-const { BUCKET_NAME, CLOUDFRONT_IMAGE, IMAGE_UPLOAD_EXPIRES } = process.env;
+const {
+  BUCKET_NAME,
+  CLOUDFRONT_IMAGE,
+  IMAGE_UPLOAD_EXPIRES,
+  BUCKET_SERVICE_ENDPOINT_URL,
+} = process.env;
 /**
  * @api {get}  /common/getPostCategory     get post category
  * @apiName Get Post Category
@@ -273,6 +279,21 @@ const getImageSignedUrl = async (
   };
 };
 
+const imageUploadTrigger = async (
+  event: S3Event,
+  context: Context
+): Promise<void> => {
+  const connection = await getDatabaseConnection();
+  const imageRepository: Repository<Image> = connection.getRepository(Image);
+  let image: Image = new Image();
+  image.url = [
+    BUCKET_SERVICE_ENDPOINT_URL,
+    event.Records[0].s3.object.key,
+  ].join("/");
+
+  await imageRepository.save(image);
+};
+
 const wrappedGetPostCategory = middy(getPostCategory)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -282,7 +303,10 @@ const wrappedGetBusinessCategory = middy(getBusinessCategory)
 const wrappedGetImageSignedUrl = middy(getImageSignedUrl)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-
+const wrappedImageUploadTrigger = middy(imageUploadTrigger)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export { wrappedGetPostCategory as getPostCategory };
 export { wrappedGetBusinessCategory as getBusinessCategory };
 export { wrappedGetImageSignedUrl as getImageSignedUrl };
+export { wrappedImageUploadTrigger as imageUploadTrigger };

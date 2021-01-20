@@ -1,3 +1,4 @@
+import { S3 } from "aws-sdk";
 import type { Serverless } from "serverless/aws";
 
 const serverlessConfiguration: Serverless = {
@@ -433,6 +434,19 @@ const serverlessConfiguration: Serverless = {
             method: "put",
             path: "common/getImageSignedUrl",
             cors: true,
+          },
+        },
+      ],
+    },
+    imageUploadTrigger: {
+      handler: "services/common/handler.imageUploadTrigger",
+      events: [
+        {
+          s3: {
+            bucket: "artalleys-gn-image-bucket",
+            event: "s3:ObjectCreated:Put",
+            rules: [],
+            existing: true,
           },
         },
       ],
