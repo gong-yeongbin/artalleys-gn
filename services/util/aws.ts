@@ -58,3 +58,12 @@ export const deleteMessage = async (receiptHandle: string): Promise<void> => {
     })
     .promise();
 };
+
+export const getSignedUrl = async (
+  operation: string,
+  params: object
+): Promise<string> => {
+  const signedUrl = s3.getSignedUrl("putObject", params);
+
+  return signedUrl;
+};

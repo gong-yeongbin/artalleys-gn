@@ -2,7 +2,6 @@ import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import { Repository } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { User, Business, Comment, BusinessPost } from "../../src/entity/Entity";
-import { name } from "../util/util";
 import { CommentBuilder } from "../../src/dto/CommentDto";
 import { UserData } from "../../src/types/dataType";
 import middy from "@middy/core";

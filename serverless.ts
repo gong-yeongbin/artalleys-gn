@@ -275,132 +275,132 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // modifyComment: {
-    //   handler: "services/comment/handler.modifyComment",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "comment/{commentId}/modifyComment",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               commentId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // deleteComment: {
-    //   handler: "services/comment/handler.deleteComment",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "comment/{commentId}/deleteComment",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               commentId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // addComment: {
-    //   handler: "services/comment/handler.addComment",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "put",
-    //         path: "comment/{postId}/addComment",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // getComment: {
-    //   handler: "services/comment/handler.getComment",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "comment/{postId}/getComment",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //               order: false,
-    //             },
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // getReply: {
-    //   handler: "services/comment/handler.getReply",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "comment/{postId}/getReply",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //               order: false,
-    //             },
-    //             paths: {
-    //               postId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
-    // getBusinessFeed: {
-    //   handler: "services/feed/handler.getBusinessFeed",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "feed/getBusinessFeed",
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //               order: false,
-    //             },
-    //           },
-    //         },
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
+    modifyComment: {
+      handler: "services/comment/handler.modifyComment",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "comment/{postId}/modifyComment",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    deleteComment: {
+      handler: "services/comment/handler.deleteComment",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{postId}/deleteComment",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    addComment: {
+      handler: "services/comment/handler.addComment",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "comment/{postId}/addComment",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    getComment: {
+      handler: "services/comment/handler.getComment",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{postId}/getComment",
+            cors: true,
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    getReply: {
+      handler: "services/comment/handler.getReply",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "comment/{postId}/getReply",
+            cors: true,
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    getBusinessFeed: {
+      handler: "services/feed/handler.getBusinessFeed",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "feed/getBusinessFeed",
+            request: {
+              parameters: {
+                querystrings: {
+                  offset: false,
+                  limit: false,
+                  order: false,
+                },
+              },
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
     getPostCategory: {
       handler: "services/common/handler.getPostCategory",
       events: [
@@ -420,6 +420,18 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "common/getBusinessCategory",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getImageSignedUrl: {
+      handler: "services/common/handler.getImageSignedUrl",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "common/getImageSignedUrl",
             cors: true,
           },
         },

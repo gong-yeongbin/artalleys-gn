@@ -72,9 +72,13 @@ interface CommentData {
     nickName: string;
     url: string;
   };
-  // userId: number;
-  // nickName: string;
-  // url: string;
+}
+
+interface SignedUrlData {
+  key: string;
+  url: string;
+  href: string;
+  expireInSeconds: number;
 }
 
 export {
@@ -85,4 +89,5 @@ export {
   UserData,
   PostOtherData,
   CommentData,
+  SignedUrlData,
 };

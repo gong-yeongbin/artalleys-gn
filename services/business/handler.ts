@@ -1,6 +1,5 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { putObject, sendMessage } from "../util/aws";
 import {
   Post,
   Image,

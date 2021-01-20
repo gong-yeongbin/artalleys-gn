@@ -1,8 +1,24 @@
 import * as crypto from "crypto";
+import * as mime from "mime";
 import * as admin from "firebase-admin";
+import { min } from "moment";
 
-export const name = (n: number): string => {
-  return crypto.randomBytes(n).toString("hex");
+export const generateRandomBase64 = (): string => {
+  return crypto.randomBytes(20).toString("base64");
+};
+
+export const generateRandomHex = (): string => {
+  const unique: string = crypto.randomBytes(20).toString("hex");
+  return unique;
+};
+
+export const filepath = (filename: string, type: string): string => {
+  const uniqueId: string = generateRandomHex();
+  const contentType: string = mime.getType(filename);
+  const extenstion: string = mime.getExtension(contentType);
+  const keyFileName: string = `${uniqueId}.${extenstion}`;
+  const path = [type, keyFileName].join("/");
+  return path;
 };
 
 export const getUid = async (token: string) => {

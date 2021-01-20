@@ -13,26 +13,23 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
           databaseURL: "",
         });
       }
-
-      let resource: string = handler.event.resource;
-      if (resource.indexOf("getFeed") != -1) {
-        return;
-      }
-
-      if (!handler.event || !handler.event.headers["Authorization"]) {
-        return new Error("token missing");
-      }
-
-      const token: string = handler.event.headers["Authorization"];
-      await admin
-        .auth()
-        .verifyIdToken(token)
-        .then((decodedToken) => {
-          return;
-        })
-        .catch((error) => {
-          return new Error("token expiration");
-        });
+      // let resource: string = handler.event.resource;
+      // if (resource.indexOf("getFeed") != -1) {
+      //   return;
+      // }
+      // if (!handler.event || !handler.event.headers["Authorization"]) {
+      //   return new Error("token missing");
+      // }
+      // const token: string = handler.event.headers["Authorization"];
+      // await admin
+      //   .auth()
+      //   .verifyIdToken(token)
+      //   .then((decodedToken) => {
+      //     return;
+      //   })
+      //   .catch((error) => {
+      //     return new Error("token expiration");
+      //   });
     },
   };
 };
