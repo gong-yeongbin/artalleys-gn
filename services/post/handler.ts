@@ -36,7 +36,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiGroup Post
  *
  * @apiParam (Header)   {string} AuthArization                                        Bearer Token
- * @apiParam (Body)     {number=1(sell), 2(buy), 3(business), 4(business post)} type  type
+ * @apiParam (Body)     {number=1(sell), 2(buy), 3(business), 4(businessPost)} type  type
  * @apiParam (Body)     {number=CategoryCode} category                                category
  * @apiParam (Body)     {number=ConditionCode} condition                              condition
  * @apiParam (Body)     {String{30}} title                                            title
@@ -48,7 +48,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)     {number} [number]                                             number
  * @apiParam (Body)     {boolean} nonNegotiablePriceYn                                Non-Negotiable Price
  * @apiParam (Body)     {boolean} [hide]                                              hide
- * @apiParam (Body)     {Array} [imageFileName]                                        image file name
+ * @apiParam (Body)     {Array} [key]                                                 image key
  *
  *
  * @apiParamExample {json} Request Body
@@ -139,13 +139,13 @@ const createPost = async (
   location.post = post;
   await locationRepository.save(location);
 
-  for (let index in data.image) {
+  for (let index in data.key) {
     await imageRepository
       .createQueryBuilder()
       .insert()
       .into(Image)
       .values({
-        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${data.image[index]}`,
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/${data.key[index]}`,
         post: post,
       })
       .execute();

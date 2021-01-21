@@ -35,7 +35,6 @@ export class CommentBuilder {
   }
 
   public replaceHost(newHost: string): CommentBuilder {
-    console.log(this._data);
     this._data.map((value, index) => {
       this._data[index].user.url = replaceHost(
         this._data[index].user.url,

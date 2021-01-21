@@ -7,7 +7,7 @@ import { authorizeToken } from "../util/authorizer";
 import { getUid, filepath } from "../util/util";
 import { BusinessCategory, PostCategory } from "../../src/entity/Entity";
 import { getSignedUrl } from "../../services/util/aws";
-import { SignedUrlData } from "../../src/types/dataType";
+import { SignedUrlData, UserData } from "../../src/types/dataType";
 import { Image } from "../../src/entity/Entity";
 
 const {
@@ -227,9 +227,11 @@ const getBusinessCategory = async (
  * @apiGroup Common
  *
  * @apiParam (Header)   {string} AuthArization                              Bearer Token
- * @apiParam (QueryStringParam) {String} filename                           file name
+ * @apiParam (QueryStringParam) {String=post,business,businessPost,user} type                               post type
+ * @apiParam (QueryStringParam) {Array} filename                           file name
  * @apiParamExample {json} Request Body
  {
+  "type": "post",
 	"filenames": ["test.png", "test1.jpg"]	
  }
  * @apiParamExample {json} Response Body
@@ -253,12 +255,15 @@ const getImageSignedUrl = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const { filenames } = JSON.parse(event.body);
+  const userInfo: UserData = await getUid(event.headers["Authorization"]);
+  const { filenames, type } = JSON.parse(event.body);
 
   let response: SignedUrlData[] = [];
 
   for (let index in filenames) {
-    let key: string = filepath(filenames[index], "image");
+    let key: string = [userInfo.uid, filepath(filenames[index], type)].join(
+      "/"
+    );
 
     let signedUrl: string = await getSignedUrl("putObject", {
       Bucket: BUCKET_NAME,
@@ -279,21 +284,6 @@ const getImageSignedUrl = async (
   };
 };
 
-const imageUploadTrigger = async (
-  event: S3Event,
-  context: Context
-): Promise<void> => {
-  const connection = await getDatabaseConnection();
-  const imageRepository: Repository<Image> = connection.getRepository(Image);
-  let image: Image = new Image();
-  image.url = [
-    BUCKET_SERVICE_ENDPOINT_URL,
-    event.Records[0].s3.object.key,
-  ].join("/");
-
-  await imageRepository.save(image);
-};
-
 const wrappedGetPostCategory = middy(getPostCategory)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -303,10 +293,6 @@ const wrappedGetBusinessCategory = middy(getBusinessCategory)
 const wrappedGetImageSignedUrl = middy(getImageSignedUrl)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-const wrappedImageUploadTrigger = middy(imageUploadTrigger)
-  .use(authorizeToken())
-  .use(doNotWaitForEmptyEventLoop());
 export { wrappedGetPostCategory as getPostCategory };
 export { wrappedGetBusinessCategory as getBusinessCategory };
 export { wrappedGetImageSignedUrl as getImageSignedUrl };
-export { wrappedImageUploadTrigger as imageUploadTrigger };

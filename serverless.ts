@@ -438,19 +438,6 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    imageUploadTrigger: {
-      handler: "services/common/handler.imageUploadTrigger",
-      events: [
-        {
-          s3: {
-            bucket: "artalleys-gn-image-bucket",
-            event: "s3:ObjectCreated:Put",
-            rules: [],
-            existing: true,
-          },
-        },
-      ],
-    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [

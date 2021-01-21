@@ -40,7 +40,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)   {String} businessHoursInfo                          business hours info
  * @apiParam (Body)   {String} homepage                                   homepage url
  * @apiParam (Body)   {String{300}} details                               details
- * @apiParam (Body)     {Array} [imageFileName]                                        image file name
+ * @apiParam (Body)     {Array} [key]                                     image key
  *
  *
  * @apiParamExample {json} Request Body
@@ -59,7 +59,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 							"latitude": 13.123
 						 },
 	"details":"organic food test test test",
-	"image": ["test.jpg","test2.png"]
+	"key": ["post/39489e5be288970c5437b7a94917f54038bb48ff.png"]
  }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/
@@ -121,13 +121,12 @@ const createBusiness = async (
   await locationRepository.save(location);
 
   for (let index in data.image) {
-    let fileName: string = uuid();
     await imageRepository
       .createQueryBuilder()
       .insert()
       .into(Image)
       .values({
-        url: `${BUCKET_SERVICE_ENDPOINT_URL}/image/${data.image[index]}`,
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/${data.key[index]}`,
         business: business,
       })
       .execute();
@@ -262,7 +261,6 @@ const likeBusiness = async (
   businessLike.user = userEntity;
 
   if (postLikeEntity == null) {
-    console.log(businessLike);
     await businessLikeRepository.save(businessLike);
 
     // businessEntity.likeCount = businessEntity.likeCount + 1;
