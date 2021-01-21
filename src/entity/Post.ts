@@ -75,9 +75,7 @@ export default class Post {
   @JoinColumn({ name: "status" })
   status: PostStatus;
 
-  @ManyToOne(() => PostCategory, (postCategory) => postCategory.post, {
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => PostCategory, (postCategory) => postCategory.post)
   @JoinColumn({ name: "category" })
   category: PostCategory;
 

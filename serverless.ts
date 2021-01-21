@@ -438,6 +438,42 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    createNotice: {
+      handler: "services/cms/handler.createNotice",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "cms/notice/createNotice",
+            cors: true,
+          },
+        },
+      ],
+    },
+    modifyNotice: {
+      handler: "services/cms/handler.modifyNotice",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "cms/notice/{id}/modifyNotice",
+            cors: true,
+          },
+        },
+      ],
+    },
+    deleteNotice: {
+      handler: "services/cms/handler.deleteNotice",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/notice/{id}/deleteNotice",
+            cors: true,
+          },
+        },
+      ],
+    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [
