@@ -81,6 +81,17 @@ interface SignedUrlData {
   expireInSeconds: number;
 }
 
+interface NoticeData {
+  id: number;
+  title: string;
+  category: string;
+  pushNotification: boolean;
+  publish: boolean;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export {
   Location,
   PostData,
@@ -90,4 +101,5 @@ export {
   PostOtherData,
   CommentData,
   SignedUrlData,
+  NoticeData,
 };

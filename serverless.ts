@@ -474,6 +474,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getNoticeList: {
+      handler: "services/cms/handler.getNoticeList",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/notice/getNoticeList",
+            cors: true,
+          },
+        },
+      ],
+    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [
