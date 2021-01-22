@@ -486,6 +486,54 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    createCs: {
+      handler: "services/cms/handler.createCs",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "cms/cs/createCs",
+            cors: true,
+          },
+        },
+      ],
+    },
+    modifyCs: {
+      handler: "services/cms/handler.modifyCs",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "cms/cs/{id}/modifyCs",
+            cors: true,
+          },
+        },
+      ],
+    },
+    deleteCs: {
+      handler: "services/cms/handler.deleteCs",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/cs/{id}/deleteCs",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getCsList: {
+      handler: "services/cms/handler.getCsList",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/cs/getCsList",
+            cors: true,
+          },
+        },
+      ],
+    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [

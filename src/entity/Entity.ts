@@ -17,3 +17,4 @@ export { default as PostLike } from "./PostLike";
 export { default as BusinessLike } from "./BusinessLike";
 export { default as Image } from "./Image";
 export { default as Notice } from "./Notice";
+export { default as Cs } from "./Cs";

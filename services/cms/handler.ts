@@ -4,8 +4,10 @@ import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop"
 import { authorizeToken } from "../../services/util/authorizer";
 import { Connection, Repository, SelectQueryBuilder } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { Notice } from "../../src/entity/Entity";
+import { Notice, Cs } from "../../src/entity/Entity";
 import { NoticeBuilder } from "../../src/dto/NoticeDto";
+import { CsvContentType } from "aws-sdk/clients/sagemaker";
+import { CsBuilder } from "../../src/dto/CsDto";
 
 /**
  * @api {put}  /cms/notice/createNotice     create notice
@@ -256,6 +258,215 @@ const getNoticeList = async (
   };
 };
 
+/**
+ * @api {put}  /cms/cs/createCs     create cs
+ * @apiName Create Cs
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)   {string} AuthArization                                        Bearer Token
+ * @apiParam (Body)     {string} title                                                cs title
+ * @apiParam (Body)     {string=OperationalPolicy,AccountCertified,PurchaseSale,TransactionItem,TransactionManners,EventInvitation,RestrictionsOnUse,NeighborhoodBusiness,LocalAdvertising,other} category                                             cs category
+ * @apiParam (Body)     {string} content                                              cs content
+ * @apiParam (Body)     {boolean} publish=false                                       cs publish
+ * @apiParam (Body)     {boolean} pushNotification=false                              cs push notification
+ * @apiParamExample Request
+ {
+	"title": "notice test",
+	"category": "OperationalPolicy",                  
+  "content": "notice test content",
+  "publish": true,                                           
+}
+ **/
+const createCs = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connection: Connection = await getDatabaseConnection();
+  const csRepository: Repository<Cs> = connection.getRepository(Cs);
+  const { title, category, publish = false, content } = JSON.parse(event.body);
+
+  if (title == null || content == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
+
+  let cs: Cs = new Cs();
+  cs.title = title;
+  cs.category = category;
+  cs.publish = publish;
+  cs.content = content;
+
+  await csRepository.save(cs);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {put}  /cms/cs/modifyCs     modify cs
+ * @apiName Modify Cs
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (PathParam)            {number} id                                 cs id
+ * @apiParamExample Request
+ {
+	"title": "notice test",
+	"category": "new",                  
+  "content": "notice test content",
+  "publish": true,
+}
+ **/
+const modifyCs = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const csId: number = Number(event.pathParameters["id"]);
+  const { title, category, publish = false, content } = JSON.parse(event.body);
+  const connection: Connection = await getDatabaseConnection();
+  const csRepository: Repository<Cs> = connection.getRepository(Cs);
+  const csEntity: Cs = await csRepository.findOne({ id: csId });
+  if (csEntity == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
+
+  csEntity.title = title;
+  csEntity.category = category;
+  csEntity.publish = publish;
+  csEntity.content = content;
+  csRepository.save(csEntity);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {get}  /cms/cs/deleteNotice     delete cs
+ * @apiName Delete Cs
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (PathParam)            {number} id                                 notice id
+ **/
+const deleteCs = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const csId: number = Number(event.pathParameters["id"]);
+  const connection: Connection = await getDatabaseConnection();
+  const csRepository: Repository<Cs> = connection.getRepository(Cs);
+  const csEntity: Cs = await csRepository.findOne({ id: csId });
+  if (csEntity == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
+
+  await csRepository.delete({ id: csId });
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {get}  /cms/cs/getCsList     get cs list
+ * @apiName Get Cs List
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (QueryStringParam)     {number} offset=0                           list offset
+ * @apiParam (QueryStringParam)     {number} limit=10                           list limit
+ * @apiParam (QueryStringParam)     {string=desc,asc} order=desc                list order
+ * @apiParamExample response
+ {
+  "data": [
+    {
+      "id": "8",
+      "title": "cs test",
+      "category": "NeighborhoodBusiness",
+      "content": "cs test content",
+      "createdAt": "2021-01-21T17:26:40.290Z",
+      "updatedAt": "2021-01-21T17:26:40.290Z"
+    },
+    {
+      "id": "7",
+      "title": "cs test",
+      "category": "NeighborhoodBusiness",
+      "content": "cs test content",
+      "createdAt": "2021-01-21T17:26:39.513Z",
+      "updatedAt": "2021-01-21T17:26:39.513Z"
+    },
+    {
+      "id": "6",
+      "title": "cs test",
+      "category": "NeighborhoodBusiness",
+      "content": "cs test content",
+      "createdAt": "2021-01-21T17:26:38.716Z",
+      "updatedAt": "2021-01-21T17:26:38.716Z"
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 3,
+    "order": "DESC",
+    "length": 3,
+    "totalCount": 6
+  }
+}
+ **/
+const getCsList = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const {
+    offset = 0,
+    limit = 10,
+    order = "desc",
+  } = event.queryStringParameters;
+
+  const connection: Connection = await getDatabaseConnection();
+  const csRepository: Repository<Cs> = connection.getRepository(Cs);
+
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "DESC" | "ASC" = order.toUpperCase() as "DESC" | "ASC";
+
+  const csEntity: Cs[] = await csRepository
+    .createQueryBuilder("cs")
+    .orderBy("cs.createdAt", queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .getMany();
+
+  const totalCount: number = await csRepository
+    .createQueryBuilder("cs")
+    .getCount();
+
+  const csDto: any = new CsBuilder(
+    csEntity,
+    queryOffset,
+    queryLimit,
+    queryOrder,
+    totalCount
+  ).build();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(csDto),
+  };
+};
+
 const wrappedCreateNotice = middy(createNotice)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -268,9 +479,25 @@ const wrappedDeleteNotice = middy(deleteNotice)
 const wrappedGetNoticeList = middy(getNoticeList)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedCreateCs = middy(createCs)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedModifyCs = middy(modifyCs)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedDeleteCs = middy(deleteCs)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedGetCsList = middy(getCsList)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedCreateNotice as createNotice,
   wrappedModifyNotice as modifyNotice,
   wrappedDeleteNotice as deleteNotice,
   wrappedGetNoticeList as getNoticeList,
+  wrappedCreateCs as createCs,
+  wrappedModifyCs as modifyCs,
+  wrappedDeleteCs as deleteCs,
+  wrappedGetCsList as getCsList,
 };

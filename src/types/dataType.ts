@@ -92,6 +92,15 @@ interface NoticeData {
   updatedAt: Date;
 }
 
+interface CsData {
+  id: number;
+  title: string;
+  category: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export {
   Location,
   PostData,
@@ -102,4 +111,5 @@ export {
   CommentData,
   SignedUrlData,
   NoticeData,
+  CsData,
 };
