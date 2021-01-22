@@ -214,10 +214,7 @@ const getNoticeList = async (
   const queryOffset: number = Number(offset);
   const queryLimit: number = Number(limit);
   const queryOrder: "ASC" | "DESC" = order.toUpperCase() as "ASC" | "DESC";
-  const queryFilter: string =
-    filter.charAt(0).toUpperCase() + filter.slice(1) == "All"
-      ? ""
-      : filter.charAt(0).toUpperCase() + filter.slice(1);
+  const queryFilter: string = filter.charAt(0).toUpperCase() + filter.slice(1);
 
   const connection: Connection = await getDatabaseConnection();
   const noticeRepository: Repository<Notice> = connection.getRepository(Notice);
@@ -234,7 +231,7 @@ const getNoticeList = async (
     query.where("notice.pushNotification =:pushNotification", {
       pushNotification: pushNotification,
     });
-  } else {
+  } else if (queryFilter != "All") {
     query.where("notice.category =:category", { category: filter });
   }
 
