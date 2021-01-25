@@ -539,7 +539,7 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: "put",
+            method: "get",
             path: "cms/cs/createContactCs",
             cors: true,
           },
@@ -553,6 +553,42 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "cms/cs/{id}/getContactCs",
+            cors: true,
+          },
+        },
+      ],
+    },
+    contactCsSendAnswer: {
+      handler: "services/cms/handler.contactCsSendAnswer",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/cs/{id}/contactCsSendAnswer",
+            cors: true,
+          },
+        },
+      ],
+    },
+    deleteContactCs: {
+      handler: "services/cms/handler.deleteContactCs",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/cs/{id}/deleteContactCs",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getContactCsList: {
+      handler: "services/cms/handler.getContactCsList",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/cs/getContactCsList",
             cors: true,
           },
         },

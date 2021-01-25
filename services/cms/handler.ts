@@ -11,6 +11,7 @@ import { CsvContentType } from "aws-sdk/clients/sagemaker";
 import { CsBuilder } from "../../src/dto/CsDto";
 import { getUid } from "../util/util";
 import { ContactCsBuilder } from "../../src/dto/ContactCsDto";
+import { ContactCsListBuilder } from "../../src/dto/ContactCsListDto";
 
 /**
  * @api {put}  /cms/notice/createNotice     create notice
@@ -482,18 +483,14 @@ const getCsList = async (
  * @apiGroup CMS
  *
  * @apiParam (Header)               {string} AuthArization                      Bearer Token
- * @apiParam (Body)                 {string} content                            content
- * @apiParamExample Request
- {
-	"content": "test content"
-}
+ * @apiParam (QueryStringParam)     {string} Content                            content
  **/
 const createContactCs = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
   const userInfo: UserData = await getUid(event.headers["Authorization"]);
-  const { content = "" } = JSON.parse(event.body);
+  const { Content = "" } = event.queryStringParameters;
   const connection: Connection = await getDatabaseConnection();
   const userRepository: Repository<User> = connection.getRepository(User);
   const contractCsRepository: Repository<ContactCs> = connection.getRepository(
@@ -502,7 +499,7 @@ const createContactCs = async (
   const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
 
   let contactCs: ContactCs = new ContactCs();
-  contactCs.content = content;
+  contactCs.content = Content;
   contactCs.user = userEntity;
   await contractCsRepository.save(contactCs);
 
@@ -542,10 +539,10 @@ const getContactCs = async (
 ): Promise<ProxyResult> => {
   const contactCsId: number = Number(event.pathParameters["id"]);
   const connection: Connection = await getDatabaseConnection();
-  const contractCsRepository: Repository<ContactCs> = connection.getRepository(
+  const contactCsRepository: Repository<ContactCs> = connection.getRepository(
     ContactCs
   );
-  const contactCsEntity: ContactCs = await contractCsRepository
+  const contactCsEntity: ContactCs = await contactCsRepository
     .createQueryBuilder("contactCs")
     .leftJoinAndSelect("contactCs.user", "user")
     .leftJoinAndSelect("user.location", "location")
@@ -559,6 +556,161 @@ const getContactCs = async (
     };
   }
   const contactCsDto: any = new ContactCsBuilder(contactCsEntity).build();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(contactCsDto),
+  };
+};
+
+/**
+ * @api {get}  /cms/cs/:id/contactCsSendAnswer     contact cs send answer
+ * @apiName Contact Cs Send Answer
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (PathParam)            {number} id                                 contact cs id
+ * @apiParam (QueryStringParam)     {string} Answer                             contact cs answer
+ **/
+const contactCsSendAnswer = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const contactCsId: number = Number(event.pathParameters["id"]);
+  const { Answer = "" } = event.queryStringParameters;
+  const connection: Connection = await getDatabaseConnection();
+  const contactCsRepository: Repository<ContactCs> = connection.getRepository(
+    ContactCs
+  );
+  const contactCsEntity: ContactCs = await contactCsRepository.findOne({
+    id: contactCsId,
+  });
+
+  contactCsEntity.answeringQuestions = Answer;
+  contactCsRepository.save(contactCsEntity);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {get}  /cms/cs/:id/deleteContactCs     delete contact cs
+ * @apiName Delete Contact Cs
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (PathParam)            {number} id                                 contact cs id
+ **/
+const deleteContactCs = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const contactCsId: number = Number(event.pathParameters["id"]);
+  const connection: Connection = await getDatabaseConnection();
+  const contactCsRepository: Repository<ContactCs> = connection.getRepository(
+    ContactCs
+  );
+
+  await contactCsRepository.delete({ id: contactCsId });
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {get}  /cms/cs/getContactCsList     get contact cs list
+ * @apiName Get Contact Cs List
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (QueryStringParam)     {number} offset=0                           list offset
+ * @apiParam (QueryStringParam)     {number} limit=10                           list limit
+ * @apiParam (QueryStringParam)     {string=desc,asc} order=desc                list order
+ * @apiParamExample response
+{
+  "data": [
+    {
+      "id": "2",
+      "content": "contact cs test content",
+      "answeringQuestions": null,
+      "user": {
+        "id": "12",
+        "uid": "fBkfeReSGtbhEA8yTBY39kuAeyr2",
+        "nickName": null,
+        "phoneNumber": "+821047484856",
+        "email": null
+      },
+      "location": null
+    },
+    {
+      "id": "3",
+      "content": "a na test",
+      "answeringQuestions": null,
+      "user": {
+        "id": "12",
+        "uid": "fBkfeReSGtbhEA8yTBY39kuAeyr2",
+        "nickName": null,
+        "phoneNumber": "+821047484856",
+        "email": null
+      },
+      "location": null
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 10,
+    "order": "ASC",
+    "length": 2,
+    "totalCount": 2
+  }
+}
+ **/
+
+const getContactCsList = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const {
+    offset = 0,
+    limit = 10,
+    order = "desc",
+  } = event.queryStringParameters;
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "DESC" | "ASC" = order.toUpperCase() as "DESC" | "ASC";
+
+  const connection: Connection = await getDatabaseConnection();
+  const contactCsRepository: Repository<ContactCs> = connection.getRepository(
+    ContactCs
+  );
+  const contactCsEntity: ContactCs[] = await contactCsRepository
+    .createQueryBuilder("contactCs")
+    .leftJoinAndSelect("contactCs.user", "user")
+    .leftJoinAndSelect("user.location", "location")
+    .orderBy("contactCs.updatedAt", queryOrder)
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .getMany();
+
+  const totalCount: number = await contactCsRepository
+    .createQueryBuilder("contactCs")
+    .getCount();
+
+  if (contactCsEntity == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
+  const contactCsDto: any = new ContactCsListBuilder(
+    contactCsEntity,
+    queryOffset,
+    queryLimit,
+    queryOrder,
+    totalCount
+  ).build();
   return {
     statusCode: 200,
     body: JSON.stringify(contactCsDto),
@@ -595,6 +747,15 @@ const wrappedCreateContactCs = middy(createContactCs)
 const wrappedGetContactCs = middy(getContactCs)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedContactCsSendAnswer = middy(contactCsSendAnswer)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedDeleteContactCs = middy(deleteContactCs)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedGetContactCsList = middy(getContactCsList)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedCreateNotice as createNotice,
   wrappedModifyNotice as modifyNotice,
@@ -606,4 +767,7 @@ export {
   wrappedGetCsList as getCsList,
   wrappedCreateContactCs as createContactCs,
   wrappedGetContactCs as getContactCs,
+  wrappedContactCsSendAnswer as contactCsSendAnswer,
+  wrappedDeleteContactCs as deleteContactCs,
+  wrappedGetContactCsList as getContactCsList,
 };
