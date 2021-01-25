@@ -534,6 +534,30 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    createContactCs: {
+      handler: "services/cms/handler.createContactCs",
+      events: [
+        {
+          http: {
+            method: "put",
+            path: "cms/cs/createContactCs",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getContactCs: {
+      handler: "services/cms/handler.getContactCs",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "cms/cs/{id}/getContactCs",
+            cors: true,
+          },
+        },
+      ],
+    },
     // onConnect: {
     //   handler: "services/chat-socket/handler.onConnect",
     //   events: [

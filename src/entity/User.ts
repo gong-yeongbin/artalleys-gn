@@ -16,6 +16,7 @@ import {
   Post,
   Business,
   Comment,
+  ContactCs,
 } from "./Entity";
 
 @Entity("user")
@@ -70,4 +71,8 @@ export default class User {
   @OneToMany(() => Comment, (comment) => comment.user)
   @JoinColumn({ name: "comment" })
   comment: Comment[];
+
+  @OneToMany(() => ContactCs, (contactCs) => contactCs.user)
+  @JoinColumn({ name: "contact_cs" })
+  contactCs: ContactCs[];
 }

@@ -4,10 +4,13 @@ import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop"
 import { authorizeToken } from "../../services/util/authorizer";
 import { Connection, Repository, SelectQueryBuilder } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { Notice, Cs } from "../../src/entity/Entity";
+import { User, Notice, Cs, ContactCs } from "../../src/entity/Entity";
+import { UserData } from "../../src/types/dataType";
 import { NoticeBuilder } from "../../src/dto/NoticeDto";
 import { CsvContentType } from "aws-sdk/clients/sagemaker";
 import { CsBuilder } from "../../src/dto/CsDto";
+import { getUid } from "../util/util";
+import { ContactCsBuilder } from "../../src/dto/ContactCsDto";
 
 /**
  * @api {put}  /cms/notice/createNotice     create notice
@@ -16,7 +19,7 @@ import { CsBuilder } from "../../src/dto/CsDto";
  *
  * @apiParam (Header)   {string} AuthArization                                        Bearer Token
  * @apiParam (Body)     {string} title                                                notice title
- * @apiParam (Body)     {string} category                                             notice category
+ * @apiParam (Body)     {string=Notice, Event, New} category                          notice category
  * @apiParam (Body)     {string} content                                              notice content
  * @apiParam (Body)     {boolean} publish=false                                       notice publish
  * @apiParam (Body)     {boolean} pushNotification=false                              notice push notification
@@ -37,7 +40,7 @@ const createNotice = async (
   const noticeRepository: Repository<Notice> = connection.getRepository(Notice);
   const {
     title,
-    category,
+    category = "New",
     pushNotification = false,
     publish = false,
     content,
@@ -52,7 +55,7 @@ const createNotice = async (
 
   let notice: Notice = new Notice();
   notice.title = title;
-  notice.category = category;
+  notice.category = category.charAt(0).toUpperCase() + category.slice(1);
   notice.pushNotification = pushNotification;
   notice.publish = publish;
   notice.content = content;
@@ -72,6 +75,11 @@ const createNotice = async (
  *
  * @apiParam (Header)               {string} AuthArization                      Bearer Token
  * @apiParam (PathParam)            {number} id                                 notice id
+ * @apiParam (Body)     {string} title                                                notice title
+ * @apiParam (Body)     {string=Notice, Event, New} category                                             notice category
+ * @apiParam (Body)     {string} content                                              notice content
+ * @apiParam (Body)     {boolean} publish=false                                       notice publish
+ * @apiParam (Body)     {boolean} pushNotification=false                              notice push notification
  * @apiParamExample Request
  {
 	"title": "notice test",
@@ -88,7 +96,7 @@ const modifyNotice = async (
   const noticeId: number = Number(event.pathParameters["id"]);
   const {
     title,
-    category,
+    category = "New",
     pushNotification = false,
     publish = false,
     content,
@@ -104,7 +112,7 @@ const modifyNotice = async (
   }
 
   noticeEntity.title = title;
-  noticeEntity.category = category;
+  noticeEntity.category = category.charAt(0).toUpperCase() + category.slice(1);
   noticeEntity.pushNotification = pushNotification;
   noticeEntity.publish = publish;
   noticeEntity.content = content;
@@ -209,7 +217,7 @@ const getNoticeList = async (
     offset = 0,
     limit = 10,
     order = "desc",
-    filter = "all", // All, Notice, Event, New, On, Off
+    filter = "all",
   } = event.queryStringParameters;
   const queryOffset: number = Number(offset);
   const queryLimit: number = Number(limit);
@@ -310,6 +318,10 @@ const createCs = async (
  *
  * @apiParam (Header)               {string} AuthArization                      Bearer Token
  * @apiParam (PathParam)            {number} id                                 cs id
+ * @apiParam (Body)                 {string} title                              title
+ * @apiParam (Body)                 {string=OperationalPolicy,AccountCertified,PurchaseSale,TransactionItem,TransactionManners,EventInvitation,RestrictionsOnUse,NeighborhoodBusiness,LocalAdvertising,other} category                           category
+ * @apiParam (Body)                 {string} content                            content
+ * @apiParam (Body)                 {boolean} publish                           publish
  * @apiParamExample Request
  {
 	"title": "notice test",
@@ -464,6 +476,95 @@ const getCsList = async (
   };
 };
 
+/**
+ * @api {put}  /cms/cs/createContactCs     create contact cs
+ * @apiName Create Contact Cs
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (Body)                 {string} content                            content
+ * @apiParamExample Request
+ {
+	"content": "test content"
+}
+ **/
+const createContactCs = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const userInfo: UserData = await getUid(event.headers["Authorization"]);
+  const { content = "" } = JSON.parse(event.body);
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const contractCsRepository: Repository<ContactCs> = connection.getRepository(
+    ContactCs
+  );
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+
+  let contactCs: ContactCs = new ContactCs();
+  contactCs.content = content;
+  contactCs.user = userEntity;
+  await contractCsRepository.save(contactCs);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {get}  /cms/cs/:id/getContactCs     get contact cs
+ * @apiName Get Contact Cs
+ * @apiGroup CMS
+ *
+ * @apiParam (Header)               {string} AuthArization                      Bearer Token
+ * @apiParam (PathParam)            {number} id                                 contact cs id
+ * @apiParamExample response
+ {
+  "data": {
+    "id": "1",
+    "content": "contact cs test content",
+    "answeringQuestions": null,
+    "user": {
+      "id": "12",
+      "uid": "fBkfeReSGtbhEA8yTBY39kuAeyr2",
+      "nickName": null,
+      "phoneNumber": "+821047484856",
+      "email": null
+    },
+    "location": null
+  }
+}
+ **/
+const getContactCs = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const contactCsId: number = Number(event.pathParameters["id"]);
+  const connection: Connection = await getDatabaseConnection();
+  const contractCsRepository: Repository<ContactCs> = connection.getRepository(
+    ContactCs
+  );
+  const contactCsEntity: ContactCs = await contractCsRepository
+    .createQueryBuilder("contactCs")
+    .leftJoinAndSelect("contactCs.user", "user")
+    .leftJoinAndSelect("user.location", "location")
+    .where("contactCs.id =:id", { id: contactCsId })
+    .getOne();
+
+  if (contactCsEntity == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
+  const contactCsDto: any = new ContactCsBuilder(contactCsEntity).build();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(contactCsDto),
+  };
+};
+
 const wrappedCreateNotice = middy(createNotice)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -488,6 +589,12 @@ const wrappedDeleteCs = middy(deleteCs)
 const wrappedGetCsList = middy(getCsList)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedCreateContactCs = middy(createContactCs)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedGetContactCs = middy(getContactCs)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedCreateNotice as createNotice,
   wrappedModifyNotice as modifyNotice,
@@ -497,4 +604,6 @@ export {
   wrappedModifyCs as modifyCs,
   wrappedDeleteCs as deleteCs,
   wrappedGetCsList as getCsList,
+  wrappedCreateContactCs as createContactCs,
+  wrappedGetContactCs as getContactCs,
 };

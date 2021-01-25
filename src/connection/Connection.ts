@@ -26,6 +26,7 @@ import {
   BusinessLike,
   Notice,
   Cs,
+  ContactCs,
 } from "../entity/Entity";
 
 import { RelationLoader } from "typeorm/query-builder/RelationLoader";
@@ -60,6 +61,7 @@ const entity = [
   BusinessLike,
   Notice,
   Cs,
+  ContactCs,
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {

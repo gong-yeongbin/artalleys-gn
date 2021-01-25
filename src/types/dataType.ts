@@ -1,3 +1,7 @@
+interface Location {
+  longitude: number;
+  latitude: number;
+}
 interface UserData {
   id: number;
   uid?: string;
@@ -5,10 +9,6 @@ interface UserData {
   phoneNumber?: string;
   email?: string;
   url?: string;
-}
-interface Location {
-  longitude: number;
-  latitude: number;
 }
 interface PostData {
   id: number;
@@ -101,6 +101,20 @@ interface CsData {
   updatedAt: Date;
 }
 
+interface ContactCsData {
+  id: number;
+  content: string;
+  answeringQuestions: string;
+  user: {
+    id: number;
+    uid: string;
+    nickName: string;
+    phoneNumber: string;
+    email: string;
+  };
+  location: Location;
+}
+
 export {
   Location,
   PostData,
@@ -112,4 +126,5 @@ export {
   SignedUrlData,
   NoticeData,
   CsData,
+  ContactCsData,
 };
