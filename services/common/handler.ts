@@ -222,7 +222,7 @@ const getBusinessCategory = async (
 };
 
 /**
- * @api {get}  /common/getImageSignedUrl     get image signed url
+ * @api {post}  /common/getImageSignedUrl     get image signed url
  * @apiName Get Image Signed Url
  * @apiGroup Common
  *
@@ -281,6 +281,16 @@ const getImageSignedUrl = async (
   return {
     statusCode: 200,
     body: JSON.stringify(response),
+  };
+};
+
+const getNotice = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  return {
+    statusCode: 200,
+    body: "",
   };
 };
 

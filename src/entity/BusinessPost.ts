@@ -9,7 +9,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from "typeorm";
-import { Business, Comment, Image } from "../entity/Entity";
+import { Business, Comment, Image, Report } from "../entity/Entity";
 
 @Entity("business_post")
 export default class BusinessPost {
@@ -54,4 +54,8 @@ export default class BusinessPost {
 
   @OneToMany(() => Comment, (comment) => comment.id)
   comments: Comment[];
+
+  @OneToMany(() => Report, (report) => report.businessPost)
+  @JoinColumn({ name: "report" })
+  report: Report[];
 }

@@ -19,3 +19,5 @@ export { default as Image } from "./Image";
 export { default as Notice } from "./Notice";
 export { default as Cs } from "./Cs";
 export { default as ContactCs } from "./ContactCs";
+export { default as Report } from "./Report";
+export { default as ReportCategory } from "./ReportCategory";

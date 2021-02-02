@@ -17,6 +17,7 @@ import {
   Business,
   Comment,
   ContactCs,
+  Report,
 } from "./Entity";
 
 @Entity("user")
@@ -75,4 +76,8 @@ export default class User {
   @OneToMany(() => ContactCs, (contactCs) => contactCs.user)
   @JoinColumn({ name: "contact_cs" })
   contactCs: ContactCs[];
+
+  @OneToMany(() => Report, (report) => report.user, { nullable: true })
+  @JoinColumn({ name: "report" })
+  report: Report[];
 }

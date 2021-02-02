@@ -103,6 +103,12 @@ const createPost = async (
   }: Post = data;
 
   const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+  if (userEntity == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
   const postStatusEntity: PostStatus = await postStatusRepository.findOne({
     id: 1,
   });
@@ -190,7 +196,8 @@ const createPost = async (
     "type": "sell",
     "category": "Antiques & Collectibles",
     "condition": "Other (see descriptions)",
-    "status": "active"
+    "status": "active",
+    "nonNegotiablePriceYn": true
   }
 }
  * @apiSuccess  (200 OK) {String} NoContent           Success
@@ -206,7 +213,10 @@ const getPost = async (
 
   const postEntity: Post = await postRepository
     .createQueryBuilder("post")
-    .leftJoinAndSelect("post.location", "location")
+    .leftJoinAndSelect("post.user", "user")
+    .leftJoinAndSelect("user.location", "userlocation")
+    .leftJoinAndSelect("user.image", "userimage")
+    .leftJoinAndSelect("post.location", "postlocation")
     .leftJoinAndSelect("post.image", "image")
     .leftJoinAndSelect("post.type", "type")
     .leftJoinAndSelect("post.category", "category")
@@ -267,7 +277,7 @@ const boostPost = async (
 };
 
 /**
- * @api {get}  /post/:postId/getPost     hide Post
+ * @api {get}  /post/:postId/hidePost     hide Post
  * @apiName Hide Post
  * @apiGroup Post
  *

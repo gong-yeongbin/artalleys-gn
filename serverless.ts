@@ -85,6 +85,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getMySales: {
+      handler: "services/user/handler.getMySales",
+      events: [
+        {
+          http: {
+            method: "post",
+            path: "user/getMySales",
+            cors: true,
+          },
+        },
+      ],
+    },
     getLocation: {
       handler: "services/user/handler.getLocation",
       events: [
@@ -254,6 +266,25 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    deleteBusiness: {
+      handler: "services/business/handler.deleteBusiness",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "business/{postId}/deleteBusiness",
+            cors: true,
+            request: {
+              parameters: {
+                paths: {
+                  postId: true,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
     getFeed: {
       handler: "services/feed/handler.getFeed",
       events: [
@@ -391,9 +422,8 @@ const serverlessConfiguration: Serverless = {
             request: {
               parameters: {
                 querystrings: {
-                  offset: false,
-                  limit: false,
-                  order: false,
+                  offset: true,
+                  limit: true,
                 },
               },
             },
@@ -431,7 +461,7 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: "put",
+            method: "post",
             path: "common/getImageSignedUrl",
             cors: true,
           },
@@ -589,6 +619,18 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "cms/cs/getContactCsList",
+            cors: true,
+          },
+        },
+      ],
+    },
+    reportPost: {
+      handler: "services/report/handler.reportPost",
+      events: [
+        {
+          http: {
+            method: "post",
+            path: "report/{id}/reportPost",
             cors: true,
           },
         },

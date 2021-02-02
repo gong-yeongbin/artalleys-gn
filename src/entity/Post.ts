@@ -19,6 +19,7 @@ import {
   PostStatus,
   PostType,
   PostLike,
+  Report,
 } from "../entity/Entity";
 
 @Entity("post")
@@ -96,4 +97,8 @@ export default class Post {
   @OneToMany(() => PostLike, (postLike) => postLike.post)
   @JoinColumn({ name: "post_like" })
   postLike: PostLike;
+
+  @OneToMany(() => Report, (report) => report.post)
+  @JoinColumn({ name: "report" })
+  report: Report[];
 }

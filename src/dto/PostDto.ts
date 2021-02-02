@@ -1,9 +1,10 @@
 import { Post } from "../entity/Entity";
-import { PostData } from "../types/dataType";
+import { PostData, UserData } from "../types/dataType";
 import { replaceHost } from "../../services/util/http";
 
 export class PostBuilder {
   private _data: PostData;
+  private _user: UserData;
 
   constructor(post: Post) {
     this._data = {
@@ -23,14 +24,22 @@ export class PostBuilder {
       category: post.category.category,
       condition: post.condition != null ? post.condition.conditions : "",
       status: post.status.status,
+      nonNegotiablePriceYn: post.nonNegotiablePriceYn,
     };
     post.image.map((value, index) => {
       post.image[index].url;
       this._data.url.push(post.image[index].url);
     });
+    this._user = {
+      id: post.user.id,
+      nickName: post.user.nickName,
+      location: post.user.location != null ? post.user.location : null,
+      url: post.user.image != null ? post.user.image.url : null,
+    };
   }
 
   public replaceHost(newHost: string): PostBuilder {
+    this._user.url = replaceHost(this._user.url, newHost);
     this._data.url.map((value, index) => {
       this._data.url[index] = replaceHost(this._data.url[index], newHost);
     });
@@ -39,7 +48,10 @@ export class PostBuilder {
 
   public build() {
     return {
-      data: this._data,
+      data: {
+        post: this._data,
+        user: this._user,
+      },
     };
   }
 }

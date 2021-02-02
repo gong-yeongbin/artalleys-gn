@@ -27,7 +27,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiGroup Business
  *
  * @apiParam (Header) {string}  Authorization                             Bearer Token
- * @apiParam (Body)   {number}  business category code                    business category code
+ * @apiParam (Body)   {number}  businessCategoryCode                      business category code
  * @apiParam (Body)   {String{30}}  title                                 title
  * @apiParam (Body)   {String}  detailTitle                               detail title
  * @apiParam (Body)   {String} address                                    address
@@ -120,7 +120,7 @@ const createBusiness = async (
   location.business = business;
   await locationRepository.save(location);
 
-  for (let index in data.image) {
+  for (let index in data.key) {
     await imageRepository
       .createQueryBuilder()
       .insert()
@@ -261,15 +261,11 @@ const likeBusiness = async (
   businessLike.user = userEntity;
 
   if (postLikeEntity == null) {
+    businessEntity.likeCount = businessEntity.likeCount + 1;
     await businessLikeRepository.save(businessLike);
-
-    // businessEntity.likeCount = businessEntity.likeCount + 1;
-    // await businessLikeRepository.save(businessEntity);
   } else {
+    businessEntity.likeCount = businessEntity.likeCount - 1;
     await businessLikeRepository.delete(businessLike);
-
-    // businessEntity.likeCount = businessEntity.likeCount - 1;
-    // await businessLikeRepository.save(businessEntity);
   }
 
   return {
@@ -278,6 +274,51 @@ const likeBusiness = async (
   };
 };
 
+/**
+ * @api {get}  /business/:postId/deleteBusiness     delete business
+ * @apiName Delete Business
+ * @apiGroup Business
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (PathParam)  {number}  postId                                post id
+ *
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
+const deleteBusiness = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const postId: number = Number(event.pathParameters["postId"]);
+
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository("User");
+  const businessRepository: Repository<Business> = connection.getRepository(
+    "Business"
+  );
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+  const businessEntity: Business = await businessRepository.findOne({
+    id: postId,
+    user: userEntity,
+  });
+
+  if (businessEntity == null) {
+    return {
+      statusCode: 500,
+      body: "",
+    };
+  }
+
+  await businessRepository.delete(businessEntity);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 // const createBusinessPost = async (
 //   event: APIGatewayEvent,
 //   context: Context
@@ -335,8 +376,12 @@ const wrappedCreateBusiness = middy(createBusiness)
 const wrappedLikeBusiness = middy(likeBusiness)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedDeleteBusiness = middy(deleteBusiness)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedGetBusiness as getBusiness,
   wrappedCreateBusiness as createBusiness,
   wrappedLikeBusiness as likeBusiness,
+  wrappedDeleteBusiness as deleteBusiness,
 };

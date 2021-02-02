@@ -6,15 +6,18 @@ import * as admin from "firebase-admin";
 const authorizeToken = (): middy.MiddlewareObject<any, any> => {
   return {
     before: async (handler: middy.HandlerLambda, next: middy.NextFunction) => {
-      const serviceAccount = require("../util/artalleys-gn-78385-firebase-adminsdk-9jh66-d8a4bb8e92.json");
-      if (!admin.apps.length) {
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
-          databaseURL: "",
-        });
-      }
+      // const serviceAccount = require("../util/artalleys-gn-78385-firebase-adminsdk-9jh66-d8a4bb8e92.json");
+      // if (!admin.apps.length) {
+      //   admin.initializeApp({
+      //     credential: admin.credential.cert(serviceAccount),
+      //     databaseURL: "",
+      //   });
+      // }
       // let resource: string = handler.event.resource;
-      // if (resource.indexOf("getFeed") != -1) {
+      // if (
+      //   resource.indexOf("getFeed") != -1 &&
+      //   resource.indexOf("getBusinessFeed") != -1
+      // ) {
       //   return;
       // }
       // if (!handler.event || !handler.event.headers["Authorization"]) {

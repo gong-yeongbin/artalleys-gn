@@ -9,6 +9,7 @@ interface UserData {
   phoneNumber?: string;
   email?: string;
   url?: string;
+  location?: Location;
 }
 interface PostData {
   id: number;
@@ -24,6 +25,7 @@ interface PostData {
   category: string;
   condition?: string;
   status: string;
+  nonNegotiablePriceYn: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -56,9 +58,17 @@ interface BusinessType {
   businessHoursInfo: string;
   homepage: string;
   details: string;
-  url: string;
+  url: string[];
   category: string;
+  likeCount: number;
   location: Location;
+}
+
+interface BusinessFeedData {
+  id: number;
+  title: string;
+  businessHoursInfo: string;
+  url: string;
 }
 
 interface CommentData {
@@ -120,6 +130,7 @@ export {
   PostData,
   BusinessType,
   FeedData,
+  BusinessFeedData,
   UserData,
   PostOtherData,
   CommentData,

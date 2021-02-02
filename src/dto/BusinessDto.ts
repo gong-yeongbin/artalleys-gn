@@ -17,17 +17,23 @@ export class BusinessBuilder {
       businessHoursInfo: business.businessHoursInfo,
       homepage: business.homepage,
       details: business.details,
-      url: business.image[0].url,
+      url: [],
       category: business.category.category,
+      likeCount: business.likeCount,
       location: {
         longitude: business.location.longitude,
         latitude: business.location.latitude,
       },
     };
+    business.image.map((value, index) => {
+      this._data.url.push(value.url);
+    });
   }
 
   public replaceHost(newHost: string): BusinessBuilder {
-    this._data.url = replaceHost(this._data.url, newHost);
+    this._data.url.map((value, index) => {
+      this._data.url[index] = replaceHost(this._data.url[index], newHost);
+    });
     return this;
   }
 

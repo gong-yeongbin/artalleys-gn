@@ -27,6 +27,8 @@ import {
   Notice,
   Cs,
   ContactCs,
+  Report,
+  ReportCategory,
 } from "../entity/Entity";
 
 import { RelationLoader } from "typeorm/query-builder/RelationLoader";
@@ -62,6 +64,8 @@ const entity = [
   Notice,
   Cs,
   ContactCs,
+  Report,
+  ReportCategory,
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {

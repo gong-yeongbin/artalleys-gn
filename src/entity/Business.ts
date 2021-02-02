@@ -6,6 +6,7 @@ import {
   OneToOne,
   OneToMany,
   ManyToOne,
+  Unique,
 } from "typeorm";
 
 import {
@@ -16,9 +17,11 @@ import {
   BusinessCategory,
   BusinessLike,
   Comment,
+  Report,
 } from "../entity/Entity";
 
 @Entity("business")
+@Unique(["id"])
 export default class Business {
   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
   id: number;
@@ -46,6 +49,12 @@ export default class Business {
 
   @Column({ name: "homepage", type: "nvarchar" })
   homepage: string;
+
+  @Column({ name: "like_count", type: "integer", default: 0 })
+  likeCount: number;
+
+  @Column({ name: "hide", type: "boolean", default: true })
+  hide: boolean;
 
   @Column({
     name: "details",
@@ -88,4 +97,8 @@ export default class Business {
 
   @OneToMany(() => Comment, (comment) => comment.id)
   comments: Comment[];
+
+  @OneToMany(() => Report, (report) => report.business)
+  @JoinColumn({ name: "report" })
+  report: Report[];
 }

@@ -1,12 +1,12 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { PostFeedBuilder } from "../../src/dto/PostFeedDto";
+import { BusinessFeedBuilder } from "../../src/dto/BusinessFeedDto";
 
-import { Post } from "../../src/entity/Entity";
+import { Business, Post } from "../../src/entity/Entity";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
-import { PlainObjectToNewEntityTransformer } from "typeorm/query-builder/transformer/PlainObjectToNewEntityTransformer";
 
 const { CLOUDFRONT_IMAGE } = process.env;
 
@@ -160,68 +160,80 @@ const getFeed = async (
  *
  * @apiParam (QueryStringParam) {Number}[offset=0] offset                              offset
  * @apiParam (QueryStringParam) {Number}[limit=10] limit                               limit
- * @apiParam (QueryStringParam) {String=DESC,ASC} order                                order
  *
  *
  * @apiParamExample response
- [
-  {
-    "postId": "4f62a7cb423ac3ff3faf",
-    "title": "business title",
-    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/4f62a7cb423ac3ff3faf/origin/65fe1202ae6419bd.png"
-  },
-  {
-    "postId": "b96ff8643d495ce9777a",
-    "title": "hwajangpyoom",
-    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/b96ff8643d495ce9777a/origin/ce15063e128c7a63.png"
-  },
-  {
-    "postId": "e085b6dc01c7cce649f9",
-    "title": "hwajangpyoom",
-    "url": "d19j7dhfxgaxy7.cloudfront.net/testuid/post/e085b6dc01c7cce649f9/origin/670833fe0d2b4920.png"
+{
+  "data": [
+    {
+      "id": "26",
+      "title": "business title",
+      "businessHoursInfo": "test businessHoursInfo",
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/business/39489e5be288970c5437b7a94917f54038bb48ff.png"
+    },
+    {
+      "id": "27",
+      "title": "business title",
+      "businessHoursInfo": "test businessHoursInfo",
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/business/39489e5be288970c5437b7a94917f54038bb48ff.png"
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 2,
+    "length": 2,
+    "totalCount": 3
   }
-]
+}
  **/
-// export const getBusinessFeed = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const {
-//     offset = 0,
-//     limit = 10,
-//     type = "sell",
-//     order = "DESC",
-//   } = event.queryStringParameters;
-//   const connection = await getDatabaseConnection();
-//   const postRepository = connection.getRepository(Post);
+const getBusinessFeed = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const { offset = 0, limit = 10 } = event.queryStringParameters;
+  const connection = await getDatabaseConnection();
+  const businessRepository = connection.getRepository(Business);
 
-//   const queryOffset: number = Number(offset);
-//   const queryLimit: number = Number(limit);
-//   const queryOrder: "ASC" | "DESC" =
-//     order.toUpperCase() == "ASC" ? "ASC" : "DESC";
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
 
-//   const postEntity: Post[] = await postRepository
-//     .createQueryBuilder("post")
-//     .leftJoinAndSelect("post.business", "business")
-//     .leftJoinAndSelect("post.postImage", "postImage")
-//     .where("post.hide = false")
-//     .orderBy("post.updated_at", queryOrder)
-//     .offset(queryOffset)
-//     .limit(queryLimit)
-//     .getMany();
+  const totalCount: number = await businessRepository
+    .createQueryBuilder("business")
+    .leftJoinAndSelect("business.image", "image")
+    .where("business.hide = false")
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .getCount();
 
-//   const feedDto: BusinessFeedData[] = new BusinessFeedBuilder(postEntity)
-//     .replaceHost(CLOUDFRONT_IMAGE)
-//     .build();
+  const businessEntity: Business[] = await businessRepository
+    .createQueryBuilder("business")
+    .leftJoinAndSelect("business.image", "image")
+    .where("business.hide = false")
+    .orderBy("business.id", "DESC")
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .getMany();
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(feedDto),
-//   };
-// };
+  const businessFeedDto: any = new BusinessFeedBuilder(
+    businessEntity,
+    queryOffset,
+    queryLimit,
+    totalCount
+  )
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(businessFeedDto),
+  };
+};
 
 const wrappedGetFeed = middy(getFeed)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedGetBusinessFeed = middy(getBusinessFeed)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 
-export { wrappedGetFeed as getFeed };
+export { wrappedGetFeed as getFeed, wrappedGetBusinessFeed as getBusinessFeed };
