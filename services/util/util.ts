@@ -23,7 +23,6 @@ export const filepath = (filename: string, type: string): string => {
 
 export const getUid = async (token: string) => {
   let response: any = "";
-
   await admin
     .auth()
     .verifyIdToken(token)

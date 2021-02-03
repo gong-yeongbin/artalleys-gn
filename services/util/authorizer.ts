@@ -3,36 +3,41 @@ import { PostCategory, User } from "../../src/entity/Entity";
 import middy from "@middy/core";
 import * as admin from "firebase-admin";
 
+const { PROJECT_ID, PRIVATE_KEY, CLIENT_EMAIL } = process.env;
 const authorizeToken = (): middy.MiddlewareObject<any, any> => {
   return {
     before: async (handler: middy.HandlerLambda, next: middy.NextFunction) => {
-      // const serviceAccount = require("../util/artalleys-gn-78385-firebase-adminsdk-9jh66-d8a4bb8e92.json");
-      // if (!admin.apps.length) {
-      //   admin.initializeApp({
-      //     credential: admin.credential.cert(serviceAccount),
-      //     databaseURL: "",
-      //   });
-      // }
-      // let resource: string = handler.event.resource;
-      // if (
-      //   resource.indexOf("getFeed") != -1 &&
-      //   resource.indexOf("getBusinessFeed") != -1
-      // ) {
-      //   return;
-      // }
-      // if (!handler.event || !handler.event.headers["Authorization"]) {
-      //   return new Error("token missing");
-      // }
-      // const token: string = handler.event.headers["Authorization"];
-      // await admin
-      //   .auth()
-      //   .verifyIdToken(token)
-      //   .then((decodedToken) => {
-      //     return;
-      //   })
-      //   .catch((error) => {
-      //     return new Error("token expiration");
-      //   });
+      if (!admin.apps.length) {
+        admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId: PROJECT_ID,
+            privateKey: PRIVATE_KEY.replace(/\\n/g, "\n"),
+            clientEmail: CLIENT_EMAIL,
+          }),
+          databaseURL: "",
+        });
+      }
+      let resource: string = handler.event.resource;
+      if (
+        resource.indexOf("getFeed") != -1 ||
+        resource.indexOf("getBusinessFeed") != -1
+      ) {
+        return;
+      }
+
+      if (!handler.event || !handler.event.headers["Authorization"]) {
+        return new Error("token missing");
+      }
+      const token: string = handler.event.headers["Authorization"];
+      await admin
+        .auth()
+        .verifyIdToken(token)
+        .then((decodedToken) => {
+          return;
+        })
+        .catch((error) => {
+          return new Error("token expiration");
+        });
     },
   };
 };

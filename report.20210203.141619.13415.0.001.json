@@ -4,10 +4,10 @@
     "reportVersion": 1,
     "event": "Allocation failed - JavaScript heap out of memory",
     "trigger": "FatalError",
-    "filename": "report.20210119.104611.7381.0.001.json",
-    "dumpEventTime": "2021-01-19T10:46:11Z",
-    "dumpEventTimeStamp": "1611020771535",
-    "processId": 7381,
+    "filename": "report.20210203.141619.13415.0.001.json",
+    "dumpEventTime": "2021-02-03T14:16:19Z",
+    "dumpEventTimeStamp": "1612329379583",
+    "processId": 13415,
     "cwd": "/Users/gong-yeongbin/project/artalleys-gn",
     "commandLine": [
       "node",
@@ -52,55 +52,55 @@
       {
         "model": "Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz",
         "speed": 3000,
-        "user": 11780120,
+        "user": 291491000,
         "nice": 0,
-        "sys": 7026470,
-        "idle": 48518960,
+        "sys": 147785870,
+        "idle": 706504160,
         "irq": 0
       },
       {
         "model": "Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz",
         "speed": 3000,
-        "user": 11026990,
+        "user": 274754410,
         "nice": 0,
-        "sys": 6225490,
-        "idle": 50072600,
+        "sys": 134935950,
+        "idle": 736090200,
         "irq": 0
       },
       {
         "model": "Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz",
         "speed": 3000,
-        "user": 10642530,
+        "user": 266555960,
         "nice": 0,
-        "sys": 5923390,
-        "idle": 50759160,
+        "sys": 127521390,
+        "idle": 751703200,
         "irq": 0
       },
       {
         "model": "Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz",
         "speed": 3000,
-        "user": 10316030,
+        "user": 259567570,
         "nice": 0,
-        "sys": 5691880,
-        "idle": 51317160,
+        "sys": 122516510,
+        "idle": 763696470,
         "irq": 0
       },
       {
         "model": "Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz",
         "speed": 3000,
-        "user": 9972690,
+        "user": 253091620,
         "nice": 0,
-        "sys": 5629590,
-        "idle": 51722800,
+        "sys": 118006730,
+        "idle": 774682200,
         "irq": 0
       },
       {
         "model": "Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz",
         "speed": 3000,
-        "user": 9694990,
+        "user": 239999590,
         "nice": 0,
-        "sys": 5396170,
-        "idle": 52233910,
+        "sys": 113857750,
+        "idle": 791923210,
         "irq": 0
       }
     ],
@@ -135,7 +135,7 @@
         "name": "en0",
         "internal": false,
         "mac": "3c:cd:36:5f:6f:0d",
-        "address": "fe80::1454:e879:df12:be4d",
+        "address": "fe80::44d:45f0:d98b:5e59",
         "netmask": "ffff:ffff:ffff:ffff::",
         "family": "IPv6",
         "scopeid": 4
@@ -152,7 +152,7 @@
         "name": "en1",
         "internal": false,
         "mac": "f8:ff:c2:4d:29:da",
-        "address": "fe80::8bd:b63e:cfb2:d447",
+        "address": "fe80::181c:6c45:3924:2dab",
         "netmask": "ffff:ffff:ffff:ffff::",
         "family": "IPv6",
         "scopeid": 6
@@ -168,38 +168,74 @@
       {
         "name": "awdl0",
         "internal": false,
-        "mac": "96:be:f2:14:6e:58",
-        "address": "fe80::94be:f2ff:fe14:6e58",
+        "mac": "0a:64:da:4d:75:45",
+        "address": "fe80::864:daff:fe4d:7545",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 11
+      },
+      {
+        "name": "llw0",
+        "internal": false,
+        "mac": "0a:64:da:4d:75:45",
+        "address": "fe80::864:daff:fe4d:7545",
         "netmask": "ffff:ffff:ffff:ffff::",
         "family": "IPv6",
         "scopeid": 12
       },
       {
-        "name": "llw0",
+        "name": "utun0",
         "internal": false,
-        "mac": "96:be:f2:14:6e:58",
-        "address": "fe80::94be:f2ff:fe14:6e58",
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::c96a:56a6:5b1:f704",
         "netmask": "ffff:ffff:ffff:ffff::",
         "family": "IPv6",
         "scopeid": 13
       },
       {
-        "name": "utun0",
+        "name": "utun1",
         "internal": false,
         "mac": "00:00:00:00:00:00",
-        "address": "fe80::30a7:8230:7d04:e1a0",
+        "address": "fe80::f993:3f2f:ef9a:abdc",
         "netmask": "ffff:ffff:ffff:ffff::",
         "family": "IPv6",
         "scopeid": 14
       },
       {
-        "name": "utun1",
+        "name": "utun2",
         "internal": false,
         "mac": "00:00:00:00:00:00",
-        "address": "fe80::aed0:f878:a26b:d9cc",
+        "address": "fe80::5804:579b:eeec:c2f3",
         "netmask": "ffff:ffff:ffff:ffff::",
         "family": "IPv6",
-        "scopeid": 15
+        "scopeid": 16
+      },
+      {
+        "name": "utun3",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::25ae:b9e1:5164:a87a",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 17
+      },
+      {
+        "name": "utun4",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::b5e4:6672:da6d:85fc",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 18
+      },
+      {
+        "name": "utun5",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::bfd2:4438:e573:2c80",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 19
       }
     ],
     "host": "gong-yeongbin-ui-iMac.local"
@@ -265,10 +301,10 @@
     }
   ],
   "javascriptHeap": {
-    "totalMemory": 2168004608,
-    "totalCommittedMemory": 2164231760,
-    "usedMemory": 2145231648,
-    "availableMemory": 48607728,
+    "totalMemory": 2157260800,
+    "totalCommittedMemory": 2151230648,
+    "usedMemory": 2132569944,
+    "availableMemory": 48825120,
     "memoryLimit": 2197815296,
     "heapSpaces": {
       "read_only_space": {
@@ -279,38 +315,38 @@
         "available": 229576
       },
       "new_space": {
-        "memorySize": 4194304,
-        "committedMemory": 1382816,
-        "capacity": 2094976,
-        "used": 396264,
-        "available": 1698712
+        "memorySize": 8388608,
+        "committedMemory": 3145040,
+        "capacity": 4189952,
+        "used": 391320,
+        "available": 3798632
       },
       "old_space": {
-        "memorySize": 733327360,
-        "committedMemory": 733056072,
-        "capacity": 732065888,
-        "used": 717292112,
-        "available": 14773776
+        "memorySize": 707112960,
+        "committedMemory": 706979888,
+        "capacity": 693061608,
+        "used": 693009144,
+        "available": 52464
       },
       "code_space": {
-        "memorySize": 5406720,
-        "committedMemory": 5204512,
-        "capacity": 4588064,
-        "used": 4588064,
+        "memorySize": 5144576,
+        "committedMemory": 4806560,
+        "capacity": 4266816,
+        "used": 4266816,
         "available": 0
       },
       "map_space": {
-        "memorySize": 18878464,
-        "committedMemory": 18620176,
-        "capacity": 17574960,
-        "used": 17574960,
+        "memorySize": 16519168,
+        "committedMemory": 16433248,
+        "capacity": 15661280,
+        "used": 15661280,
         "available": 0
       },
       "large_object_space": {
-        "memorySize": 1404739584,
-        "committedMemory": 1404739584,
-        "capacity": 1404250192,
-        "used": 1404250192,
+        "memorySize": 1418637312,
+        "committedMemory": 1418637312,
+        "capacity": 1418111328,
+        "used": 1418111328,
         "available": 0
       },
       "code_large_object_space": {
@@ -323,20 +359,20 @@
       "new_large_object_space": {
         "memorySize": 0,
         "committedMemory": 0,
-        "capacity": 2094976,
+        "capacity": 4189952,
         "used": 0,
-        "available": 2094976
+        "available": 4189952
       }
     }
   },
   "resourceUsage": {
-    "userCpuSeconds": 190.545,
-    "kernelCpuSeconds": 10.6991,
-    "cpuConsumptionPercent": 0.302905,
-    "maxRss": 1834995417088,
+    "userCpuSeconds": 125.506,
+    "kernelCpuSeconds": 8.41179,
+    "cpuConsumptionPercent": 2.95624,
+    "maxRss": 2097441406976,
     "pageFaults": {
-      "IORequired": 967,
-      "IONotRequired": 3486955
+      "IORequired": 28,
+      "IONotRequired": 1990126
     },
     "fsActivity": {
       "reads": 0,
@@ -354,7 +390,7 @@
     "npm_config_only": "",
     "npm_config_commit_hooks": "true",
     "npm_config_browser": "",
-    "npm_package_gitHead": "9fa6c28bcba417b6019347a3b59e9759fa8b68f4",
+    "npm_package_gitHead": "3d404893c03af7e07d918475bb7d8f838fbc311d",
     "npm_package_devDependencies_prettier": "^2.1.2",
     "npm_config_also": "",
     "npm_config_sign_git_commit": "",
@@ -396,7 +432,7 @@
     "npm_config_git_tag_version": "true",
     "npm_config_cert": "",
     "npm_package_dependencies_mysql": "^2.18.1",
-    "TERM_SESSION_ID": "w0t0p0:545CA64C-1419-410E-949E-48F0D9094948",
+    "TERM_SESSION_ID": "w0t1p0:F40FF4C1-14F2-464C-9D78-90F5DE14493B",
     "npm_config_registry": "https://registry.npmjs.org/",
     "npm_config_noproxy": "",
     "npm_config_fetch_retries": "2",
@@ -419,7 +455,7 @@
     "npm_config_logs_max": "10",
     "npm_config_always_auth": "",
     "npm_package_dependencies_aws_sdk": "^2.788.0",
-    "SSH_AUTH_SOCK": "/private/tmp/com.apple.launchd.HWLP9iC62m/Listeners",
+    "SSH_AUTH_SOCK": "/private/tmp/com.apple.launchd.PQwm9KlRWM/Listeners",
     "npm_package_devDependencies_eslint": "^7.12.1",
     "__CF_USER_TEXT_ENCODING": "0x1F5:0x3:0x33",
     "npm_execpath": "/Users/gong-yeongbin/.nvm/versions/node/v12.14.0/lib/node_modules/npm/bin/npm-cli.js",
@@ -451,7 +487,7 @@
     "npm_config_engine_strict": "",
     "npm_config_description": "true",
     "_": "/Users/gong-yeongbin/.nvm/versions/node/v12.14.0/bin/sls",
-    "LaunchInstanceID": "FF649E60-6A32-4F7D-B68A-D25BB3575657",
+    "LaunchInstanceID": "B677BFC4-ACA8-49D1-BB85-011B749760C8",
     "npm_config_userconfig": "/Users/gong-yeongbin/.npmrc",
     "npm_config_init_module": "/Users/gong-yeongbin/.npm-init.js",
     "npm_config_cidr": "",
@@ -473,6 +509,7 @@
     "LANG": "en_US.UTF-8",
     "npm_config_tag": "latest",
     "npm_config_script_shell": "",
+    "npm_package_dependencies_mime": "^2.5.0",
     "ITERM_PROFILE": "Default",
     "npm_config_progress": "true",
     "npm_config_global": "",
@@ -524,7 +561,7 @@
     "npm_config_otp": "",
     "npm_config_cache_min": "10",
     "npm_package_devDependencies_ts_node": "3.3.0",
-    "ITERM_SESSION_ID": "w0t0p0:545CA64C-1419-410E-949E-48F0D9094948",
+    "ITERM_SESSION_ID": "w0t1p0:F40FF4C1-14F2-464C-9D78-90F5DE14493B",
     "npm_config_searchexclude": "",
     "npm_config_cache": "/Users/gong-yeongbin/.npm",
     "LOGNAME": "gong-yeongbin",
@@ -564,6 +601,7 @@
     "npm_config_onload_script": "",
     "npm_package_devDependencies__types_aws_lambda": "^8.10.70",
     "npm_package_dependencies_firebase_admin": "^9.4.2",
+    "npm_package_dependencies__types_mime": "^2.0.3",
     "npm_node_execpath": "/Users/gong-yeongbin/.nvm/versions/node/v12.14.0/bin/node",
     "npm_config_prefix": "/Users/gong-yeongbin/.nvm/versions/node/v12.14.0",
     "npm_config_link": "",
@@ -578,16 +616,27 @@
     "DB_SYNCHRONIZE": "true",
     "BUCKET_NAME": "artalleys-gn-image-bucket",
     "BUCKET_SERVICE_ENDPOINT_URL": "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com",
-    "CLOUDFRONT_IMAGE": "d19j7dhfxgaxy7.cloudfront.net",
+    "IMAGE_UPLOAD_EXPIRES": "900",
+    "CLOUDFRONT_IMAGE": "https://d19j7dhfxgaxy7.cloudfront.net",
     "SQS_IMAGE_RESIZE_ENDPOIN_URL": "https://sqs.us-east-2.amazonaws.com/",
     "SQS_IMAGE_RESIZE_QUEUE_URL": "https://sqs.us-east-2.amazonaws.com/950146448607/artalleys-gn-image-resize",
     "SQS_IMAGE_RESIZE_ARN": "arn:aws:sqs:us-east-2:950146448607:artalleys-gn-image-resize",
+    "TYPE": "service_account",
+    "PROJECT_ID": "artalleys-gn-78385",
+    "PRIVATE_KEY_ID": "d8a4bb8e9244e03ef45a368354390a69fbb844f8",
+    "PRIVATE_KEY": "-----BEGIN PRIVATE KEY-----\\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDYhTnJSTULtvMe\\nrm1II1DoD+pQKZlCJsDN5pZ6qgoi4JfZ5vujxpwvsivlHv8+CHVrSFti70NQ50h6\\nKLfyzK/2uwLmp6lFkwseqRY00c6TPKI07us3jza3UG0j1GiWyDQ3dPhMg1Rv4nto\\nX98mQCv6uKpyPX6/zv5U3zWszrjaKx4rcZ46MxPI/sRCmZP8zPngiOOHj9H9CEPu\\niADuqsdDv089/Pi7NfVFUw9Dshqg1OUjj9jUBbYwGSPSfPerW7x/fHEXgnDecQsK\\nCjHsejvG0mOeaUyWIlvxE2yoiFn6jEyxZFWmINf8bT9fX5Kw9JB35OwvgOwyFjpQ\\n+JppiOBHAgMBAAECggEAC4qyhWHTI5A5joGizq0fQ3eRuHs3MbkKHw+zJs/IoYpS\\nXem7sUPFkJ9RSrHnzkE6LSFayb/SWU4y5VwlThqOKLtYUL5QPiaz+Yru5ZrnhZ6+\\nUM8Jl9kZBBWT88x/VMZQTkJ8d+uqRRqQFITDyvCxx3gvkc5oYsYgdZq+bDtKzEpV\\n/fHlHeLPERdeQV0T0IA2BiOKEgqvGX4tVDvZIYVpPfaytkAQCOzYTP04h9+rGSaa\\nZ3u9qPppy0fYQvTa8neoJ/PuiG9wu4DEmQhkc9CKO2ecihJtc3PlwdZCduTNJwyw\\n/to13l3/tolra4b78ZSh2nHHIObwYF7UFJDd7pVAtQKBgQD2CQXyiAyuWfZ/zUEv\\nMtdo2nK7NK24UzlM70IMtbVuI26aRMNDlDknYDUb6LLmtKia9YjdCIzzaGWvqEih\\nzeQRoRq5LrUOpmUvCBYO0wxdvZd+SNMHWZWPAkUUBaOmTt7Xx+vmbop+mF/Cn01+\\nFQ/DjU46kElXsvleo80iCq5nPQKBgQDhSi7FeDEZMb09syG27cpwpT5osYEa7sfC\\niTU4PCSYAj0XiZn5q0PLhoyG7q0PJld70eeu1ftcUmhpvLeVxv/1Djn3MgvqOpMN\\nOqK5rCJZlqIdA0wS5xTKdffDbdtIN8xgiYiAwwKc6i4Zf3IT+zlehBkyw01S0OCE\\nOcvEnvV90wKBgQDRC7Gl9LrxmTa8OCXeeJBWYuWA8q14JB5XpCK2sd3KCwj6wto2\\nHUbCkhgN8pWvOGjZ4S28wHsihd2Adrff4xSZdg1CstDb9b2bTH+RcPjc3S5O+olz\\ngUZ2EDOpY3E86V6mcROa4umBzu3ua3RoYHTYbsO9NsNaZJNFOmAdQH4W8QKBgCMo\\nA2J3XhoTY/ej44f7VZL8hl+qC36bcnrOFIsA/6jk+ImaxHdsnXi+N2G7DzCFCDPf\\nTqs+4ynGBlsxwuhRlJG2NZ94pNlZaKcw1kHpNbcLRaMHZ7CvdNQfUpmhpA2B/5e0\\n/qMxS1AXTzhVZgTuOEaikJgWWBOrWs3ngv/c2mxXAoGBAIZtt3cg/r2Oc8tFs9AP\\ngJcIVIJKXEzyyEgTeNL1DwwSOpOGDZFk1XrycIc6pwPdm2hOJib0njqE6qiFdAzt\\nZMAUF420fHZPkflnvKsNDudIMOXBGElAOVGL7v+87JDU8aCnUcTfKGLPh/hQj9ra\\ngg5t+Uu4B/wSrOlkB7ORvfkP\\n-----END PRIVATE KEY-----\\n",
+    "CLIENT_EMAIL": "firebase-adminsdk-9jh66@artalleys-gn-78385.iam.gserviceaccount.com",
+    "CLIENT_ID": "104121863244390714157",
+    "AUTH_URI": "https://accounts.google.com/o/oauth2/auth",
+    "TOKEN_URI": "https://oauth2.googleapis.com/token",
+    "AUTH_PROVIDER_X509_CERT_URL": "https://www.googleapis.com/oauth2/v1/certs",
+    "CLIENT_C509_CERT_URL": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-9jh66%40artalleys-gn-78385.iam.gserviceaccount.com",
     "IS_OFFLINE": "true",
     "AWS_DEFAULT_REGION": "us-east-2",
     "AWS_LAMBDA_FUNCTION_MEMORY_SIZE": "1024",
-    "AWS_LAMBDA_FUNCTION_NAME": "goodneibors-prod-createPost",
+    "AWS_LAMBDA_FUNCTION_NAME": "goodneibors-prod-getMySales",
     "AWS_LAMBDA_FUNCTION_VERSION": "$LATEST",
-    "AWS_LAMBDA_LOG_GROUP_NAME": "/aws/lambda/goodneibors-prod-createPost",
+    "AWS_LAMBDA_LOG_GROUP_NAME": "/aws/lambda/goodneibors-prod-getMySales",
     "AWS_LAMBDA_LOG_STREAM_NAME": "2016/12/02/[$LATEST]f77ff5e4026c45bda9a9ebcec6bc9cad",
     "AWS_REGION": "us-east-2",
     "LAMBDA_RUNTIME_DIR": "/var/runtime",
@@ -595,7 +644,7 @@
     "LD_LIBRARY_PATH": "/usr/local/lib64/node-v4.3.x/lib:/lib64:/usr/lib64:/var/runtime:/var/runtime/lib:/var/task:/var/task/lib",
     "NODE_PATH": "/var/runtime:/var/task:/var/runtime/node_modules",
     "isWebpacked": "true",
-    "_HANDLER": "services/post/handler.createPost"
+    "_HANDLER": "services/user/handler.getMySales"
   },
   "userLimits": {
     "core_file_size_blocks": {
