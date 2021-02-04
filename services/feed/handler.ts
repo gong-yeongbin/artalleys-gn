@@ -210,8 +210,8 @@ const getBusinessFeed = async (
     .leftJoinAndSelect("business.image", "image")
     .where("business.hide = false")
     .orderBy("business.id", "DESC")
-    .offset(queryOffset)
-    .limit(queryLimit)
+    .skip(queryOffset)
+    .take(queryLimit)
     .getMany();
 
   const businessFeedDto: any = new BusinessFeedBuilder(

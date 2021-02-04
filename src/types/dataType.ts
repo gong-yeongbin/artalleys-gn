@@ -95,8 +95,8 @@ interface NoticeData {
   id: number;
   title: string;
   category: string;
-  pushNotification: boolean;
-  publish: boolean;
+  pushNotification?: boolean;
+  publish?: boolean;
   content: string;
   createdAt: Date;
   updatedAt: Date;

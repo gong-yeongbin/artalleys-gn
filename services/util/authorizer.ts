@@ -20,7 +20,10 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
       let resource: string = handler.event.resource;
       if (
         resource.indexOf("getFeed") != -1 ||
-        resource.indexOf("getBusinessFeed") != -1
+        resource.indexOf("getBusinessFeed") != -1 ||
+        resource.indexOf("getPostCategory") != -1 ||
+        resource.indexOf("getBusinessCategory") != -1 ||
+        resource.indexOf("getNotice") != -1
       ) {
         return;
       }

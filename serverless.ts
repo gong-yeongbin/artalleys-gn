@@ -468,6 +468,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getNotice: {
+      handler: "services/common/handler.getNotice",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "common/getNotice",
+            cors: true,
+          },
+        },
+      ],
+    },
     createNotice: {
       handler: "services/cms/handler.createNotice",
       events: [

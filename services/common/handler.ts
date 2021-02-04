@@ -8,7 +8,8 @@ import { getUid, filepath } from "../util/util";
 import { BusinessCategory, PostCategory } from "../../src/entity/Entity";
 import { getSignedUrl } from "../../services/util/aws";
 import { SignedUrlData, UserData } from "../../src/types/dataType";
-import { Image } from "../../src/entity/Entity";
+import { Image, Notice } from "../../src/entity/Entity";
+import { NoticeGetBuilder } from "../../src/dto/NoticeGetDto";
 
 const {
   BUCKET_NAME,
@@ -284,13 +285,76 @@ const getImageSignedUrl = async (
   };
 };
 
+/**
+ * @api {get}  /common/getNotice    get notice
+ * @apiName Get Notice
+ * @apiGroup common
+ *
+ * @apiParam (QueryStringParam) {Number} offset                            offset
+ * @apiParam (QueryStringParam) {Number} limit                             limit
+ * @apiParam (QueryStringParam) {String} order                             order
+ *
+ *
+ * @apiParamExample {json} Response
+{
+  "data": [
+    {
+      "id": "4",
+      "title": "notice test",
+      "category": "Notice",
+      "content": "notice test content",
+      "createdAt": "2021-01-20T22:26:58.982Z",
+      "updatedAt": "2021-01-20T22:26:58.982Z"
+    },
+    {
+      "id": "5",
+      "title": "notice test",
+      "category": "Event",
+      "content": "notice test content",
+      "createdAt": "2021-01-20T22:27:03.523Z",
+      "updatedAt": "2021-01-20T22:27:03.523Z"
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 2,
+    "length": 2,
+    "totalCount": 2
+  }
+}
+ **/
+
 const getNotice = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
+  const { offset = 0, limit = 10, order } = event.queryStringParameters;
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+  const queryOrder: "DESC" | "ASC" = order.toUpperCase() as "DESC" | "ASC";
+
+  const connection = await getDatabaseConnection();
+  const noticeRepository: Repository<Notice> = connection.getRepository(Notice);
+  const noticeEntity: Notice[] = await noticeRepository.find({
+    where: { publish: true },
+    order: { createdAt: queryOrder },
+    skip: queryOffset,
+    take: queryLimit,
+  });
+  const totalCount: number = await noticeRepository.count({
+    where: { publish: true },
+  });
+
+  const noticeDto: any = new NoticeGetBuilder(
+    noticeEntity,
+    queryOffset,
+    queryLimit,
+    totalCount
+  ).build();
+
   return {
     statusCode: 200,
-    body: "",
+    body: JSON.stringify(noticeDto),
   };
 };
 
@@ -303,6 +367,13 @@ const wrappedGetBusinessCategory = middy(getBusinessCategory)
 const wrappedGetImageSignedUrl = middy(getImageSignedUrl)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-export { wrappedGetPostCategory as getPostCategory };
-export { wrappedGetBusinessCategory as getBusinessCategory };
-export { wrappedGetImageSignedUrl as getImageSignedUrl };
+const wrappedGetNotice = middy(getNotice)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+
+export {
+  wrappedGetPostCategory as getPostCategory,
+  wrappedGetBusinessCategory as getBusinessCategory,
+  wrappedGetImageSignedUrl as getImageSignedUrl,
+  wrappedGetNotice as getNotice,
+};

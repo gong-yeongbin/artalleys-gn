@@ -15,6 +15,7 @@ const { CLOUDFRONT_IMAGE } = process.env;
  * @apiGroup Comment
  *
  * @apiParam (PathParam) {String}postId                           post id
+ * @apiParam (QueryStringParam) {String=Business,BusinessPost} type   post type
  * @apiParam (Body) {Number}[commentId]                           reply id
  * @apiParam (Body) {String}message                               message
  *
@@ -77,7 +78,8 @@ const addComment = async (
   commentId !== null ? (comment.commentId = commentId) : null;
   comment.message = message;
   comment.user = userEntity;
-  commentRepository.save(comment);
+  await commentRepository.save(comment);
+
   return {
     statusCode: 200,
     body: "",
