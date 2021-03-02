@@ -1,37 +1,37 @@
-// import {
-//   Column,
-//   CreateDateColumn,
-//   Entity,
-//   PrimaryGeneratedColumn,
-//   UpdateDateColumn,
-//   JoinColumn,
-//   ManyToOne,
-// } from "typeorm";
-// import { Post, ChatRoom } from "./Entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
+} from "typeorm";
+import { Post, User } from "./Entity";
 
-// @Entity("chat")
-// export default class Chat {
-//   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
-//   id: number;
+@Entity("chat")
+export default class Chat {
+  @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
+  id: number;
 
-//   @Column({ name: "send_id" })
-//   sendId: string;
+  @Column({ name: "message", type: "nvarchar" })
+  message: string;
 
-//   @Column({ name: "receive_id", type: "nvarchar" })
-//   receiveId: string;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-//   @Column({ name: "message", type: "nvarchar" })
-//   message: string;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
-//   @CreateDateColumn({ name: "created_at" })
-//   createdAt: Date;
+  @ManyToOne(() => User, (user) => user.sendId)
+  @JoinColumn({ name: "sendId" })
+  sendId: User;
 
-//   @UpdateDateColumn({ name: "updated_at" })
-//   updatedAt: Date;
+  @ManyToOne(() => User, (user) => user.receiveId)
+  @JoinColumn({ name: "receiveId" })
+  receiveId: User;
 
-//   // @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.chat, {
-//   //   onDelete: "CASCADE",
-//   // })
-//   // @JoinColumn({ name: "chat_room" })
-//   // chatRoom: ChatRoom;
-// }
+  @ManyToOne(() => Post, (post) => post.chat)
+  @JoinColumn({ name: "post" })
+  post: Post;
+}

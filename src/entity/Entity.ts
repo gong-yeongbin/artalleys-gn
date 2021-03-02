@@ -21,3 +21,4 @@ export { default as Cs } from "./Cs";
 export { default as ContactCs } from "./ContactCs";
 export { default as Report } from "./Report";
 export { default as ReportCategory } from "./ReportCategory";
+export { default as Chat } from "./Chat";

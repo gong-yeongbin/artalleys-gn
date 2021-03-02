@@ -27,6 +27,7 @@ import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop"
 import { uuid } from "uuidv4";
 import { getUid } from "../util/util";
 import { UserData } from "../../src/types/dataType";
+import { distance } from "jimp/*";
 
 const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
@@ -301,7 +302,7 @@ const hidePost = async (
     ? (postEntity.hide = false)
     : (postEntity.hide = true);
 
-  postRepository.save(postEntity);
+  await postRepository.save(postEntity);
 
   return {
     statusCode: 200,
@@ -515,6 +516,32 @@ const likePost = async (
   };
 };
 
+const getOtherProductsViewedALotByNeighbourhood = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const { mile, latitude, longitude } = event.queryStringParameters;
+  const radius: number = Number(mile) * 1.6093;
+  const connection: Connection = await getDatabaseConnection();
+  const postRepository: Repository<Post> = connection.getRepository(Post);
+  const postEntity: Post[] = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.location", "location")
+    .select(
+      "6371*acos(cos(radians(:latitude))*cos(radians(location.latitude))*cos(radians(location.longitude)-radians(:longitude))+sin(radians(:latitude))*sin(radians(location.latitude)))",
+      "distance"
+    )
+    .addSelect("post.*")
+    .having("distance <= :radius")
+    .setParameters({ latitude: latitude, longitude: longitude, radius: radius })
+    .getRawMany();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(postEntity),
+  };
+};
+
 const wrappedLikePost = middy(likePost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -534,6 +561,11 @@ const wrappedBoostPost = middy(boostPost)
 const wrappedGetOtherPost = middy(getOtherPost)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedGetOtherProductsViewedALotByNeighbourhood = middy(
+  getOtherProductsViewedALotByNeighbourhood
+)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedGetPost as getPost,
   wrappedCreatePost as createPost,
@@ -542,4 +574,5 @@ export {
   wrappedBoostPost as boostPost,
   wrappedGetOtherPost as getOtherPost,
   wrappedLikePost as likePost,
+  wrappedGetOtherProductsViewedALotByNeighbourhood as getOtherProductsViewedALotByNeighbourhood,
 };

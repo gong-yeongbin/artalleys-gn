@@ -12,7 +12,7 @@ import { MySalesBuilder } from "../../src/dto/MySalesDto";
 const { CLOUDFRONT_IMAGE } = process.env;
 
 /**
- * @api {get}  /user/joinUser     Join User
+ * @api {put}  /user/joinUser     Join User
  * @apiName Join User
  * @apiGroup User
  *
@@ -101,7 +101,7 @@ const getLocation = async (
  * @apiParam (Header)               {string}  Authorization                         Bearer Token
  * @apiParam (QueryStringParam)     {string}  offset                                offset
  * @apiParam (QueryStringParam)     {string}  limit                                 limit
- * @apiParam (Body)                 {Array=1and2,3}   statusCode                      status code
+ * @apiParam (Body)                 {Array=1and2,3}   status                        status 
  * @apiParam (Body)                 {boolean=true,false} hide                                  hide
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success

@@ -18,6 +18,7 @@ import {
   Comment,
   ContactCs,
   Report,
+  Chat,
 } from "./Entity";
 
 @Entity("user")
@@ -80,4 +81,12 @@ export default class User {
   @OneToMany(() => Report, (report) => report.user, { nullable: true })
   @JoinColumn({ name: "report" })
   report: Report[];
+
+  @OneToMany(() => Chat, (chat) => chat.sendId)
+  @JoinColumn({ name: "sendId" })
+  sendId: Chat;
+
+  @OneToMany(() => Chat, (chat) => chat.receiveId)
+  @JoinColumn({ name: "receiveId" })
+  receiveId: Chat;
 }

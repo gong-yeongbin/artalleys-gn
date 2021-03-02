@@ -85,8 +85,7 @@ const getFeed = async (
   const queryLimit: number = Number(limit);
   const queryType: string = type;
 
-  const querySetCategory: number[] = category;
-
+  const querySetCategory: number[] = category.length != 0 ? category : 0;
   // desc - newest, price_hl
   // asc - closest, price_lh
   filter = filter.toLowerCase();
@@ -104,13 +103,16 @@ const getFeed = async (
 
   const totalCount: number = await postRepository
     .createQueryBuilder("post")
+    .leftJoinAndSelect("post.image", "image")
     .leftJoinAndSelect("post.type", "type")
     .leftJoinAndSelect("post.category", "category")
-    .where("type.type =:type", { type: queryType })
-    .andWhere("post.hide =:hide", { hide: hide })
-    .andWhere("category.category IN (:category)", {
+    .leftJoinAndSelect("post.status", "status")
+    .where("type.type = :type", { type: queryType })
+    .andWhere("post.hide = :hide", { hide: hide })
+    .andWhere("post.category IN ( :category)", {
       category: querySetCategory,
     })
+    .andWhere("post.title like :title", { title: `%${querySearch}%` })
     .getCount();
 
   let query = postRepository
@@ -121,7 +123,7 @@ const getFeed = async (
     .leftJoinAndSelect("post.status", "status")
     .where("type.type = :type", { type: queryType })
     .andWhere("post.hide = :hide", { hide: hide })
-    .andWhere("category.id IN (:category)", {
+    .andWhere("post.category IN ( :category)", {
       category: querySetCategory,
     })
     .andWhere("post.title like :title", { title: `%${querySearch}%` })

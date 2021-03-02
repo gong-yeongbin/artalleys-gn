@@ -17,6 +17,7 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
           databaseURL: "",
         });
       }
+
       let resource: string = handler.event.resource;
       if (
         resource.indexOf("getFeed") != -1 ||

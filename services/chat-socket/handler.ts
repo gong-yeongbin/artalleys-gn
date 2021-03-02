@@ -1,299 +1,156 @@
-// import { APIGatewayEvent, ProxyResult, Context } from "aws-lambda";
-// import { ApiGatewayManagementApi } from "aws-sdk";
-// import { Repository } from "typeorm";
-// import { getDatabaseConnection } from "../../src/connection/Connection";
-// import { Chat, User, Post, ChatRoom } from "../../src/entity/Entity";
+import { APIGatewayEvent, ProxyResult, Context } from "aws-lambda";
+import { ApiGatewayManagementApi, AugmentedAIRuntime } from "aws-sdk";
+import { getDatabaseConnection } from "../../src/connection/Connection";
+import { Repository, Connection } from "typeorm";
+import { User, Post, Chat } from "../../src/entity/Entity";
+import { UserData } from "../../src/types/dataType";
+import { getUid } from "../util/util";
+import * as admin from "firebase-admin";
+import middy from "@middy/core";
+import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
+import { authorizeToken } from "../../services/util/authorizer";
 
-// export const onConnect = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const connectionId = event.requestContext.connectionId;
-//   const uid: string = "testid2";
-//   const connection = await getDatabaseConnection();
-//   const userRepository = connection.getRepository(User);
+export const onConnect = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connectionId = event.requestContext.connectionId;
+  console.log("websocket connect ", connectionId);
+  return {
+    statusCode: 200,
+    body: JSON.stringify(
+      `Entering onConnect on connection id: ${connectionId}`
+    ),
+  };
+};
 
-//   const userEntity = await userRepository
-//     .createQueryBuilder("User")
-//     .where("uid = :uid", {
-//       uid: uid,
-//     })
-//     .getOne();
+export const onDisconnect = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connectionId: string = event.requestContext.connectionId;
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@ disconnection ", connectionId);
 
-//   if (userEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
-//   if (
-//     userEntity.connectionId == null ||
-//     userEntity.connectionId != connectionId
-//   ) {
-//     userEntity.connectionId = connectionId;
-//     await userRepository.save(userEntity);
-//   }
+export const onDefault = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(
-//       `Entering onConnect on connection id: ${connectionId}`
-//     ),
-//   };
-// };
+export const onSessionConnect = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const connectionId = event.requestContext.connectionId;
+  const data = JSON.parse(event.body);
+  console.log("@@@@@@@@ ", data.message);
+  console.log("@@@@@@@@ ", connectionId);
+  // const api: ApiGatewayManagementApi = new ApiGatewayManagementApi({
+  //   apiVersion: "2018-11-29",
+  //   endpoint:
+  //     event.requestContext.domainName + "/" + event.requestContext.stage,
+  // });
 
-// export const onDisconnect = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  // await api
+  //   .postToConnection({
+  //     ConnectionId: connectionId,
+  //     Data: JSON.stringify(connectionId),
+  //   })
+  //   .promise();
 
-// export const onDefault = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
-// {"action":"connect2","id":"testid"}
-// {"action":"connect2","id":"testid2"}
-// export const onConnect2 = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const connectionId = event.requestContext.connectionId;
-//   const data = JSON.parse(event.body);
-//   const uid: string = data.id;
-//   const connection = await getDatabaseConnection();
-//   const userRepository = connection.getRepository(User);
-//   console.log("@@@ ", data);
+export const onSendMessage = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
 
-//   const userEntity = await userRepository
-//     .createQueryBuilder("User")
-//     .where("uid = :uid", {
-//       uid: uid,
-//     })
-//     .getOne();
-//   if (userEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
+const { PROJECT_ID, PRIVATE_KEY, CLIENT_EMAIL } = process.env;
 
-//   if (
-//     userEntity.connectionId == null ||
-//     userEntity.connectionId != connectionId
-//   ) {
-//     userEntity.connectionId = connectionId;
-//     await userRepository.save(userEntity);
-//   }
+const onPush = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  let registrationToken =
+    "eS0JLULT2ECUpl4sk0eBsL:APA91bGSJub1Tljc1YN94GNAWoCSNDFJVQQdAoaJmjjPXdViFyQpTA3Hc-KycXPArhqdhpbj06XWh8VXHFFxwBoqdTSpajV2jphnaHqsqEb1bTEf0BvU_w7mnlxhYNwjadGa62vCwDmw";
+  //target_token은 푸시 메시지를 받을 디바이스의 토큰값입니다
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(
-//       `Entering onConnect on connection id: ${connectionId}`
-//     ),
-//   };
-// };
+  let message = {
+    notification: {
+      title: "",
+      body: "",
+    },
+    token: registrationToken,
+  };
 
-// {"action":"onSendMessage", "uid":"testid","message":"test msg","postId":"aa74538fddecbafb3674","receiveId":"testid2"}
-// {"action":"onSendMessage", "uid":"testid2","message":"test msg","postId":"aa74538fddecbafb3674","receiveId":"testid"}
-// export const onSendMessage = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const data = JSON.parse(event.body);
-//   const uid: string = data.uid;
-//   const message: string = data.message;
-//   const postId: string = data.postId;
-//   const receiveId: string = data.receiveId;
+  // admin
+  //   .auth()
+  //   .createCustomToken("fBkfeReSGtbhEA8yTBY39kuAeyr2")
+  //   .then((customToken) => {
+  //     // Send token back to client
+  //     console.log("@@@@@@@@@@ ", customToken);
+  //     message.token = customToken;
+  //   })
+  //   .catch((error) => {
+  //     console.log("Error creating custom token:", error);
+  //   });
+  // const { postId, message } = JSON.parse(event.body);
+  // const userInfo: UserData = await getUid(event.headers["Authorization"]);
+  // const connection: Connection = await getDatabaseConnection();
+  // const userRepository: Repository<User> = connection.getRepository(User);
+  // const postRepository: Repository<Post> = connection.getRepository(Post);
+  // const chatRepository: Repository<Chat> = connection.getRepository(Chat);
+  // const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+  // const postEntity: Post = await postRepository
+  //   .createQueryBuilder("post")
+  //   .leftJoinAndSelect("post.user", "user")
+  //   .where("post.id = :postId", { postId: postId })
+  //   .getOne();
 
-//   const connection = await getDatabaseConnection();
-//   const userRepository = connection.getRepository(User);
-//   const postRepository = connection.getRepository(Post);
-//   const chatRepository = connection.getRepository(Chat);
-//   const chatRoomRepository = connection.getRepository(ChatRoom);
+  admin
+    .messaging()
+    .send(message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+      // let chat: Chat = new Chat();
+      // chat.message = message;
+      // chat.sendId = userEntity;
+      // chat.receiveId = postEntity.user;
+      // chat.post = postEntity;
+      // await chatRepository.save(chat);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
 
-//   const chatRoomEntity: ChatRoom = await chatRoomRepository.findOne({
-//     seller_id: uid,
-//   });
-//   const postEntity: Post = await postRepository.findOne({ postId: postId });
-//   const userEntity = await userRepository.findOne({
-//     uid: receiveId,
-//   });
+  return {
+    statusCode: 200,
+    body: JSON.stringify("postEntity"),
+  };
+};
 
-//   if (chatRoomEntity == null) {
-//     let room = new ChatRoom();
-//     room.buyer_id = uid;
-//     room.seller_id = receiveId;
-//     room.post = postEntity;
-//   }
+const wrappedGetHello = middy(onPush)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 
-//   if (userEntity == null || postEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
-
-//   let chat: Chat = new Chat();
-//   chat.sendId = uid;
-//   chat.receiveId = receiveId;
-//   chat.message = message;
-//   await chatRepository.save(chat);
-
-//   const api: ApiGatewayManagementApi = new ApiGatewayManagementApi({
-//     apiVersion: "2018-11-29",
-//     endpoint:
-//       event.requestContext.domainName + "/" + event.requestContext.stage,
-//   });
-
-//   await api
-//     .postToConnection({
-//       ConnectionId: userEntity.connectionId,
-//       Data: message,
-//     })
-//     .promise();
-
-//   return {
-//     statusCode: 200,
-//     body: "",
-//   };
-// };
-
-/**
- * @api {get} /chat/getCHatRoomList     get chat room list
- * @apiName Get Chat Room List
- * @apiGroup Chat
- *
- *
- * @apiParamExample Response
- [
-  {
-    "id": "31",
-    "sendId": "testid2",
-    "receiveId": "testid",
-    "message": "you too",
-    "createdAt": "2020-12-02T03:46:12.263Z",
-    "updatedAt": "2020-12-02T03:46:12.263Z"
-  }
-]
- *
- * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
- * @apiErrorExample {json}  ResourceNotFound
- *      HTTP/1.1    404    Not Found
- **/
-
-// export const getChatRoomList = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const uid: string = "testid";
-//   const connection = await getDatabaseConnection();
-//   const chatRepository: Repository<Chat> = connection.getRepository(Chat);
-//   const chatEntity: Chat[] = await chatRepository
-//     .createQueryBuilder("chat")
-//     .where("chat.sendId = :id || chat.receiveId = :id", { id: uid })
-//     .orderBy("chat.createdAt", "DESC")
-//     .limit(1)
-//     .getMany();
-
-//   if (chatEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
-
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(chatEntity),
-//   };
-// };
-
-/**
- * @api {get} /chat/:receiveId/getChatContentList     get chat content list
- * @apiName Get Chat Content List
- * @apiGroup Chat
- *
- * @apiParam (PathParam) {String}receiveId                           receive Id
- * @apiParam (QueryStringParam) {Number}[offset=0]    offset      offset
- * @apiParam (QueryStringParam) {Number}[limit=10]    limit       limit
- *
- * @apiParamExample Response
- [
-  {
-    "id": "31",
-    "sendId": "testid2",
-    "receiveId": "testid",
-    "message": "you too",
-    "createdAt": "2020-12-02T03:46:12.263Z",
-    "updatedAt": "2020-12-02T03:46:12.263Z"
-  },
-  {
-    "id": "30",
-    "sendId": "testid",
-    "receiveId": "testid2",
-    "message": "omg",
-    "createdAt": "2020-12-02T03:46:01.336Z",
-    "updatedAt": "2020-12-02T03:46:01.336Z"
-  },
-  {
-    "id": "29",
-    "sendId": "testid2",
-    "receiveId": "testid",
-    "message": "wow good",
-    "createdAt": "2020-12-02T03:45:51.943Z",
-    "updatedAt": "2020-12-02T03:45:51.943Z"
-  },
-]
- *
- * @apiError (404 Not Found)    ResourceNotFound    This resource cannot be found
- * @apiErrorExample {json}  ResourceNotFound
- *      HTTP/1.1    404    Not Found
- **/
-
-// export const getChatContentList = async (
-//   event: APIGatewayEvent,
-//   context: Context
-// ): Promise<ProxyResult> => {
-//   const uid: string = "testid";
-//   const receiveId: string = event.pathParameters["receiveId"];
-//   const { offset = 0, limit = 10 } = event.queryStringParameters;
-//   const queryOffset: number = Number(offset);
-//   const queryLimit: number = Number(limit);
-//   const connection = await getDatabaseConnection();
-//   const chatRepository: Repository<Chat> = connection.getRepository(Chat);
-
-//   const chatEntity: Chat[] = await chatRepository
-//     .createQueryBuilder("chat")
-//     .where("chat.sendId = :id || chat.receiveId = :receiveId", {
-//       id: uid,
-//       receiveId: receiveId,
-//     })
-//     .orderBy("chat.createdAt", "ASC")
-//     .offset(queryOffset)
-//     .limit(queryLimit)
-//     .getMany();
-
-//   if (chatEntity == null) {
-//     return {
-//       statusCode: 404,
-//       body: "",
-//     };
-//   }
-
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify(chatEntity),
-//   };
-// };
+export { wrappedGetHello as onPush };

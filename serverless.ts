@@ -28,6 +28,7 @@ const serverlessConfiguration: Serverless = {
     name: "aws",
     stage: "prod",
     runtime: "nodejs12.x",
+    versionFunctions: false,
     region: "us-east-2",
     websocketsApiRouteSelectionExpression: "$request.body.action",
     apiGateway: {
@@ -78,7 +79,7 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: "get",
+            method: "put",
             path: "user/joinUser",
             cors: true,
           },
@@ -212,6 +213,19 @@ const serverlessConfiguration: Serverless = {
                 },
               },
             },
+          },
+        },
+      ],
+    },
+    getOtherProductsViewedALotByNeighbourhood: {
+      handler:
+        "services/post/handler.getOtherProductsViewedALotByNeighbourhood",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "post/getOtherProductsViewedALotByNeighbourhood",
+            cors: true,
           },
         },
       ],
@@ -648,77 +662,55 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    // onConnect: {
-    //   handler: "services/chat-socket/handler.onConnect",
-    //   events: [
-    //     {
-    //       websocket: { route: "$connect" },
-    //     },
-    //   ],
-    // },
-    // onConnect2: {
-    //   handler: "services/chat-socket/handler.onConnect2",
-    //   events: [
-    //     {
-    //       websocket: { route: "connect2" },
-    //     },
-    //   ],
-    // },
-    // onDisconnect: {
-    //   handler: "services/chat-socket/handler.onDisconnect",
-    //   events: [{ websocket: { route: "$disconnect" } }],
-    // },
-    // onDefault: {
-    //   handler: "services/chat-socket/handler.onDefault",
-    //   events: [
-    //     {
-    //       websocket: { route: "$default" },
-    //     },
-    //   ],
-    // },
-    // onSendMessage: {
-    //   handler: "services/chat-socket/handler.onSendMessage",
-    //   events: [
-    //     {
-    //       websocket: { route: "onSendMessage" },
-    //     },
-    //   ],
-    // },
-    // getChatRoomList: {
-    //   handler: "services/chat-socket/handler.getChatRoomList",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "chat/getChatRoomList",
-    //         cors: true,
-    //       },
-    //     },
-    //   ],
-    // },
-    // getChatContentList: {
-    //   handler: "services/chat-socket/handler.getChatContentList",
-    //   events: [
-    //     {
-    //       http: {
-    //         method: "get",
-    //         path: "chat/{receiveId}/getChatContentList",
-    //         cors: true,
-    //         request: {
-    //           parameters: {
-    //             querystrings: {
-    //               offset: false,
-    //               limit: false,
-    //             },
-    //             paths: {
-    //               receiveId: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // },
+    onConnect: {
+      handler: "services/chat-socket/handler.onConnect",
+      events: [
+        {
+          websocket: { route: "$connect" },
+        },
+      ],
+    },
+    onDisconnect: {
+      handler: "services/chat-socket/handler.onDisconnect",
+      events: [{ websocket: { route: "$disconnect" } }],
+    },
+    onDefault: {
+      handler: "services/chat-socket/handler.onDefault",
+      events: [
+        {
+          websocket: { route: "$default" },
+        },
+      ],
+    },
+    onSessionConnect: {
+      handler: "services/chat-socket/handler.onSessionConnect",
+      events: [
+        {
+          websocket: { route: "onSessionConnect" },
+        },
+      ],
+    },
+    onSendMessage: {
+      handler: "services/chat-socket/handler.onSendMessage",
+      events: [
+        {
+          websocket: { route: "onSendMessage" },
+        },
+      ],
+    },
+
+    onPush: {
+      handler: "services/chat-socket/handler.onPush",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "message/onPush",
+            cors: true,
+          },
+        },
+      ],
+    },
   },
 };
 
