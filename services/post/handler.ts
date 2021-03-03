@@ -27,7 +27,7 @@ import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop"
 import { uuid } from "uuidv4";
 import { getUid } from "../util/util";
 import { UserData } from "../../src/types/dataType";
-import { distance } from "jimp/*";
+import { PostFeedBuilder } from "../../src/dto/PostFeedDto";
 
 const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
@@ -516,29 +516,140 @@ const likePost = async (
   };
 };
 
+/**
+ * @api {get}  /post/getOtherProductsViewedALotByNeighbourhood     get Other Products Viewed A Lot By Neighbourhood
+ * @apiName Get Other Products Viewed A Lot By Neighbourhood
+ * @apiGroup Post 
+ * 
+ * @apiParam (QueryStringParam) {Number} mile                                    mile
+ * @apiParam (QueryStringParam) {Number} latitude                                latitude
+ * @apiParam (QueryStringParam) {Number} longitude                               longitude
+ * @apiParam (QueryStringParam) {Number} offset                                   offset
+ * @apiParam (QueryStringParam) {Number} limit                               limit
+
+ * @apiParamExample response
+{
+  "data": [
+    {
+      "id": "68",
+      "title": "apple watch1",
+      "status": "active",
+      "category": "Antiques & Collectibles",
+      "price": 100000000,
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/post/39489e5be288970c5437b7a94917f54038bb48ff.png",
+      "likeCount": 0
+    },
+    {
+      "id": "72",
+      "title": "apple watch1",
+      "status": "active",
+      "category": "Antiques & Collectibles",
+      "price": 100000000,
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/post/39489e5be288970c5437b7a94917f54038bb48ff.png",
+      "likeCount": 0
+    },
+    {
+      "id": "69",
+      "title": "apple watch1",
+      "status": "reserved",
+      "category": "Antiques & Collectibles",
+      "price": 100000000,
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/post/39489e5be288970c5437b7a94917f54038bb48ff.png",
+      "likeCount": 0
+    },
+    {
+      "id": "70",
+      "title": "apple watch1",
+      "status": "active",
+      "category": "Antiques & Collectibles",
+      "price": 100000000,
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/post/39489e5be288970c5437b7a94917f54038bb48ff.png",
+      "likeCount": 0
+    },
+    {
+      "id": "71",
+      "title": "apple watch1",
+      "status": "active",
+      "category": "Antiques & Collectibles",
+      "price": 100000000,
+      "url": "https://d19j7dhfxgaxy7.cloudfront.net/post/39489e5be288970c5437b7a94917f54038bb48ff.png",
+      "likeCount": 0
+    }
+  ],
+  "_meta": {
+    "offset": 0,
+    "limit": 0,
+    "order": "DESC",
+    "totalCount": 5
+  }
+}
+ **/
+
 const getOtherProductsViewedALotByNeighbourhood = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  const { mile, latitude, longitude } = event.queryStringParameters;
-  const radius: number = Number(mile) * 1.6093;
+  const {
+    mile,
+    latitude,
+    longitude,
+    offset,
+    limit,
+  } = event.queryStringParameters;
+  const queryRadius: number = Number(mile) * 1.6093;
+  const queryOffset: number = Number(offset);
+  const queryLimit: number = Number(limit);
+
   const connection: Connection = await getDatabaseConnection();
   const postRepository: Repository<Post> = connection.getRepository(Post);
-  const postEntity: Post[] = await postRepository
+  const distanceEntity: {
+    postId;
+    distance;
+  }[] = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.location", "location")
     .select(
       "6371*acos(cos(radians(:latitude))*cos(radians(location.latitude))*cos(radians(location.longitude)-radians(:longitude))+sin(radians(:latitude))*sin(radians(location.latitude)))",
       "distance"
     )
-    .addSelect("post.*")
+    .addSelect("post.id", "postId")
     .having("distance <= :radius")
-    .setParameters({ latitude: latitude, longitude: longitude, radius: radius })
+    .setParameters({
+      latitude: latitude,
+      longitude: longitude,
+      radius: queryRadius,
+    })
     .getRawMany();
+
+  const postId: number[] = distanceEntity.map((value, index) => {
+    return value.postId;
+  });
+
+  const postEntity: [Post[], number] = await postRepository
+    .createQueryBuilder("post")
+    .leftJoinAndSelect("post.image", "image")
+    .leftJoinAndSelect("post.type", "type")
+    .leftJoinAndSelect("post.category", "category")
+    .leftJoinAndSelect("post.status", "status")
+    .where("post.id IN (:postId)", { postId: postId })
+    .orderBy("post.viewCount", "DESC")
+    .offset(queryOffset)
+    .limit(queryLimit)
+    .getManyAndCount();
+
+  const feedDto: any = new PostFeedBuilder(
+    postEntity[0],
+    queryOffset,
+    queryLimit,
+    "DESC",
+    postEntity[1]
+  )
+    .replaceHost(CLOUDFRONT_IMAGE)
+    .build();
 
   return {
     statusCode: 200,
-    body: JSON.stringify(postEntity),
+    body: JSON.stringify(feedDto),
   };
 };
 

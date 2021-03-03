@@ -42,7 +42,7 @@ const joinUser = async (
     await userRepository.save(user);
   } else {
     return {
-      statusCode: 500,
+      statusCode: 409,
       body: JSON.stringify("be already joined"),
     };
   }
