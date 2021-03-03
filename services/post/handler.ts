@@ -632,6 +632,7 @@ const getOtherProductsViewedALotByNeighbourhood = async (
     .leftJoinAndSelect("post.category", "category")
     .leftJoinAndSelect("post.status", "status")
     .where("post.id IN (:postId)", { postId: postId })
+    .andWhere("post.hide = false")
     .orderBy("post.viewCount", "DESC")
     .offset(queryOffset)
     .limit(queryLimit)

@@ -35,10 +35,13 @@ const joinUser = async (
     uid: userInfo.uid,
   });
 
+  const totalCount: number = await userRepository.count();
+
   let user: User = new User();
   if (userEntity == null || userEntity == undefined) {
     user.uid = userInfo.uid;
     user.phoneNumber = userInfo.phoneNumber;
+    user.nickName = `GN${totalCount + 1}`;
     await userRepository.save(user);
   } else {
     return {
@@ -49,47 +52,7 @@ const joinUser = async (
 
   return {
     statusCode: 200,
-    body: "",
-  };
-};
-
-import * as googleMaps from "@google/maps";
-
-const getLocation = async (
-  event: APIGatewayEvent,
-  context: Context
-): Promise<ProxyResult> => {
-  var googleMapsClient = googleMaps.createClient({
-    key: "AIzaSyC9bONXxtEBd8UOI8-QhoI8APPMsbV43ik",
-  });
-  // googleMapsClient.geocode(
-  //   {
-  //     components: {
-  //       postal_code: "95014",
-  //     },
-  //   },
-  //   function (err, response) {
-  //     if (!err) {
-  //       console.log(response.json.results[0].geometry.location);
-  //     }
-  //   }
-  // );
-  // googleMapsClient.reverseGeocode(
-  //   {
-  //     latlng: [37.33497, -122.00909],
-  //   },
-  //   function (err, response) {
-  //     if (!err) {
-  //       console.log(response.json.results[0].formatted_address.split(",")[1]);
-  //       console.log(response.json.results[0].formatted_address.split(",")[2]);
-  //       console.log(response.json.results[0].formatted_address.split(",")[3]);
-  //       console.log(response.json.results[0].formatted_address);
-  //     }
-  //   }
-  // );
-  return {
-    statusCode: 200,
-    body: "",
+    body: JSON.stringify(totalCount),
   };
 };
 
@@ -185,17 +148,7 @@ const getMySales = async (
   const postRepository: Repository<Post> = connection.getRepository(Post);
   const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
 
-  const totalCount: number = await postRepository
-    .createQueryBuilder("post")
-    .leftJoinAndSelect("post.status", "status")
-    .leftJoinAndSelect("post.image", "image")
-    .leftJoinAndSelect("post.user", "user")
-    .where("status.id in (:status)", { status: status })
-    .andWhere("user =:user", { user: userEntity.id })
-    .andWhere("post.hide =:hide", { hide: hide })
-    .getCount();
-
-  const postEntity: Post[] = await postRepository
+  const postEntity: [Post[], number] = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.category", "category")
     .leftJoinAndSelect("post.status", "status")
@@ -205,13 +158,13 @@ const getMySales = async (
     .andWhere("post.hide =:hide", { hide: hide })
     .offset(queryOffset)
     .limit(queryLimit)
-    .getMany();
+    .getManyAndCount();
 
   const mySalesDto: any = new MySalesBuilder(
-    postEntity,
+    postEntity[0],
     queryOffset,
     queryLimit,
-    totalCount
+    postEntity[1]
   )
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
@@ -238,9 +191,6 @@ const getMyFavourites = async (
 const wrappedJoinUser = middy(joinUser)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-const wrappedGetLocation = middy(getLocation)
-  .use(authorizeToken())
-  .use(doNotWaitForEmptyEventLoop());
 const wrappedGetMySales = middy(getMySales)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -249,7 +199,6 @@ const wrappedGetMyFavourites = middy(getMyFavourites)
   .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedJoinUser as joinUser,
-  wrappedGetLocation as getLocation,
   wrappedGetMySales as getMySales,
   wrappedGetMyFavourites as getMyFavourites,
 };
