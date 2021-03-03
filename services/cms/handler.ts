@@ -7,7 +7,6 @@ import { getDatabaseConnection } from "../../src/connection/Connection";
 import { User, Notice, Cs, ContactCs } from "../../src/entity/Entity";
 import { UserData } from "../../src/types/dataType";
 import { NoticeBuilder } from "../../src/dto/NoticeDto";
-import { CsvContentType } from "aws-sdk/clients/sagemaker";
 import { CsBuilder } from "../../src/dto/CsDto";
 import { getUid } from "../util/util";
 import { ContactCsBuilder } from "../../src/dto/ContactCsDto";
@@ -244,18 +243,14 @@ const getNoticeList = async (
     query.where("notice.category =:category", { category: filter });
   }
 
-  const noticeEntityTotalCount: number = await noticeRepository
-    .createQueryBuilder("notice")
-    .getCount();
-
-  const noticeEntity: Notice[] = await query.getMany();
+  const noticeEntity: [Notice[], number] = await query.getManyAndCount();
   const noticeDto: any = new NoticeBuilder(
-    noticeEntity,
+    noticeEntity[0],
     queryOffset,
     queryLimit,
     queryOrder,
     queryFilter,
-    noticeEntityTotalCount
+    noticeEntity[1]
   ).build();
 
   return {
@@ -453,23 +448,19 @@ const getCsList = async (
   const queryLimit: number = Number(limit);
   const queryOrder: "DESC" | "ASC" = order.toUpperCase() as "DESC" | "ASC";
 
-  const csEntity: Cs[] = await csRepository
+  const csEntity: [Cs[], number] = await csRepository
     .createQueryBuilder("cs")
     .orderBy("cs.createdAt", queryOrder)
     .offset(queryOffset)
     .limit(queryLimit)
-    .getMany();
-
-  const totalCount: number = await csRepository
-    .createQueryBuilder("cs")
-    .getCount();
+    .getManyAndCount();
 
   const csDto: any = new CsBuilder(
-    csEntity,
+    csEntity[0],
     queryOffset,
     queryLimit,
     queryOrder,
-    totalCount
+    csEntity[1]
   ).build();
   return {
     statusCode: 200,
@@ -685,18 +676,17 @@ const getContactCsList = async (
   const contactCsRepository: Repository<ContactCs> = connection.getRepository(
     ContactCs
   );
-  const contactCsEntity: ContactCs[] = await contactCsRepository
+  const contactCsEntity: [
+    ContactCs[],
+    number
+  ] = await contactCsRepository
     .createQueryBuilder("contactCs")
     .leftJoinAndSelect("contactCs.user", "user")
     .leftJoinAndSelect("user.location", "location")
     .orderBy("contactCs.updatedAt", queryOrder)
     .offset(queryOffset)
     .limit(queryLimit)
-    .getMany();
-
-  const totalCount: number = await contactCsRepository
-    .createQueryBuilder("contactCs")
-    .getCount();
+    .getManyAndCount();
 
   if (contactCsEntity == null) {
     return {
@@ -705,11 +695,11 @@ const getContactCsList = async (
     };
   }
   const contactCsDto: any = new ContactCsListBuilder(
-    contactCsEntity,
+    contactCsEntity[0],
     queryOffset,
     queryLimit,
     queryOrder,
-    totalCount
+    contactCsEntity[1]
   ).build();
   return {
     statusCode: 200,
