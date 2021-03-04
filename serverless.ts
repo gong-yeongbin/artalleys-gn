@@ -74,6 +74,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    getUserData: {
+      handler: "services/user/handler.getUserData",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "user/getUserData",
+            cors: true,
+          },
+        },
+      ],
+    },
     joinUser: {
       handler: "services/user/handler.joinUser",
       events: [

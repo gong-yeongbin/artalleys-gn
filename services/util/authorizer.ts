@@ -33,6 +33,7 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
         return new Error("token missing");
       }
       const token: string = handler.event.headers["Authorization"];
+
       await admin
         .auth()
         .verifyIdToken(token)

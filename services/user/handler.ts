@@ -12,6 +12,32 @@ import { MySalesBuilder } from "../../src/dto/MySalesDto";
 const { CLOUDFRONT_IMAGE } = process.env;
 
 /**
+ * @api {get}  /user/getUserData     Get User Data
+ * @apiName Get User Data
+ * @apiGroup User
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ **/
+
+const getUserData = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(userEntity),
+  };
+};
+
+/**
  * @api {put}  /user/joinUser     Join User
  * @apiName Join User
  * @apiGroup User
@@ -194,11 +220,13 @@ const wrappedJoinUser = middy(joinUser)
 const wrappedGetMySales = middy(getMySales)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-const wrappedGetMyFavourites = middy(getMyFavourites)
+const wrappedGetMyFavourites = middy(getMyFavourites).use(authorizeToken());
+const wrappedGetUserData = middy(getUserData)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedJoinUser as joinUser,
   wrappedGetMySales as getMySales,
   wrappedGetMyFavourites as getMyFavourites,
+  wrappedGetUserData as getUserData,
 };
