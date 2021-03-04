@@ -4,12 +4,13 @@ import { getDatabaseConnection } from "../../src/connection/Connection";
 import { authorizeToken } from "../util/authorizer";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
-import { User, Post } from "../../src/entity/Entity";
+import { User, Post, Image } from "../../src/entity/Entity";
 import { getUid } from "../util/util";
 import { UserData } from "../../src/types/dataType";
 import { MySalesBuilder } from "../../src/dto/MySalesDto";
+import { deleteObject } from "../util/aws";
 
-const { CLOUDFRONT_IMAGE } = process.env;
+const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
 /**
  * @api {get}  /user/getUserData     Get User Data
@@ -123,7 +124,6 @@ const setDistance = async (
  * @apiParam (QueryStringParam)     {string}nickname                    nickname
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success
- * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
  **/
 const setNickName = async (
   event: APIGatewayEvent,
@@ -138,6 +138,63 @@ const setNickName = async (
 
   userEntity.nickName = nickname;
   await userRepository.save(userEntity);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {patch}  /user/setProfileImage     Set Profile Image
+ * @apiName Set Profile Image
+ * @apiGroup User
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (Body)       {object}  key                                   s3 image key
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ **/
+const setProfileImage = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const data: any = JSON.parse(event.body);
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const imageRepository: Repository<Image> = connection.getRepository(Image);
+  const userEntity: User = await userRepository
+    .createQueryBuilder("user")
+    .where("user.uid = :uid", { uid: userInfo.uid })
+    .getOne();
+
+  const imageEntity: Image = await imageRepository.findOne({
+    user: userEntity,
+  });
+
+  if (imageEntity == null) {
+    await imageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Image)
+      .values({
+        url: `${BUCKET_SERVICE_ENDPOINT_URL}/${data.key}`,
+        user: userEntity,
+      })
+      .execute();
+  } else {
+    let objecyKey: string = imageEntity.url.replace(
+      "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/",
+      ""
+    );
+
+    await deleteObject(objecyKey);
+
+    imageEntity.url = `${BUCKET_SERVICE_ENDPOINT_URL}/${data.key}`;
+    await imageRepository.save(imageEntity);
+  }
 
   return {
     statusCode: 200,
@@ -293,6 +350,9 @@ const wrappedSetDistance = middy(setDistance)
 const wrappedSetNickName = middy(setNickName)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedSetProfileImage = middy(setProfileImage)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedJoinUser as joinUser,
   wrappedGetMySales as getMySales,
@@ -300,4 +360,5 @@ export {
   wrappedGetUserData as getUserData,
   wrappedSetDistance as setDistance,
   wrappedSetNickName as setNickName,
+  wrappedSetProfileImage as setProfileImage,
 };

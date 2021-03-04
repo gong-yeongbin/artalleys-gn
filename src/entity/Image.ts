@@ -4,8 +4,9 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   ManyToOne,
+  OneToOne,
 } from "typeorm";
-import { Business, Post } from "./Entity";
+import { Business, Post, User } from "./Entity";
 
 @Entity("image")
 export default class Image {
@@ -26,4 +27,10 @@ export default class Image {
   })
   @JoinColumn({ name: "business" })
   business: Business;
+
+  @OneToOne(() => User, (user) => user.image, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "user" })
+  user: User;
 }

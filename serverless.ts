@@ -122,6 +122,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    setProfileImage: {
+      handler: "services/user/handler.setProfileImage",
+      events: [
+        {
+          http: {
+            method: "patch",
+            path: "user/setProfileImage",
+            cors: true,
+          },
+        },
+      ],
+    },
     getMySales: {
       handler: "services/user/handler.getMySales",
       events: [
