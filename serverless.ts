@@ -98,6 +98,30 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    setDistance: {
+      handler: "services/user/handler.setDistance",
+      events: [
+        {
+          http: {
+            method: "patch",
+            path: "user/setDistance",
+            cors: true,
+          },
+        },
+      ],
+    },
+    setNickName: {
+      handler: "services/user/handler.setNickName",
+      events: [
+        {
+          http: {
+            method: "patch",
+            path: "user/setNickName",
+            cors: true,
+          },
+        },
+      ],
+    },
     getMySales: {
       handler: "services/user/handler.getMySales",
       events: [

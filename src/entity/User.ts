@@ -38,6 +38,9 @@ export default class User {
   @Column({ name: "email", type: "nvarchar", length: 45, nullable: true })
   email: string;
 
+  @Column({ name: "distance", type: "bigint", default: 20 })
+  distance: number;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 

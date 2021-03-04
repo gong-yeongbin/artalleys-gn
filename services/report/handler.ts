@@ -30,7 +30,7 @@ import { getDatabaseConnection } from "../../src/connection/Connection";
 {
 	"type": "Post",
 	"category": 1,
-	"content":"wow fuck you"
+	"content":"omg"
 }
  * @apiSuccess (200 OK) {String} NoContent                              Success
  **/

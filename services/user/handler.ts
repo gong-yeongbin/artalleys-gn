@@ -83,6 +83,69 @@ const joinUser = async (
 };
 
 /**
+ * @api {patch}  /user/setDistance     Set Distance
+ * @apiName Set Distance
+ * @apiGroup User
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (QueryStringParam)     {number}  distance                    distance
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
+
+const setDistance = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const distance: number = Number(event.queryStringParameters["distance"]);
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+
+  userEntity.distance = distance;
+  await userRepository.save(userEntity);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
+ * @api {patch}  /user/setNickName     Set NickName
+ * @apiName Set NickName
+ * @apiGroup User
+ *
+ * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (QueryStringParam)     {string}nickname                    nickname
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
+const setNickName = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const token: string = event.headers["Authorization"];
+  const userInfo: UserData = await getUid(token);
+  const nickname: string = event.queryStringParameters["nickname"];
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+
+  userEntity.nickName = nickname;
+  await userRepository.save(userEntity);
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+/**
  * @api {post}  /user/getMySales     get my sales
  * @apiName Get My Sales
  * @apiGroup User
@@ -224,9 +287,17 @@ const wrappedGetMyFavourites = middy(getMyFavourites).use(authorizeToken());
 const wrappedGetUserData = middy(getUserData)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedSetDistance = middy(setDistance)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
+const wrappedSetNickName = middy(setNickName)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 export {
   wrappedJoinUser as joinUser,
   wrappedGetMySales as getMySales,
   wrappedGetMyFavourites as getMyFavourites,
   wrappedGetUserData as getUserData,
+  wrappedSetDistance as setDistance,
+  wrappedSetNickName as setNickName,
 };
