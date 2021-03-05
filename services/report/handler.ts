@@ -63,8 +63,8 @@ const reportPost = async (
     | BusinessPost = await genericRepository.findOne({ id: postId });
 
   if (
-    userEntity == null &&
-    reportCategoryEntity == null &&
+    userEntity == null ||
+    reportCategoryEntity == null ||
     genericEntity == null
   ) {
     return {

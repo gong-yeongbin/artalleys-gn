@@ -26,7 +26,7 @@ export default class Report {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => ReportCategory, (reportCategory) => reportCategory.id)
+  @ManyToOne(() => ReportCategory, (reportCategory) => reportCategory.id)
   @JoinColumn({ name: "category" })
   category: ReportCategory;
 
