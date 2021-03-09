@@ -20,6 +20,9 @@ export default class Location {
   @Column({ name: "latitude", type: "float" })
   latitude: number;
 
+  @Column({ name: "address", type: "float" })
+  city: string;
+
   @OneToOne(() => Post, (post) => post.location, {
     cascade: true,
     onDelete: "CASCADE",

@@ -22,6 +22,7 @@ import {
   Report,
   Chat,
 } from "../entity/Entity";
+import ChatRoom from "./ChatRoom";
 
 @Entity("post")
 export default class Post {
@@ -103,7 +104,7 @@ export default class Post {
   @JoinColumn({ name: "report" })
   report: Report[];
 
-  @OneToMany(() => Chat, (chat) => chat.post)
-  @JoinColumn({ name: "chat" })
-  chat: Chat[];
+  @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.post)
+  @JoinColumn({ name: "chat_room" })
+  chatRoom: ChatRoom[];
 }

@@ -23,6 +23,7 @@ export class BusinessBuilder {
       location: {
         longitude: business.location.longitude,
         latitude: business.location.latitude,
+        city: business.location.city,
       },
     };
     business.image.map((value, index) => {

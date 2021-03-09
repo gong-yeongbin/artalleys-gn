@@ -43,7 +43,8 @@ const getUserData = async (
  * @apiName Join User
  * @apiGroup User
  *
- * @apiParam (Header)     {string}  Authorization                         Bearer Token
+ * @apiParam (Header)               {string}  Authorization                         Bearer Token
+ * @apiParam (QueryStringParam)     {string}  deviceToken                           device token
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success
  * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
@@ -54,6 +55,7 @@ const joinUser = async (
   context: Context
 ): Promise<ProxyResult> => {
   const token: string = event.headers["Authorization"];
+  const device_token: string = event.queryStringParameters["deviceToken"];
   const userInfo: UserData = await getUid(token);
   const connection: Connection = await getDatabaseConnection();
   const userRepository: Repository<User> = connection.getRepository(User);
@@ -69,6 +71,7 @@ const joinUser = async (
     user.uid = userInfo.uid;
     user.phoneNumber = userInfo.phoneNumber;
     user.nickName = `GN${totalCount + 1}`;
+    user.deviceToken = device_token;
     await userRepository.save(user);
   } else {
     return {
@@ -317,7 +320,7 @@ const getMySales = async (
 
   return {
     statusCode: 200,
-    body: JSON.stringify(mySalesDto),
+    body: "",
   };
 };
 

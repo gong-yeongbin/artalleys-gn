@@ -45,6 +45,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)     {Object} [location]                                           location
  * @apiParam (Body)     {Object} location.latitude                                    latitude
  * @apiParam (Body)     {Object} location.longitude                                   longitude
+ * @apiParam (Body)     {Object} location.city                                        city
  * @apiParam (Body)     {number} [price]                                              price
  * @apiParam (Body)     {number} [number]                                             number
  * @apiParam (Body)     {boolean} nonNegotiablePriceYn                                Non-Negotiable Price
@@ -143,6 +144,7 @@ const createPost = async (
   let location: Location = new Location();
   location.latitude = data.location.latitude;
   location.longitude = data.location.longitude;
+  location.city = data.location.city;
   location.post = post;
   await locationRepository.save(location);
 

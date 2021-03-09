@@ -19,6 +19,7 @@ export class PostBuilder {
       location: {
         latitude: post.location.latitude,
         longitude: post.location.longitude,
+        city: post.location.city,
       },
       type: post.type.type,
       category: post.category.category,
@@ -33,7 +34,6 @@ export class PostBuilder {
     this._user = {
       id: post.user.id,
       nickName: post.user.nickName,
-      location: post.user.location != null ? post.user.location : null,
       url: post.user.image != null ? post.user.image.url : null,
     };
   }

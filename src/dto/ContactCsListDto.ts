@@ -27,7 +27,6 @@ export class ContactCsListBuilder {
           phoneNumber: value.user.phoneNumber,
           email: value.user.email,
         },
-        location: value.user.location,
       };
     });
     this._offset = offset;

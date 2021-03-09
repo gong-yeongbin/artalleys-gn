@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from "typeorm";
+import ChatRoom from "./ChatRoom";
 import { Post, User } from "./Entity";
 
 @Entity("chat")
@@ -23,15 +24,11 @@ export default class Chat {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.sendId)
-  @JoinColumn({ name: "sendId" })
-  sendId: User;
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: "user" })
+  user: User;
 
-  @ManyToOne(() => User, (user) => user.receiveId)
-  @JoinColumn({ name: "receiveId" })
-  receiveId: User;
-
-  @ManyToOne(() => Post, (post) => post.chat)
-  @JoinColumn({ name: "post" })
-  post: Post;
+  @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.chat)
+  @JoinColumn({ name: "chat_room" })
+  chatRoom: ChatRoom;
 }

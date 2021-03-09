@@ -10,7 +10,6 @@ import {
 } from "typeorm";
 import {
   Image,
-  Location,
   Followers,
   Following,
   Post,
@@ -19,6 +18,7 @@ import {
   ContactCs,
   Report,
   Chat,
+  ChatRoom,
 } from "./Entity";
 
 @Entity("user")
@@ -41,17 +41,14 @@ export default class User {
   @Column({ name: "distance", type: "bigint", default: 20 })
   distance: number;
 
+  @Column({ name: "device_token", type: "nvarchar" })
+  deviceToken: string;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
-
-  @OneToOne(() => Location, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "location" })
-  location: Location;
 
   @OneToOne(() => Image, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "image" })
@@ -85,11 +82,7 @@ export default class User {
   @JoinColumn({ name: "report" })
   report: Report[];
 
-  @OneToMany(() => Chat, (chat) => chat.sendId)
-  @JoinColumn({ name: "sendId" })
-  sendId: Chat;
-
-  @OneToMany(() => Chat, (chat) => chat.receiveId)
-  @JoinColumn({ name: "receiveId" })
-  receiveId: Chat;
+  @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.user)
+  @JoinColumn({ name: "chat_room" })
+  chatRoom: ChatRoom[];
 }

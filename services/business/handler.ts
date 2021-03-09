@@ -37,6 +37,7 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Body)   {Object} location                                   location
  * @apiParam (Body)   {Object} location.latitude                          latitude
  * @apiParam (Body)   {Object} location.longitude                         longitude
+ * @apiParam (Body)   {Object} location.city                              city
  * @apiParam (Body)   {String} businessHoursInfo                          business hours info
  * @apiParam (Body)   {String} homepage                                   homepage url
  * @apiParam (Body)   {String{300}} details                               details
@@ -117,6 +118,7 @@ const createBusiness = async (
   let location: Location = new Location();
   location.latitude = data.location.latitude;
   location.longitude = data.location.longitude;
+  location.city = data.location.city;
   location.business = business;
   await locationRepository.save(location);
 

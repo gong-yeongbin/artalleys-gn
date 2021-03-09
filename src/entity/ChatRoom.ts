@@ -1,36 +1,36 @@
-// import {
-//   Entity,
-//   Column,
-//   PrimaryGeneratedColumn,
-//   OneToMany,
-//   ManyToOne,
-//   JoinColumn,
-// } from "typeorm";
-// import { Post, Chat } from "./Entity";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+  Index,
+  PrimaryColumn,
+} from "typeorm";
+import { Post, Chat, User } from "./Entity";
 
-// @Entity("chat_room")
-// export default class ChatRoom {
-//   @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
-//   id: number;
+@Entity("chat_room")
+@Unique(["post", "user"])
+export default class ChatRoom {
+  @PrimaryGeneratedColumn({ name: "id", type: "bigint" })
+  id: number;
 
-//   @Column({ name: "room_id" })
-//   roomId: string;
+  @ManyToOne(() => Post, (post) => post.id, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "post" })
+  post: Post;
 
-//   @Column({ name: "seller_id" })
-//   seller_id: string;
+  @OneToMany(() => Chat, (chat) => chat.chatRoom, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "chat" })
+  chat: Chat;
 
-//   @Column({ name: "buyer_id" })
-//   buyer_id: string;
-
-//   @ManyToOne(() => Post, (post) => post.chatRoom, {
-//     onDelete: "CASCADE",
-//   })
-//   @JoinColumn({ name: "post" })
-//   post: Post;
-
-//   // @OneToMany(() => Chat, (chat) => chat.chatRoom, {
-//   //   cascade: ["insert", "update", "remove"],
-//   //   nullable: true,
-//   // })
-//   // chat: Chat[];
-// }
+  @ManyToOne(() => User, (user) => user.id, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "user" })
+  user: User;
+}

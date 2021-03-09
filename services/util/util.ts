@@ -2,6 +2,7 @@ import * as crypto from "crypto";
 import * as mime from "mime";
 import * as admin from "firebase-admin";
 import { min } from "moment";
+import { bool } from "aws-sdk/clients/signer";
 
 export const generateRandomBase64 = (): string => {
   return crypto.randomBytes(20).toString("base64");
@@ -37,4 +38,23 @@ export const getUid = async (token: string) => {
     });
 
   return response;
+};
+
+export const sendPush = async (
+  message: admin.messaging.Message
+): Promise<boolean> => {
+  let result: boolean;
+  await admin
+    .messaging()
+    .send(message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+      result = true;
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+      result = false;
+    });
+  return result;
 };

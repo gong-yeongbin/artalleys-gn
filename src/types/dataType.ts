@@ -1,6 +1,7 @@
 interface Location {
   longitude: number;
   latitude: number;
+  city: string;
 }
 interface UserData {
   id: number;
@@ -9,7 +10,6 @@ interface UserData {
   phoneNumber?: string;
   email?: string;
   url?: string;
-  location?: Location;
 }
 interface PostData {
   id: number;
@@ -122,7 +122,6 @@ interface ContactCsData {
     phoneNumber: string;
     email: string;
   };
-  location: Location;
 }
 
 export {

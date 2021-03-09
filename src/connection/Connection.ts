@@ -30,6 +30,7 @@ import {
   Report,
   ReportCategory,
   Chat,
+  ChatRoom,
 } from "../entity/Entity";
 
 import { RelationLoader } from "typeorm/query-builder/RelationLoader";
@@ -68,6 +69,7 @@ const entity = [
   Report,
   ReportCategory,
   Chat,
+  ChatRoom,
 ];
 
 const CONNECTION_OPTIONS: ConnectionOptions = {

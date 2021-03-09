@@ -16,7 +16,6 @@ export class ContactCsBuilder {
         phoneNumber: contactCs.user.phoneNumber,
         email: contactCs.user.email,
       },
-      location: contactCs.user.location,
     };
   }
   public build() {

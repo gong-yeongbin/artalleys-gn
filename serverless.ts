@@ -710,50 +710,49 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-    onConnect: {
-      handler: "services/chat-socket/handler.onConnect",
+    createRoom: {
+      handler: "services/chat/handler.createRoom",
       events: [
         {
-          websocket: { route: "$connect" },
-        },
-      ],
-    },
-    onDisconnect: {
-      handler: "services/chat-socket/handler.onDisconnect",
-      events: [{ websocket: { route: "$disconnect" } }],
-    },
-    onDefault: {
-      handler: "services/chat-socket/handler.onDefault",
-      events: [
-        {
-          websocket: { route: "$default" },
-        },
-      ],
-    },
-    onSessionConnect: {
-      handler: "services/chat-socket/handler.onSessionConnect",
-      events: [
-        {
-          websocket: { route: "onSessionConnect" },
+          http: {
+            method: "put",
+            path: "chat/createRoom",
+            cors: true,
+          },
         },
       ],
     },
     onSendMessage: {
-      handler: "services/chat-socket/handler.onSendMessage",
+      handler: "services/chat/handler.onSendMessage",
       events: [
         {
-          websocket: { route: "onSendMessage" },
+          http: {
+            method: "put",
+            path: "chat/onSendMessage",
+            cors: true,
+          },
         },
       ],
     },
-
-    onPush: {
-      handler: "services/chat-socket/handler.onPush",
+    getChatRoomList: {
+      handler: "services/chat/handler.getChatRoomList",
       events: [
         {
           http: {
             method: "get",
-            path: "message/onPush",
+            path: "chat/getChatRoomList",
+            cors: true,
+          },
+        },
+      ],
+    },
+    getChatMessageList: {
+      handler: "services/chat/handler.getChatMessageList",
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "chat/getChatMessageList",
             cors: true,
           },
         },
