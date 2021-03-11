@@ -217,7 +217,6 @@ const getPost = async (
   const postEntity: Post = await postRepository
     .createQueryBuilder("post")
     .leftJoinAndSelect("post.user", "user")
-    .leftJoinAndSelect("user.location", "userlocation")
     .leftJoinAndSelect("user.image", "userimage")
     .leftJoinAndSelect("post.location", "postlocation")
     .leftJoinAndSelect("post.image", "image")
@@ -626,6 +625,10 @@ const getOtherProductsViewedALotByNeighbourhood = async (
   const postId: number[] = distanceEntity.map((value, index) => {
     return value.postId;
   });
+
+  if (postId.length < 1) {
+    postId.push(0);
+  }
 
   const postEntity: [Post[], number] = await postRepository
     .createQueryBuilder("post")

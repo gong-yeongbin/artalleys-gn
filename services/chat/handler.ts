@@ -1,7 +1,7 @@
 import { APIGatewayEvent, ProxyResult, Context } from "aws-lambda";
 import { ApiGatewayManagementApi, AugmentedAIRuntime } from "aws-sdk";
 import { getDatabaseConnection } from "../../src/connection/Connection";
-import { Repository, Connection, getRepository } from "typeorm";
+import { Repository, Connection, getRepository, In } from "typeorm";
 import { User, Post, ChatRoom, Chat } from "../../src/entity/Entity";
 import { UserData } from "../../src/types/dataType";
 import { getUid, sendPush } from "../util/util";
@@ -9,6 +9,7 @@ import * as admin from "firebase-admin";
 import middy from "@middy/core";
 import doNotWaitForEmptyEventLoop from "@middy/do-not-wait-for-empty-event-loop";
 import { authorizeToken } from "../util/authorizer";
+import { getOtherProductsViewedALotByNeighbourhood } from "../post/handler";
 
 /**
  * @api {put}  /chat/createRoom     Create Room
@@ -127,43 +128,47 @@ const getChatRoomList = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
-  // const userInfo: UserData = await getUid(event.headers["Authorization"]);
-  // const connection: Connection = await getDatabaseConnection();
-  // const userRepository: Repository<User> = connection.getRepository(User);
-  // const postRepository: Repository<Post> = connection.getRepository(Post);
-  // const chatRepository: Repository<Chat> = connection.getRepository(Chat);
-  // const chatRoomRepository: Repository<ChatRoom> = connection.getRepository(
-  //   ChatRoom
-  // );
-  // const userEntity: User = await userRepository.findOne({
-  //   where: {
-  //     uid: userInfo.uid,
-  //   },
+  const userInfo: UserData = await getUid(event.headers["Authorization"]);
+  const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const chatRepository: Repository<Chat> = connection.getRepository(Chat);
+  const chatRoomRepository: Repository<ChatRoom> = connection.getRepository(
+    ChatRoom
+  );
+
+  const userEntity: User = await userRepository.findOne({
+    where: {
+      uid: userInfo.uid,
+    },
+    relations: ["chatRoom"],
+  });
+
+  const chatRoomIdList: number[] = userEntity.chatRoom.map((value, index) => {
+    return value.id;
+  });
+
+  // const chatEntity: Chat[] = await chatRepository.find({
+  //   where: { chatRoom: In(chatRoomIdList) },
+  //   order: { createdAt: "DESC" },
   //   relations: ["chatRoom"],
   // });
+  const chatRoomEntity: ChatRoom[] = await chatRoomRepository
+    .createQueryBuilder("chatRoom")
+    .leftJoinAndSelect("chatRoom.chat", "chat")
+    .where("chatRoom.id In (:roomId)", { roomId: chatRoomIdList })
+    .orderBy("chat.createdAt", "DESC")
+    .getMany();
 
-  // const chatRoomIdList: number[] = userEntity.chatRoom.map((value, index) => {
-  //   return value.id;
-  // });
-
-  // const chatRoomEntity: ChatRoom[] = await chatRoomRepository
-  //   .createQueryBuilder("chatRoom")
-  //   .where("id In (:id)", { id: chatRoomIdList })
-  //   .getMany();
-
-  // const chatlist = chatRoomEntity.map((value, index) => {
-  //   return value.id;
-  // });
-
-  // const chatEntity: Chat[] = await chatRepository
-  //   .createQueryBuilder("chat")
-  //   .leftJoinAndSelect("chat.chatRoom", "chatRoom")
-  //   .where("chatRoom.id In (:roomId)", { roomId: chatlist })
-  //   .getMany();
-
+  let chatEntity: Chat = new Chat();
+  const chatData: Chat[] = chatRoomEntity.map((value, index) => {
+    chatEntity.chatRoom.id = value.id;
+    chatEntity.id = value.chat[0];
+    return chatEntity;
+    // return chatvalue.chat[0];
+  });
   return {
     statusCode: 200,
-    body: JSON.stringify("chatEntity"),
+    body: JSON.stringify(chatData),
   };
 };
 
@@ -210,6 +215,7 @@ const getChatMessageList = async (
     skip: Number(offset),
     take: Number(limit),
   });
+
   return {
     statusCode: 200,
     body: JSON.stringify(chatEntity),
