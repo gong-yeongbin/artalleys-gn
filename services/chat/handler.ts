@@ -159,16 +159,19 @@ const getChatRoomList = async (
     .orderBy("chat.createdAt", "DESC")
     .getMany();
 
-  let chatEntity: Chat = new Chat();
-  const chatData: Chat[] = chatRoomEntity.map((value, index) => {
-    chatEntity.chatRoom.id = value.id;
-    chatEntity.id = value.chat[0];
-    return chatEntity;
-    // return chatvalue.chat[0];
-  });
+  for (let i = 0; i < chatRoomEntity.length; i++) {
+    for (
+      let j = chatRoomEntity[i].chat.length;
+      chatRoomEntity[i].chat.length - 1 > 0;
+      j--
+    ) {
+      chatRoomEntity[i].chat.pop();
+    }
+  }
+
   return {
     statusCode: 200,
-    body: JSON.stringify(chatData),
+    body: JSON.stringify(chatRoomEntity),
   };
 };
 

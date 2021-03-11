@@ -26,7 +26,7 @@ export default class ChatRoom {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "chat" })
-  chat: Chat;
+  chat: Chat[];
 
   @ManyToOne(() => User, (user) => user.id, {
     onDelete: "CASCADE",
