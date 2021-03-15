@@ -1,5 +1,9 @@
 - Run `npm i` command
-- npm install -g serverless
+
+# serverless framework
+
+- 설치: npm install -g serverless
+- 배포: npm run deploy
 
 # 로컬 db 셋팅
 
