@@ -25,6 +25,7 @@
 
 - mysql -u root -p
 - 접속 후 gn 데이터베이스 생성
+- 기본 카테고리 및 상태 데이터 > src/migration/V1_Baseline.sql > insert ....
 
 # apidoc
 
