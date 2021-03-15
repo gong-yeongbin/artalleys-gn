@@ -347,13 +347,20 @@ const getMySales = async (
   };
 };
 
-const getMyFavourites = async (
+const setDeviceToken = async (
   event: APIGatewayEvent,
   context: Context
 ): Promise<ProxyResult> => {
+  const deviceToken: string = event.queryStringParameters["deviceToken"];
   const token: string = event.headers["Authorization"];
   const userInfo: UserData = await getUid(token);
   const connection: Connection = await getDatabaseConnection();
+  const userRepository: Repository<User> = connection.getRepository(User);
+  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+
+  userEntity.deviceToken = deviceToken;
+  await userRepository.save(userEntity);
+
   return {
     statusCode: 200,
     body: "",
@@ -366,7 +373,7 @@ const wrappedJoinUser = middy(joinUser)
 const wrappedGetMySales = middy(getMySales)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-const wrappedGetMyFavourites = middy(getMyFavourites).use(authorizeToken());
+const wrappedSetDeviceToken = middy(setDeviceToken).use(authorizeToken());
 const wrappedGetUserData = middy(getUserData)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -382,7 +389,7 @@ const wrappedSetProfileImage = middy(setProfileImage)
 export {
   wrappedJoinUser as joinUser,
   wrappedGetMySales as getMySales,
-  wrappedGetMyFavourites as getMyFavourites,
+  wrappedSetDeviceToken as setDeviceToken,
   wrappedGetUserData as getUserData,
   wrappedSetDistance as setDistance,
   wrappedSetNickName as setNickName,

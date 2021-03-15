@@ -770,6 +770,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    setDeviceToken: {
+      handler: "services/user/handler.setDeviceToken",
+      events: [
+        {
+          http: {
+            method: "patch",
+            path: "user/setDeviceToken",
+            cors: true,
+          },
+        },
+      ],
+    },
   },
 };
 

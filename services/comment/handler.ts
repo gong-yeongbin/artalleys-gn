@@ -244,15 +244,14 @@ const getComment = async (
       });
   }
 
-  const commentEntity: Comment[] = await query.getMany();
-  const totalCount: number = await query.getCount();
+  const commentEntity: [Comment[], number] = await query.getManyAndCount();
 
   const commentDto: any = new CommentBuilder(
-    commentEntity,
+    commentEntity[0],
     queryOffset,
     queryLimit,
     queryOrder,
-    totalCount
+    commentEntity[1]
   )
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();
