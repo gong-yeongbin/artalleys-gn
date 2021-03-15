@@ -1,8 +1,6 @@
-# Good Neibors Project
-
 - Run `npm i` command
 
-## 로컬 db 셋팅
+# 로컬 db 셋팅
 
 - docker 설치
 
@@ -18,7 +16,7 @@
 
 - docker exec -i -t mysql_gn bash
 
-### Mysql 접속
+### mysql 접속
 
 - mysql -u root -p
 - 접속 후 gn 데이터베이스 생성
