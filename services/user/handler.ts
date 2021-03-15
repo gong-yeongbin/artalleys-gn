@@ -9,6 +9,7 @@ import { getUid } from "../util/util";
 import { UserData } from "../../src/types/dataType";
 import { MySalesBuilder } from "../../src/dto/MySalesDto";
 import { deleteObject } from "../util/aws";
+import { replaceHost } from "../../services/util/http";
 
 const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
 
@@ -20,6 +21,22 @@ const { BUCKET_SERVICE_ENDPOINT_URL, CLOUDFRONT_IMAGE } = process.env;
  * @apiParam (Header)     {string}  Authorization                         Bearer Token
  *
  * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiParamExample {json} Response Body
+ {
+  "id": "16",
+  "uid": "wTYz5gmRuRTQ1W8HcdcsGCPAqO32",
+  "nickName": "GN4",
+  "phoneNumber": "+11234567890",
+  "email": null,
+  "distance": "20",
+  "deviceToken": "e91LtMifTSGCM7mpqByd4p:APA91bE7w5Rzjdd47zfvWU9QdKu06dWyC7OX2SFt9FJHMq3bBI-cL0CLoHCAxV99Q0BtxGVoIMPOuS6MTSjdcUNh1dgv02aMi882TLa5oxQwazDQY2Kru6ndupb1MJ8JOnRDe_GZNyUR",
+  "createdAt": "2021-03-08T18:27:26.908Z",
+  "updatedAt": "2021-03-08T18:27:26.908Z",
+  "image": {
+    "id": "96",
+    "url": "https://d19j7dhfxgaxy7.cloudfront.net/aaaaaaaaaaa"
+  }
+}
  **/
 
 const getUserData = async (
@@ -30,8 +47,14 @@ const getUserData = async (
   const userInfo: UserData = await getUid(token);
   const connection: Connection = await getDatabaseConnection();
   const userRepository: Repository<User> = connection.getRepository(User);
-  const userEntity: User = await userRepository.findOne({ uid: userInfo.uid });
+  const userEntity: User = await userRepository.findOne({
+    where: { uid: userInfo.uid },
+    relations: ["image"],
+  });
 
+  if (userEntity.image != null) {
+    userEntity.image.url = replaceHost(userEntity.image.url, CLOUDFRONT_IMAGE);
+  }
   return {
     statusCode: 200,
     body: JSON.stringify(userEntity),

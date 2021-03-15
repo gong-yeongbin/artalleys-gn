@@ -225,6 +225,32 @@ const getChatMessageList = async (
   };
 };
 
+/**
+ * @api {delete}  /chat/:roomId/deleteChatRoom                                          delete chat room
+ * @apiName delete chat room
+ * @apiGroup Chat
+ *
+ * @apiParam (Header)            {string}  Authorization                         Bearer Token
+ **/
+
+const deleteChatRoom = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<ProxyResult> => {
+  const roomId: number = Number(event.pathParameters["roomId"]);
+  const connection: Connection = await getDatabaseConnection();
+  const chatRoomRepository: Repository<ChatRoom> = connection.getRepository(
+    ChatRoom
+  );
+
+  await chatRoomRepository.delete({ id: roomId });
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
 const wrappedCreateRoom = middy(createRoom)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -237,10 +263,14 @@ const wrappedGetChatRoomList = middy(getChatRoomList)
 const wrappedGetChatMessageList = middy(getChatMessageList)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+const wrappedDeleteChatRoom = middy(deleteChatRoom)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 
 export {
   wrappedCreateRoom as createRoom,
   wrappedOnSendMessage as onSendMessage,
   wrappedGetChatRoomList as getChatRoomList,
   wrappedGetChatMessageList as getChatMessageList,
+  wrappedDeleteChatRoom as deleteChatRoom,
 };

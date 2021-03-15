@@ -22,9 +22,7 @@ export default class ChatRoom {
   @JoinColumn({ name: "post" })
   post: Post;
 
-  @OneToMany(() => Chat, (chat) => chat.chatRoom, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => Chat, (chat) => chat.chatRoom)
   @JoinColumn({ name: "chat" })
   chat: Chat[];
 

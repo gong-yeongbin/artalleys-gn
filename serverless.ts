@@ -758,6 +758,18 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
+    deleteChatRoom: {
+      handler: "services/chat/handler.deleteChatRoom",
+      events: [
+        {
+          http: {
+            method: "delete",
+            path: "chat/{roomId}/deleteChatRoom",
+            cors: true,
+          },
+        },
+      ],
+    },
   },
 };
 
