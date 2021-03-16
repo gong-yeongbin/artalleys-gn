@@ -199,7 +199,6 @@ const setProfileImage = async (
   const imageEntity: Image = await imageRepository.findOne({
     user: userEntity,
   });
-
   if (imageEntity == null) {
     await imageRepository
       .createQueryBuilder()
@@ -210,13 +209,16 @@ const setProfileImage = async (
         user: userEntity,
       })
       .execute();
+
+    userEntity.image = await imageRepository.findOne({ user: userEntity });
+    await userRepository.save(userEntity);
   } else {
     let objecyKey: string = imageEntity.url.replace(
       "https://artalleys-gn-image-bucket.s3.us-east-2.amazonaws.com/",
       ""
     );
 
-    await deleteObject(objecyKey);
+    // await deleteObject(objecyKey);
 
     imageEntity.url = `${BUCKET_SERVICE_ENDPOINT_URL}/${data.key}`;
     await imageRepository.save(imageEntity);
