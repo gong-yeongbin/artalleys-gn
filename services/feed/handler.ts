@@ -101,19 +101,19 @@ const getFeed = async (
 
   const querySearch: string = search;
 
-  const totalCount: number = await postRepository
-    .createQueryBuilder("post")
-    .leftJoinAndSelect("post.image", "image")
-    .leftJoinAndSelect("post.type", "type")
-    .leftJoinAndSelect("post.category", "category")
-    .leftJoinAndSelect("post.status", "status")
-    .where("type.type = :type", { type: queryType })
-    .andWhere("post.hide = :hide", { hide: hide })
-    .andWhere("post.category IN ( :category)", {
-      category: querySetCategory,
-    })
-    .andWhere("post.title like :title", { title: `%${querySearch}%` })
-    .getCount();
+  // const totalCount: number = await postRepository
+  //   .createQueryBuilder("post")
+  //   .leftJoinAndSelect("post.image", "image")
+  //   .leftJoinAndSelect("post.type", "type")
+  //   .leftJoinAndSelect("post.category", "category")
+  //   .leftJoinAndSelect("post.status", "status")
+  //   .where("type.type = :type", { type: queryType })
+  //   .andWhere("post.hide = :hide", { hide: hide })
+  //   .andWhere("post.category IN ( :category)", {
+  //     category: querySetCategory,
+  //   })
+  //   .andWhere("post.title like :title", { title: `%${querySearch}%` })
+  //   .getCount();
 
   let query = postRepository
     .createQueryBuilder("post")
@@ -138,13 +138,13 @@ const getFeed = async (
     });
   }
 
-  const postEntity: Post[] = await query.getMany();
+  const postEntity: [Post[], number] = await query.getManyAndCount();
   const feedDto: any = new PostFeedBuilder(
-    postEntity,
+    postEntity[0],
     queryOffset,
     queryLimit,
     queryOrder,
-    totalCount
+    postEntity[1]
   )
     .replaceHost(CLOUDFRONT_IMAGE)
     .build();

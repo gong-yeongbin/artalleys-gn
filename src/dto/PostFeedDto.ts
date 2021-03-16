@@ -26,9 +26,15 @@ export class PostFeedBuilder {
         status: value.status.status,
         category: value.category.category,
         price: value.price,
-        url: value.image[0].url,
+        url: "",
         likeCount: value.likeCount,
       };
+    });
+    post.map((value, index) => {
+      console.log(value.image);
+      value.image.length != 0
+        ? (this._data[index].url = value.image[0].url)
+        : "";
     });
   }
 

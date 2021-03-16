@@ -343,7 +343,7 @@ const getMySales = async (
 
   return {
     statusCode: 200,
-    body: "",
+    body: JSON.stringify(mySalesDto),
   };
 };
 
@@ -373,7 +373,9 @@ const wrappedJoinUser = middy(joinUser)
 const wrappedGetMySales = middy(getMySales)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
-const wrappedSetDeviceToken = middy(setDeviceToken).use(authorizeToken());
+const wrappedSetDeviceToken = middy(setDeviceToken)
+  .use(authorizeToken())
+  .use(doNotWaitForEmptyEventLoop());
 const wrappedGetUserData = middy(getUserData)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
@@ -386,6 +388,7 @@ const wrappedSetNickName = middy(setNickName)
 const wrappedSetProfileImage = middy(setProfileImage)
   .use(authorizeToken())
   .use(doNotWaitForEmptyEventLoop());
+
 export {
   wrappedJoinUser as joinUser,
   wrappedGetMySales as getMySales,
