@@ -218,7 +218,7 @@ const setProfileImage = async (
       ""
     );
 
-    // await deleteObject(objecyKey);
+    await deleteObject(objecyKey);
 
     imageEntity.url = `${BUCKET_SERVICE_ENDPOINT_URL}/${data.key}`;
     await imageRepository.save(imageEntity);
@@ -348,6 +348,18 @@ const getMySales = async (
     body: JSON.stringify(mySalesDto),
   };
 };
+
+/**
+ * @api {patch}  /user/setDeviceToken     set device token
+ * @apiName Set Device Token
+ * @apiGroup User
+ *
+ * @apiParam (Header)               {string}  Authorization                         Bearer Token
+ * @apiParam (QueryStringParam)     {string}  deviceToken                           device token
+ *
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ * @apiError    (404 Not Found)   ResourceNotFound    This resource cannot be found
+ **/
 
 const setDeviceToken = async (
   event: APIGatewayEvent,

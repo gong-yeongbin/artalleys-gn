@@ -124,6 +124,30 @@ const onSendMessage = async (
   };
 };
 
+/**
+ * @api {get}  /chat/getChatRoomList     get chat room list
+ * @apiName Get Chat Room List
+ * @apiGroup Chat
+ *
+ * @apiParam (Header)            {string}  Authorization                         Bearer Token
+ * @apiParam (QueryStringParam)               {number}  offset                   offset
+ * @apiParam (QueryStringParam)               {number}  limit                    limit
+ * @apiParamExample Response
+[
+  {
+    "id": "18",
+    "chat": [
+      {
+        "id": "16",
+        "message": "test message",
+        "createdAt": "2021-03-08T21:35:27.672Z",
+        "updatedAt": "2021-03-08T21:35:27.672Z"
+      }
+    ]
+  }
+]
+ * @apiSuccess  (200 OK) {String} NoContent           Success
+ **/
 const getChatRoomList = async (
   event: APIGatewayEvent,
   context: Context
@@ -147,11 +171,9 @@ const getChatRoomList = async (
     return value.id;
   });
 
-  // const chatEntity: Chat[] = await chatRepository.find({
-  //   where: { chatRoom: In(chatRoomIdList) },
-  //   order: { createdAt: "DESC" },
-  //   relations: ["chatRoom"],
-  // });
+  if (chatRoomIdList.length < 1) {
+    chatRoomIdList.push(0);
+  }
   const chatRoomEntity: ChatRoom[] = await chatRoomRepository
     .createQueryBuilder("chatRoom")
     .leftJoinAndSelect("chatRoom.chat", "chat")
