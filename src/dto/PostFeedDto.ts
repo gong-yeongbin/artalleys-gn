@@ -31,7 +31,6 @@ export class PostFeedBuilder {
       };
     });
     post.map((value, index) => {
-      console.log(value.image);
       value.image.length != 0
         ? (this._data[index].url = value.image[0].url)
         : "";

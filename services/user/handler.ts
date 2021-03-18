@@ -95,6 +95,7 @@ const joinUser = async (
     user.phoneNumber = userInfo.phoneNumber;
     user.nickName = `GN${totalCount + 1}`;
     user.deviceToken = device_token;
+
     await userRepository.save(user);
   } else {
     return {

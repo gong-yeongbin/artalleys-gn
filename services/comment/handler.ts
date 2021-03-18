@@ -1,5 +1,5 @@
 import { APIGatewayEvent, Context, ProxyResult } from "aws-lambda";
-import { Repository } from "typeorm";
+import { Repository, SimpleConsoleLogger } from "typeorm";
 import { getDatabaseConnection } from "../../src/connection/Connection";
 import { User, Business, Comment, BusinessPost } from "../../src/entity/Entity";
 import { CommentBuilder } from "../../src/dto/CommentDto";
@@ -214,6 +214,7 @@ const getComment = async (
       body: JSON.stringify("post Id null"),
     };
   }
+
   const commentRepository: Repository<Comment> = await connection.getRepository(
     Comment
   );
@@ -230,7 +231,7 @@ const getComment = async (
   if (type == "Business") {
     query = query
       .leftJoinAndSelect("comment.business", "business")
-      .where("business.id = :id and comment.commentId is null", {
+      .where("business.id = :id ", {
         id: postId,
       });
   } else if (type == "BusienssPost") {
@@ -243,7 +244,6 @@ const getComment = async (
         id: postId,
       });
   }
-
   const commentEntity: [Comment[], number] = await query.getManyAndCount();
 
   const commentDto: any = new CommentBuilder(

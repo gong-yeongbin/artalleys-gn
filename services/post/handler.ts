@@ -175,7 +175,6 @@ const createPost = async (
  * @apiName Get Post
  * @apiGroup Post
  *
- * @apiParam (Header)     {string}  Authorization                         Bearer Token
  * @apiParam (PathParam)  {number}  postId                                post id
  *
  *

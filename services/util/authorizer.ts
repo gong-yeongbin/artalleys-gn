@@ -23,6 +23,7 @@ const authorizeToken = (): middy.MiddlewareObject<any, any> => {
         resource.indexOf("createRoom") != -1 ||
         resource.indexOf("getFeed") != -1 ||
         resource.indexOf("getBusinessFeed") != -1 ||
+        resource.indexOf("getPost") != -1 ||
         resource.indexOf("getPostCategory") != -1 ||
         resource.indexOf("getBusinessCategory") != -1 ||
         resource.indexOf("getNotice") != -1

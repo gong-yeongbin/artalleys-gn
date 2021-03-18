@@ -115,6 +115,7 @@ const onSendMessage = async (
     chat.message = message;
     chat.user = userEntity;
     chat.chatRoom = chatRoomEntity;
+
     await chatRepository.save(chat);
   }
 

@@ -2,7 +2,7 @@ import { Comment } from "../entity/Entity";
 import { CommentData } from "../types/dataType";
 import { replaceHost } from "../../services/util/http";
 export class CommentBuilder {
-  private _data: CommentData[];
+  private _data: CommentData[] = [];
   private _meta: object;
 
   constructor(
@@ -12,18 +12,20 @@ export class CommentBuilder {
     order: string,
     totalCount: number
   ) {
-    this._data = comment.map((value, index) => {
-      return {
-        id: value.id,
-        message: value.message,
-        createdAt: value.createdAt,
-        updatedAt: value.updatedAt,
-        user: {
-          userId: value.user.id,
-          nickName: value.user.nickName,
-          url: value.user.image == null ? "" : value.user.image.url,
-        },
-      };
+    comment.map((value, index) => {
+      if (value.commentId == null) {
+        this._data.push({
+          id: value.id,
+          message: value.message,
+          createdAt: value.createdAt,
+          updatedAt: value.updatedAt,
+          user: {
+            userId: value.user.id,
+            nickName: value.user.nickName,
+            url: value.user.image == null ? "" : value.user.image.url,
+          },
+        });
+      }
     });
 
     this._meta = {
